@@ -162,13 +162,13 @@
             </div>
 
             <div class="card">
-                <div class="card-header"><h2><i class="fas fa-edit"></i> Buat Pesanan</h2></div>
+                <div class="card-header"><h2><i class="fas fa-edit"></i> Buat Pesanan Servis</h2></div>
                 <form id="orderForm">
                     <div class="form-group"><label>Nama Lengkap</label><input type="text" id="custName" required></div>
                     <div class="form-group"><label>Nomor WhatsApp</label><input type="tel" id="custWA" required></div>
-                    <div class="form-group"><label>Nama Barang</label><input type="text" id="custDevice" required></div>
-                    <div class="form-group"><label>Keluhan</label><textarea id="custProblem" rows="3"></textarea></div>
-                    <button type="submit"><i class="fas fa-paper-plane"></i> Kirim Pesanan</button>
+                    <div class="form-group"><label>Nama Barang / Tipe Unit</label><input type="text" id="custDevice" required></div>
+                    <div class="form-group"><label>Deskripsi Keluhan</label><textarea id="custProblem" rows="3"></textarea></div>
+                    <button type="button" onclick="submitOrderViaWhatsApp()"><i class="fab fa-whatsapp"></i> Kirim Pesanan Via WhatsApp</button>
                 </form>
             </div>
 
@@ -239,15 +239,15 @@
                     <button class="btn-success" onclick="printReceipt()" style="width:100%; margin-top:15px"><i class="fas fa-print"></i> Cetak Struk</button>
                 </div>
 
-                <!-- Pesanan -->
+                <!-- History Pesanan -->
                 <div class="card">
-                    <div class="card-header"><h2>Antrean Pesanan</h2></div>
+                    <div class="card-header"><h2><i class="fas fa-history"></i> History Pesanan</h2></div>
                     <div id="admin-order-list"></div>
                 </div>
 
                 <!-- Pengumuman -->
                 <div class="card">
-                    <div class="card-header"><h2>Kelola Pengumuman</h2></div>
+                    <div class="card-header"><h2><i class="fas fa-bullhorn"></i> Kelola Pengumuman</h2></div>
                     <div class="form-group"><input type="text" id="annText" placeholder="Ketik info..."></div>
                     <button onclick="addAnnouncement()">Kirim</button>
                     <div id="admin-ann-list" style="margin-top:15px"></div>
@@ -255,7 +255,7 @@
 
                 <!-- Katalog -->
                 <div class="card">
-                    <div class="card-header"><h2>Kelola Katalog Layanan</h2></div>
+                    <div class="card-header"><h2><i class="fas fa-screwdriver-wrench"></i> Kelola Katalog Layanan</h2></div>
                     <div class="form-group"><input type="text" id="itemRepairName" placeholder="Nama layanan..."></div>
                     <button onclick="addRepairItem()">Tambah</button>
                     <div id="admin-item-list" style="margin-top:15px"></div>
@@ -358,7 +358,7 @@
             document.getElementById('admin-dashboard').style.display = 'block';
             document.getElementById('activeAdminName').textContent = user.name;
             showToast("Selamat Datang, " + user.name);
-            renderOrders();
+            renderOrders(); // Pastikan order di-render setelah login
         } else {
             alert("Nomor WA atau Password salah!");
         }
@@ -406,20 +406,53 @@
     }
 
     // --- CORE LOGIC (ORDERS, ANN, REPAIR) ---
-    document.getElementById('orderForm').onsubmit = (e) => {
-        e.preventDefault();
-        // Add status: 'Pending' to new orders
-        orders.push({ id: Date.now(), name: document.getElementById('custName').value, wa: document.getElementById('custWA').value, device: document.getElementById('custDevice').value, problem: document.getElementById('custProblem').value, time: new Date().toLocaleString(), status: 'Pending' });
+    // New function for customer to submit order via WhatsApp
+    function submitOrderViaWhatsApp() {
+        const name = document.getElementById('custName').value.trim();
+        const wa = document.getElementById('custWA').value.trim();
+        const device = document.getElementById('custDevice').value.trim();
+        const problem = document.getElementById('custProblem').value.trim();
+
+        if (!name || !wa || !device || !problem) {
+            alert("Harap lengkapi semua kolom pesanan!");
+            return;
+        }
+
+        // 1. Construct WhatsApp message for Admin
+        let adminPhone = ADMIN_CONTACT_WA.startsWith('0') ? '62' + ADMIN_CONTACT_WA.slice(1) : ADMIN_CONTACT_WA;
+        const waMessage = encodeURIComponent(
+            `*PESANAN SERVIS BARU VIA CUSTOMER APP*\n\n` +
+            `Nama Pelanggan: ${name}\n` +
+            `No. WhatsApp: ${wa}\n` +
+            `Unit Perangkat: ${device}\n` +
+            `Keluhan: ${problem}\n\n` +
+            `---\nMohon segera proses pesanan ini.`
+        );
+        window.open(`https://wa.me/${adminPhone}?text=${waMessage}`, '_blank');
+
+        // 2. Save order to local storage (for Admin Dashboard History)
+        const newOrder = {
+            id: Date.now(),
+            name: name,
+            wa: wa,
+            device: device,
+            problem: problem,
+            time: new Date().toLocaleString(),
+            status: 'Pending' // Initial status for new WhatsApp orders
+        };
+        orders.push(newOrder);
         localStorage.setItem('orders', JSON.stringify(orders));
-        showToast("Pesanan Terkirim!");
-        e.target.reset();
-        renderOrders();
-        renderCustHistory();
-    };
+
+        showToast("Pesanan Anda telah dikirim via WhatsApp dan tercatat di sistem!");
+        // Reset form fields
+        document.getElementById('orderForm').reset();
+        renderOrders(); // Re-render admin dashboard orders
+        renderCustHistory(); // Update customer's history display
+    }
 
     function renderOrders() {
         const list = document.getElementById('admin-order-list');
-        list.innerHTML = orders.length ? '' : '<p>Tidak ada antrean.</p>';
+        list.innerHTML = orders.length ? '' : '<p>Tidak ada history pesanan.</p>';
         orders.forEach(o => {
             const statusClass = `status-${o.status.toLowerCase()}`;
             list.innerHTML += `
@@ -446,11 +479,6 @@
         });
     }
 
-    function sendWA(ph, nm, dv) {
-        let p = ph.startsWith('0') ? '62' + ph.slice(1) : ph;
-        window.open(`https://wa.me/${p}?text=${encodeURIComponent('Halo '+nm+', kami dari Pro-Tech. Unit '+dv+' Anda sedang kami kerjakan.')}`, '_blank');
-    }
-
     // New: Update Order Status & Send WhatsApp Notification
     function updateOrderStatus(id, newStatus) {
         let orderIndex = orders.findIndex(o => o.id === id);
@@ -469,22 +497,22 @@
 
         switch (status) {
             case 'Received':
-                message = `Halo Bpk/Ibu ${name},\n\nPesanan servis unit ${device} Anda telah kami terima di sistem Pro-Tech. Teknisi kami akan segera melakukan pemeriksaan dan diagnosa.\n\nTerima kasih atas kepercayaan Anda!`;
+                message = `Halo Bpk/Ibu ${name},\n\nPesanan servis unit *${device}* Anda telah kami *terima* di sistem Pro-Tech. Teknisi kami akan segera melakukan pemeriksaan dan diagnosa.\n\nTerima kasih atas kepercayaan Anda!`;
                 break;
             case 'Processing':
-                message = `Halo Bpk/Ibu ${name},\n\nUnit ${device} Anda saat ini sedang dalam proses pengerjaan oleh teknisi kami. Kami akan segera mengabari Anda jika perbaikan telah selesai.\n\nTerima kasih atas kesabaran Anda.`;
+                message = `Halo Bpk/Ibu ${name},\n\nUnit *${device}* Anda saat ini sedang dalam *proses pengerjaan* oleh teknisi kami. Kami akan segera mengabari Anda jika perbaikan telah selesai.\n\nTerima kasih atas kesabaran Anda.`;
                 break;
             case 'Completed':
-                message = `Halo Bpk/Ibu ${name},\n\nKabar gembira! Unit ${device} Anda telah *selesai diperbaiki* dan siap untuk diambil. Mohon konfirmasi jadwal pengambilan.\n\nTerima kasih telah menggunakan jasa Pro-Tech.`;
+                message = `Halo Bpk/Ibu ${name},\n\nKabar gembira! Unit *${device}* Anda telah *selesai diperbaiki* dan siap untuk diambil. Mohon konfirmasi jadwal pengambilan.\n\nTerima kasih telah menggunakan jasa Pro-Tech.`;
                 break;
-            default:
-                message = `Halo Bpk/Ibu ${name},\n\nAda pembaruan status untuk unit ${device} Anda di Pro-Tech. Mohon cek aplikasi atau hubungi admin untuk detail lebih lanjut.`;
+            default: // Fallback for 'Pending' or other statuses if needed
+                message = `Halo Bpk/Ibu ${name},\n\nAda pembaruan status untuk unit *${device}* Anda di Pro-Tech. Status terbaru: *${status}*. Mohon cek aplikasi atau hubungi admin untuk detail lebih lanjut.`;
                 break;
         }
         window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`, '_blank');
     }
 
-    // Customer Send WA to Admin
+    // Customer Send WA to Admin (for general inquiries)
     function sendWhatsAppToAdmin() {
         let adminPhone = ADMIN_CONTACT_WA.startsWith('0') ? '62' + ADMIN_CONTACT_WA.slice(1) : ADMIN_CONTACT_WA;
         const customerName = document.getElementById('custName').value || 'Pelanggan Pro-Tech'; 
