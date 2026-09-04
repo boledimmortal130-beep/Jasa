@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Perbaikan Alat Elektronik</title>
+    <title>Pro-Tech: Sistem Perbaikan Elektronik</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -18,970 +18,439 @@
             --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
         }
         
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: #f0f2f5; color: var(--dark); line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
         
-        body {
-            background-color: #f0f2f5;
-            color: var(--dark);
-            line-height: 1.6;
-        }
+        /* Header & Nav */
+        header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 20px 0; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow); }
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 10px; }
+        nav ul { display: flex; list-style: none; gap: 15px; }
+        nav a { color: white; text-decoration: none; padding: 8px 15px; border-radius: 5px; transition: 0.3s; }
+        nav a.active { background: rgba(255, 255, 255, 0.2); }
+
+        /* Notification */
+        .notification-container { position: relative; margin-left: auto; margin-right: 20px; }
+        .notification-icon { cursor: pointer; font-size: 1.5rem; position: relative; }
+        .notification-count { position: absolute; top: -5px; right: -5px; background: var(--warning); color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 0.7rem; display: flex; justify-content: center; align-items: center; }
+        .notification-dropdown { position: absolute; top: 100%; right: 0; background: white; width: 300px; border-radius: 10px; box-shadow: var(--shadow); padding: 15px; display: none; margin-top: 10px; color: var(--dark); }
+        .notification-dropdown.active { display: block; }
+        .notif-item { padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+
+        /* Time Display */
+        .time-display { text-align: center; padding: 10px; background: var(--primary); color: white; margin-bottom: 20px; font-weight: bold; }
+
+        /* Layout */
+        .main-content { display: grid; grid-template-columns: 1fr 300px; gap: 20px; }
+        .card { background: white; border-radius: 10px; padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow); }
+        .card-header { border-bottom: 1px solid var(--border); margin-bottom: 15px; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
         
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 20px 0;
-            box-shadow: var(--shadow);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .logo i {
-            font-size: 2rem;
-        }
-        
-        .logo h1 {
-            font-size: 1.8rem;
-        }
-        
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 20px;
-        }
-        
-        nav a {
-            color: white;
-            text-decoration: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-        }
-        
-        nav a:hover, nav a.active {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        
-        .notification-container {
-            position: relative;
-            margin-left: auto;
-            margin-right: 20px;
+        /* Forms */
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; }
+        input, textarea, select { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 5px; }
+        button { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.3s; background: var(--primary); color: white; }
+        button:hover { opacity: 0.9; transform: translateY(-2px); }
+        .btn-sm { padding: 5px 10px; font-size: 0.8rem; }
+        .btn-danger { background: var(--warning); }
+        .btn-success { background: #2ecc71; }
+        .btn-wa { background: #25d366; }
+
+        /* Dynamic Lists */
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border: 1px solid var(--border); margin-bottom: 5px; border-radius: 5px; }
+        .badge { padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; }
+        .badge-on { background: #d4edda; color: #155724; }
+        .badge-off { background: #f8d7da; color: #721c24; }
+
+        /* Receipt Print Area */
+        #printArea { display: none; padding: 20px; border: 1px solid #000; width: 300px; font-family: monospace; }
+        @media print {
+            body * { visibility: hidden; }
+            #printArea, #printArea * { visibility: visible; }
+            #printArea { position: absolute; left: 0; top: 0; display: block; }
         }
 
-        .notification-icon {
-            position: relative;
-            cursor: pointer;
-            font-size: 1.5rem;
-            color: white;
-        }
-        
-        .notification-count {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: var(--warning);
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 0.7rem;
-            font-weight: bold;
-        }
-        
-        .notification-dropdown {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background: white;
-            border-radius: 10px;
-            box-shadow: var(--shadow);
-            padding: 20px;
-            width: 300px;
-            margin-top: 10px;
-            display: none;
-            z-index: 100;
-            animation: fadeIn 0.3s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .notification-dropdown.active {
-            display: block;
-        }
-        
-        .notification-dropdown h3 {
-            color: var(--primary);
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        .notification-item {
-            padding: 10px 0;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        .notification-item:last-child {
-            border-bottom: none;
-        }
-        
-        .notification-item p {
-            margin: 5px 0;
-            font-size: 0.9rem;
-            color: var(--dark);
-        }
-        
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 300px;
-            gap: 20px;
-            margin-top: 30px;
-        }
-        
-        .card {
-            background: white;
-            border-radius: 10px;
-            box-shadow: var(--shadow);
-            padding: 25px;
-            margin-bottom: 25px;
-        }
-        
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        .card-header h2 {
-            color: var(--primary);
-            font-size: 1.5rem;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--dark);
-        }
-        
-        input, textarea, select {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border 0.3s;
-        }
-        
-        input:focus, textarea:focus, select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
-        }
-        
-        button {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        button:hover {
-            background: var(--secondary);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        
-        .btn-success {
-            background: var(--success);
-            color: var(--dark);
-        }
-
-        .btn-success:hover {
-            background: #2cb9e0;
-        }
-        
-        .btn-warning {
-            background: var(--warning);
-        }
-        
-        .status-badge {
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-        
-        .status-pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-        
-        .status-processing {
-            background: #cce5ff;
-            color: #004085;
-        }
-        
-        .status-completed {
-            background: #d4edda;
-            color: #155724;
-        }
-        
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            border-radius: 8px;
-            color: white;
-            font-weight: 500;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            z-index: 1000;
-            transform: translateX(200%);
-            transition: transform 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .notification.show {
-            transform: translateX(0);
-        }
-        
-        .notification.success {
-            background: #4cc9f0;
-            color: var(--dark);
-        }
-        
-        .notification.error {
-            background: var(--warning);
-        }
-        
-        .notification.info {
-            background: var(--primary);
-        }
-        
-        .sidebar {
-            background: white;
-            border-radius: 10px;
-            box-shadow: var(--shadow);
-            padding: 25px;
-        }
-        
-        .sidebar-item {
-            padding: 15px 0;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        .sidebar-item:last-child {
-            border-bottom: none;
-        }
-        
-        .sidebar-item h3 {
-            color: var(--primary);
-            margin-bottom: 10px;
-            font-size: 1.2rem;
-        }
-        
-        .time-display {
-            text-align: center;
-            padding: 15px;
-            background: var(--primary);
-            color: white;
-            border-radius: 8px;
-            margin: 20px auto;
-            max-width: 1200px;
-            font-weight: 600;
-            box-shadow: var(--shadow);
-        }
-        
-        .order-card {
-            border-left: 4px solid var(--primary);
-            padding: 15px;
-            margin: 15px 0;
-            background: #f8f9fa;
-            border-radius: 0 8px 8px 0;
-        }
-        
-        .order-card h4 {
-            margin-bottom: 10px;
-            color: var(--secondary);
-        }
-        
-        .order-card p {
-            margin: 5px 0;
-            font-size: 0.9rem;
-        }
-        
-        .admin-panel {
-            display: none;
-        }
-        
-        .customer-panel {
-            display: block;
-        }
-        
-        .admin-form-box {
-            background: white;
-            border-radius: 10px;
-            box-shadow: var(--shadow);
-            padding: 30px;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-        
-        .admin-form-box h2 {
-            margin-bottom: 20px;
-            color: var(--primary);
-            text-align: center;
-        }
-        
-        .admin-form-box button {
-            width: 100%;
-            padding: 15px;
-            margin-top: 10px;
-        }
-
-        .switch-form-link {
-            text-align: center;
-            margin-top: 15px;
-            font-size: 0.9rem;
-        }
-
-        .switch-form-link a {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .switch-form-link a:hover {
-            text-decoration: underline;
-        }
-        
-        .logout-btn {
-            background: var(--warning);
-            margin-top: 10px;
-        }
-        
-        .logout-btn:hover {
-            background: #d6336c;
-        }
-        
-        .admin-dashboard {
-            display: none;
-        }
-        
         @media (max-width: 768px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-            
-            .header-content {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            nav ul {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-
-            .notification-container {
-                margin-right: 0;
-                width: 100%;
-                display: flex;
-                justify-content: center;
-                order: -1;
-            }
-
-            .notification-dropdown {
-                right: auto;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 90%;
-            }
-
-            .time-display {
-                margin: 20px 10px;
-            }
+            .main-content { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <i class="fas fa-tools"></i>
-                    <h1>Sistem Perbaikan Elektronik</h1>
-                </div>
-                
-                <div class="notification-container">
-                    <div class="notification-icon" id="notificationIcon">
-                        <i class="fas fa-bell"></i>
-                        <span class="notification-count" id="notificationCount">3</span>
-                    </div>
-                    <div class="notification-dropdown" id="notificationDropdown">
-                        <h3>Informasi Sistem</h3>
-                        <div class="notification-item">
-                            <p><i class="fas fa-info-circle"></i> Sistem ini digunakan untuk mengelola pesanan perbaikan alat elektronik.</p>
-                        </div>
-                        <div class="notification-item">
-                            <p><i class="fas fa-whatsapp"></i> Pesanan akan dikirim langsung ke WhatsApp admin.</p>
-                        </div>
-                        <div class="notification-item">
-                            <p><i class="fas fa-clock"></i> Waktu Real Time</p>
-                            <p id="realTimeSmall">00:00:00</p>
-                            <p id="realDateSmall">Hari, Tanggal Bulan Tahun</p>
-                        </div>
-                    </div>
-                </div>
-                <nav>
-                    <ul>
-                        <li><a href="#" class="active" id="customer-tab">Customer</a></li>
-                        <li><a href="#" id="admin-tab">Admin</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
-    </header>
 
-    <!-- Waktu Real Time Utama -->
-    <div class="time-display" id="timeDisplay">
-        <span id="current-time">Loading...</span>
-    </div>
-
+<header>
     <div class="container">
-        <div class="main-content">
-            <!-- Customer Panel -->
-            <div class="customer-panel" id="customerPanel">
-                <div class="card">
-                    <div class="card-header">
-                        <h2><i class="fas fa-user-plus"></i> Buat Pesanan Baru</h2>
-                    </div>
-                    <form id="orderForm">
-                        <div class="form-group">
-                            <label for="customerName">Nama Lengkap</label>
-                            <input type="text" id="customerName" required placeholder="Masukkan nama lengkap Anda">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="customerPhone">Nomor WhatsApp</label>
-                            <input type="tel" id="customerPhone" required placeholder="Contoh: 081234567890">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="customerAddress">Alamat Lengkap</label>
-                            <textarea id="customerAddress" required rows="3" placeholder="Masukkan alamat lengkap Anda"></textarea>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="deviceName">Nama Barang</label>
-                            <input type="text" id="deviceName" required placeholder="Contoh: Smartphone Samsung Galaxy S21">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="problemDescription">Keluhan / Catatan / Deskripsi</label>
-                            <textarea id="problemDescription" required rows="4" placeholder="Jelaskan masalah yang terjadi pada barang Anda"></textarea>
-                        </div>
-                        
-                        <button type="submit"><i class="fas fa-paper-plane"></i> Kirim Pesanan</button>
-                    </form>
+        <div class="header-content">
+            <div class="logo"><i class="fas fa-microchip"></i> <h1>Pro-Tech</h1></div>
+            <div class="notification-container">
+                <div class="notification-icon" id="notifBtn">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-count" id="notifCount">0</span>
                 </div>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <h2><i class="fas fa-history"></i> Riwayat Pesanan</h2>
-                    </div>
-                    <div id="orderHistory">
-                        <p>Belum ada riwayat pesanan</p>
-                    </div>
+                <div class="notification-dropdown" id="notifDropdown">
+                    <h3>Pemberitahuan</h3>
+                    <div id="notifList"></div>
                 </div>
             </div>
-            
-            <!-- Admin Panel -->
-            <div class="admin-panel" id="adminPanel">
-                
-                <!-- Section Login -->
-                <div class="admin-form-box" id="loginSection">
-                    <h2><i class="fas fa-lock"></i> Login Admin</h2>
-                    <form id="adminLoginForm">
-                        <div class="form-group">
-                            <label for="loginPhone">Nomor WhatsApp Admin</label>
-                            <input type="tel" id="loginPhone" required placeholder="Masukkan nomor WhatsApp Anda">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="loginPassword">Kata Sandi</label>
-                            <input type="password" id="loginPassword" required placeholder="Masukkan kata sandi">
-                        </div>
-                        
-                        <button type="submit"><i class="fas fa-sign-in-alt"></i> Masuk</button>
-                    </form>
-                    <div class="switch-form-link">
-                        Belum terdaftar? <a href="#" id="toRegisterLink">Daftar Akun Admin</a>
-                    </div>
-                </div>
+            <nav>
+                <ul>
+                    <li><a href="#" class="active" id="nav-cust">Customer</a></li>
+                    <li><a href="#" id="nav-admin">Admin</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</header>
 
-                <!-- Section Registrasi (Daftar) -->
-                <div class="admin-form-box" id="registerSection" style="display: none;">
-                    <h2><i class="fas fa-user-plus"></i> Daftar Admin Baru</h2>
-                    <form id="adminRegisterForm">
-                        <div class="form-group">
-                            <label for="regName">Nama Lengkap Admin</label>
-                            <input type="text" id="regName" required placeholder="Contoh: Mas Agus">
-                        </div>
+<div class="time-display" id="clock">Loading Time...</div>
 
-                        <div class="form-group">
-                            <label for="regPhone">Nomor WhatsApp Admin</label>
-                            <input type="tel" id="regPhone" required placeholder="Contoh: 081234567890">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="regPassword">Kata Sandi Baru</label>
-                            <input type="password" id="regPassword" required placeholder="Buat kata sandi baru">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="regCode">Kode Khusus Pendaftaran</label>
-                            <input type="text" id="regCode" required placeholder="Hubungi Super Admin untuk kode ini">
-                            <small style="color: var(--gray); font-size: 0.8rem; display:block; margin-top:5px;">
-                                *Harus diisi dengan kode otorisasi sistem yang valid.
-                            </small>
-                        </div>
-                        
-                        <button type="submit" class="btn-success"><i class="fas fa-save"></i> Daftarkan Admin</button>
-                    </form>
-                    <div class="switch-form-link">
-                        Sudah punya akun? <a href="#" id="toLoginLink">Kembali ke Login</a>
-                    </div>
-                </div>
-                
-                <!-- Section Dashboard setelah Login -->
-                <div class="admin-dashboard" id="dashboardSection">
-                    <div class="card">
-                        <div class="card-header">
-                            <h2><i class="fas fa-tachometer-alt"></i> Dashboard Admin</h2>
-                            <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
-                        </div>
-                        <div class="form-group">
-                            <label for="adminName">Nama Admin Aktif</label>
-                            <input type="text" id="adminName" value="" readonly style="background: #e9ecef; font-weight: bold;">
-                        </div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-header">
-                            <h2><i class="fas fa-list"></i> Daftar Pesanan</h2>
-                        </div>
-                        <div id="adminOrderList">
-                            <p>Belum ada pesanan</p>
-                        </div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-header">
-                            <h2><i class="fas fa-bell"></i> Pengumuman</h2>
-                        </div>
-                        <div class="form-group">
-                            <textarea id="announcementText" rows="3" placeholder="Tulis pengumuman..."></textarea>
-                        </div>
-                        <button id="sendAnnouncement"><i class="fas fa-bullhorn"></i> Kirim Pengumuman</button>
-                    </div>
+<div class="container">
+    <div class="main-content">
+        <!-- CUSTOMER PANEL -->
+        <div id="panel-cust">
+            <div class="card">
+                <div class="card-header"><h2><i class="fas fa-tools"></i> Layanan Perbaikan Kami</h2></div>
+                <div id="cust-service-list" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <!-- Diisi via JS -->
                 </div>
             </div>
-            
-            <!-- Sidebar -->
-            <div class="sidebar">
-                <div class="sidebar-item">
-                    <h3><i class="fas fa-chart-line"></i> Statistik Cepat</h3>
-                    <p>Total Pesanan: <span>150</span></p>
-                    <p>Pesanan Diproses: <span>25</span></p>
-                    <p>Pesanan Selesai: <span>120</span></p>
+
+            <div class="card">
+                <div class="card-header"><h2><i class="fas fa-edit"></i> Form Pesanan Servis</h2></div>
+                <form id="orderForm">
+                    <div class="form-group"><label>Nama Lengkap</label><input type="text" id="custName" required></div>
+                    <div class="form-group"><label>WhatsApp (Contoh: 0812...)</label><input type="tel" id="custWA" required></div>
+                    <div class="form-group"><label>Nama Barang</label><input type="text" id="custDevice" required></div>
+                    <div class="form-group"><label>Keluhan</label><textarea id="custProblem" rows="3"></textarea></div>
+                    <button type="submit">Kirim Pesanan</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- ADMIN PANEL -->
+        <div id="panel-admin" style="display: none;">
+            <!-- Login Admin -->
+            <div id="admin-auth" class="card">
+                <h2>Login Admin</h2>
+                <div class="form-group"><label>Nomor WA</label><input type="text" id="authWA"></div>
+                <div class="form-group"><label>Password</label><input type="password" id="authPass"></div>
+                <button onclick="loginAdmin()">Masuk</button>
+                <p style="margin-top:10px; font-size:0.8rem">Kode Daftar: <b>PRO-SERVICE-99</b></p>
+            </div>
+
+            <!-- Dashboard Admin -->
+            <div id="admin-dashboard" style="display: none;">
+                <div class="card">
+                    <div class="card-header"><h2>Dashboard Admin</h2><button class="btn-danger" onclick="logout()">Logout</button></div>
+                    <p>Selamat Datang, <b id="activeAdminName">Admin</b></p>
                 </div>
-                <div class="sidebar-item">
-                    <h3><i class="fas fa-headset"></i> Layanan Bantuan</h3>
-                    <p>Telepon: +62 812-3456-7890</p>
-                    <p>Email: bantuan@perbaikanelektronik.com</p>
+
+                <!-- Manajemen Pengumuman -->
+                <div class="card">
+                    <div class="card-header"><h2>Kelola Pengumuman</h2></div>
+                    <div class="form-group"><input type="text" id="annText" placeholder="Isi pengumuman baru..."></div>
+                    <button onclick="addAnnouncement()">Tambah Pengumuman</button>
+                    <div id="admin-ann-list" style="margin-top:15px;"></div>
+                </div>
+
+                <!-- Manajemen Barang Servis -->
+                <div class="card">
+                    <div class="card-header"><h2>Kelola Daftar Barang (Layanan)</h2></div>
+                    <div class="form-group"><input type="text" id="itemRepairName" placeholder="Contoh: Laptop, TV, HP..."></div>
+                    <button onclick="addRepairItem()">Tambah Layanan</button>
+                    <div id="admin-item-list" style="margin-top:15px;"></div>
+                </div>
+
+                <!-- Daftar Pesanan -->
+                <div class="card">
+                    <div class="card-header"><h2>Daftar Pesanan Masuk</h2></div>
+                    <div id="admin-order-list"></div>
+                </div>
+
+                <!-- Cetak Struk -->
+                <div class="card">
+                    <div class="card-header"><h2>Buat Struk Pembayaran</h2></div>
+                    <div class="form-group"><label>Nama Pelanggan</label><input type="text" id="sNama"></div>
+                    <div class="form-group"><label>Nama Barang</label><input type="text" id="sBarang"></div>
+                    <div class="form-group"><label>Harga Part (Rp)</label><input type="number" id="sHarga" value="0" oninput="calcTotal()"></div>
+                    <div class="form-group"><label>Biaya Jasa (Rp)</label><input type="number" id="sJasa" value="0" oninput="calcTotal()"></div>
+                    <div class="form-group"><h3>Total: Rp <span id="sTotal">0</span></h3></div>
+                    <button class="btn-success" onclick="printReceipt()">Cetak Struk</button>
                 </div>
             </div>
         </div>
+
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="card">
+                <h3>Info Toko</h3>
+                <p><i class="fas fa-map-marker-alt"></i> Jl. Elektronik No. 1</p>
+                <p><i class="fas fa-phone"></i> 0812-3456-7890</p>
+            </div>
+            <div class="card" id="history-box">
+                <h3>Riwayat Anda</h3>
+                <div id="cust-history" style="font-size: 0.8rem;">Belum ada pesanan.</div>
+            </div>
+        </div>
     </div>
-    
-    <div class="notification" id="notification">
-        <i class="fas fa-bell"></i>
-        <span id="notificationMessage"></span>
-    </div>
+</div>
 
-    <script>
-        // Kode khusus pendaftaran admin yang sulit ditebak
-        const KODE_KHUSUS_SISTEM = "SYS-SECURE-REPAIR-7799#PRO-ADMIN";
+<!-- Print Hidden Area -->
+<div id="printArea">
+    <h2 style="text-align:center">STRUK SERVIS PRO-TECH</h2>
+    <hr>
+    <p id="pTgl"></p>
+    <p>Pelanggan: <span id="pNama"></span></p>
+    <p>Barang: <span id="pBarang"></span></p>
+    <hr>
+    <p>Harga Part: Rp <span id="pHarga"></span></p>
+    <p>Biaya Jasa: Rp <span id="pJasa"></span></p>
+    <hr>
+    <h3>TOTAL: Rp <span id="pTotal"></span></h3>
+    <br>
+    <p style="text-align:center">Terima kasih atas kepercayaan Anda!</p>
+</div>
 
-        // Update waktu real time
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('id-ID');
-            const dateString = now.toLocaleDateString('id-ID', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-            });
-            
-            document.getElementById('current-time').textContent = `${timeString} - ${dateString}`;
-            document.getElementById('realTimeSmall').textContent = timeString;
-            document.getElementById('realDateSmall').textContent = dateString;
-        }
+<div class="notification" id="toast">Notifikasi</div>
+
+<script>
+    // Database Sederhana (Local Storage)
+    let announcements = JSON.parse(localStorage.getItem('announcements')) || [];
+    let repairItems = JSON.parse(localStorage.getItem('repairItems')) || ['Handphone', 'Laptop', 'TV'];
+    let orders = JSON.parse(localStorage.getItem('orders')) || [];
+    let admins = JSON.parse(localStorage.getItem('registered_admins')) || [{name: 'Owner', phone: '0812', password: '123'}];
+
+    // --- UTILS ---
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    function updateClock() {
+        document.getElementById('clock').textContent = new Date().toLocaleString('id-ID');
+    }
+    setInterval(updateClock, 1000);
+
+    // --- TAB NAVIGATION ---
+    document.getElementById('nav-cust').onclick = () => {
+        document.getElementById('panel-cust').style.display = 'block';
+        document.getElementById('panel-admin').style.display = 'none';
+        document.getElementById('nav-cust').classList.add('active');
+        document.getElementById('nav-admin').classList.remove('active');
+    };
+    document.getElementById('nav-admin').onclick = () => {
+        document.getElementById('panel-cust').style.display = 'none';
+        document.getElementById('panel-admin').style.display = 'block';
+        document.getElementById('nav-admin').classList.add('active');
+        document.getElementById('nav-cust').classList.remove('active');
+    };
+
+    // --- NOTIFICATION SYSTEM ---
+    document.getElementById('notifBtn').onclick = (e) => {
+        e.stopPropagation();
+        document.getElementById('notifDropdown').classList.toggle('active');
+    };
+
+    function renderNotif() {
+        const list = document.getElementById('notifList');
+        const activeAnn = announcements.filter(a => a.status === 'on');
+        document.getElementById('notifCount').textContent = activeAnn.length;
         
-        setInterval(updateTime, 1000);
-        updateTime();
-        
-        // Notification dropdown toggle
-        const notificationIcon = document.getElementById('notificationIcon');
-        const notificationDropdown = document.getElementById('notificationDropdown');
-        
-        notificationIcon.addEventListener('click', function(e) {
-            e.stopPropagation();
-            notificationDropdown.classList.toggle('active');
+        list.innerHTML = activeAnn.length ? '' : '<p>Tidak ada pengumuman baru</p>';
+        activeAnn.forEach(a => {
+            list.innerHTML += `<div class="notif-item"><b>Info:</b> ${a.text}</div>`;
         });
-        
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!notificationIcon.contains(e.target) && !notificationDropdown.contains(e.target)) {
-                notificationDropdown.classList.remove('active');
-            }
-        });
-        
-        // Tab switching
-        document.getElementById('customer-tab').addEventListener('click', function(e) {
-            e.preventDefault();
-            document.getElementById('customerPanel').style.display = 'block';
-            document.getElementById('adminPanel').style.display = 'none';
-            document.getElementById('customer-tab').classList.add('active');
-            document.getElementById('admin-tab').classList.remove('active');
-        });
-        
-        document.getElementById('admin-tab').addEventListener('click', function(e) {
-            e.preventDefault();
-            document.getElementById('customerPanel').style.display = 'none';
-            document.getElementById('adminPanel').style.display = 'block';
-            document.getElementById('admin-tab').classList.add('active');
-            document.getElementById('customer-tab').classList.remove('active');
-        });
+    }
 
-        // Switch Form login dan registrasi admin
-        document.getElementById('toRegisterLink').addEventListener('click', function(e) {
-            e.preventDefault();
-            document.getElementById('loginSection').style.display = 'none';
-            document.getElementById('registerSection').style.display = 'block';
-        });
+    // --- ANNOUNCEMENT MGMT ---
+    function addAnnouncement() {
+        const text = document.getElementById('annText').value;
+        if(!text) return;
+        announcements.push({ id: Date.now(), text, status: 'on' });
+        localStorage.setItem('announcements', JSON.stringify(announcements));
+        document.getElementById('annText').value = '';
+        renderAdminAnn();
+        renderNotif();
+    }
 
-        document.getElementById('toLoginLink').addEventListener('click', function(e) {
-            e.preventDefault();
-            document.getElementById('registerSection').style.display = 'none';
-            document.getElementById('loginSection').style.display = 'block';
-        });
-        
-        // Notification system alert
-        function showNotification(message, type = 'info') {
-            const notification = document.getElementById('notification');
-            const messageElement = document.getElementById('notificationMessage');
-            
-            messageElement.textContent = message;
-            notification.className = `notification ${type} show`;
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
-        }
-        
-        // Order form handling (Kirim Pesanan)
-        document.getElementById('orderForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const customerName = document.getElementById('customerName').value;
-            const customerPhone = document.getElementById('customerPhone').value;
-            const customerAddress = document.getElementById('customerAddress').value;
-            const deviceName = document.getElementById('deviceName').value;
-            const problemDescription = document.getElementById('problemDescription').value;
-            
-            showNotification('Pesanan berhasil dikirim! Admin akan segera memproses.', 'success');
-            
-            this.reset();
-            
-            addToOrderHistory({
-                name: customerName,
-                phone: customerPhone,
-                address: customerAddress,
-                device: deviceName,
-                description: problemDescription,
-                status: 'Pending',
-                timestamp: new Date().toLocaleString('id-ID')
-            });
-            
-            addOrderToAdminPanel({
-                name: customerName,
-                phone: customerPhone,
-                address: customerAddress,
-                device: deviceName,
-                description: problemDescription,
-                status: 'Pending'
-            });
-        });
-        
-        function addToOrderHistory(order) {
-            const historyContainer = document.getElementById('orderHistory');
-            if (historyContainer.querySelector('p')) {
-                historyContainer.innerHTML = '';
-            }
-            const orderCard = document.createElement('div');
-            orderCard.className = 'order-card';
-            orderCard.innerHTML = `
-                <h4>${order.name}</h4>
-                <p><i class="fas fa-phone"></i> ${order.phone}</p>
-                <p><i class="fas fa-map-marker-alt"></i> ${order.address}</p>
-                <p><i class="fas fa-laptop"></i> ${order.device}</p>
-                <p><i class="fas fa-exclamation-triangle"></i> ${order.description}</p>
-                <p><i class="fas fa-clock"></i> ${order.timestamp}</p>
-                <span class="status-badge status-pending">Status: ${order.status}</span>
-            `;
-            
-            historyContainer.insertBefore(orderCard, historyContainer.firstChild);
-        }
-        
-        function addOrderToAdminPanel(order) {
-            const adminOrderList = document.getElementById('adminOrderList');
-            if (adminOrderList.querySelector('p')) {
-                adminOrderList.innerHTML = '';
-            }
-            const orderCard = document.createElement('div');
-            orderCard.className = 'order-card';
-            orderCard.innerHTML = `
-                <h4>${order.name}</h4>
-                <p><i class="fas fa-phone"></i> ${order.phone}</p>
-                <p><i class="fas fa-map-marker-alt"></i> ${order.address}</p>
-                <p><i class="fas fa-laptop"></i> ${order.device}</p>
-                <p><i class="fas fa-exclamation-triangle"></i> ${order.description}</p>
-                <span class="status-badge status-${order.status.toLowerCase()}">Status: ${order.status}</span>
-                <div style="margin-top: 10px;">
-                    <button class="btn-success" style="margin-right: 5px;" onclick="updateOrderStatus(this, 'Processing')">
-                        <i class="fas fa-cogs"></i> Proses
-                    </button>
-                    <button class="btn-warning" onclick="updateOrderStatus(this, 'Completed')">
-                        <i class="fas fa-check"></i> Selesai
-                    </button>
-                </div>
-            `;
-            
-            adminOrderList.appendChild(orderCard);
-        }
-        
-        function updateOrderStatus(button, status) {
-            const card = button.closest('.order-card');
-            const statusBadge = card.querySelector('.status-badge');
-            const statusText = status === 'Processing' ? 'Processing' : 'Completed';
-            const statusClass = status === 'Processing' ? 'status-processing' : 'status-completed';
-            
-            statusBadge.textContent = `Status: ${statusText}`;
-            statusBadge.className = `status-badge ${statusClass}`;
-            
-            showNotification(`Pesanan telah diubah menjadi status ${statusText}`, 'info');
-        }
+    function toggleAnn(id) {
+        announcements = announcements.map(a => a.id === id ? {...a, status: a.status === 'on' ? 'off' : 'on'} : a);
+        saveAndRenderAnn();
+    }
 
-        // --- SISTEM REGISTRASI & LOGIN ADMIN (LOCALSTORAGE) ---
+    function deleteAnn(id) {
+        announcements = announcements.filter(a => a.id !== id);
+        saveAndRenderAnn();
+    }
 
-        // Ambil data admin dari localStorage
-        function getRegisteredAdmins() {
-            const admins = localStorage.getItem('registered_admins');
-            return admins ? JSON.parse(admins) : [];
-        }
+    function saveAndRenderAnn() {
+        localStorage.setItem('announcements', JSON.stringify(announcements));
+        renderAdminAnn();
+        renderNotif();
+    }
 
-        // Simpan data admin baru ke localStorage
-        function saveAdmin(adminData) {
-            const admins = getRegisteredAdmins();
-            admins.push(adminData);
-            localStorage.setItem('registered_admins', JSON.stringify(admins));
-        }
-
-        // Submit Form Pendaftaran Admin
-        document.getElementById('adminRegisterForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const name = document.getElementById('regName').value.trim();
-            const phone = document.getElementById('regPhone').value.trim();
-            const password = document.getElementById('regPassword').value;
-            const code = document.getElementById('regCode').value.trim();
-            
-            // Validasi Kode Khusus yang Sulit
-            if (code !== KODE_KHUSUS_SISTEM) {
-                showNotification('Pendaftaran Gagal! Kode khusus salah.', 'error');
-                return;
-            }
-
-            // Validasi nomor WA sudah terdaftar atau belum
-            const admins = getRegisteredAdmins();
-            const isExist = admins.some(admin => admin.phone === phone);
-            if (isExist) {
-                showNotification('Nomor WhatsApp ini sudah terdaftar sebagai admin.', 'error');
-                return;
-            }
-
-            // Proses Pendaftaran Berhasil
-            const newAdmin = { name, phone, password };
-            saveAdmin(newAdmin);
-            
-            showNotification('Pendaftaran Berhasil! Silakan Login.', 'success');
-            this.reset();
-            
-            // Alihkan kembali ke form login
-            document.getElementById('registerSection').style.display = 'none';
-            document.getElementById('loginSection').style.display = 'block';
-        });
-        
-        // Submit Form Login Admin
-        document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const phone = document.getElementById('loginPhone').value.trim();
-            const password = document.getElementById('loginPassword').value;
-            
-            const admins = getRegisteredAdmins();
-            
-            // Cari data admin yang cocok
-            const matchedAdmin = admins.find(admin => admin.phone === phone && admin.password === password);
-            
-            if (matchedAdmin) {
-                // Sembunyikan form login & tampilkan dashboard
-                document.getElementById('loginSection').style.display = 'none';
-                document.getElementById('dashboardSection').style.display = 'block';
-                
-                // Isi nama admin aktif
-                document.getElementById('adminName').value = matchedAdmin.name;
-                
-                showNotification(`Login berhasil! Selamat datang, ${matchedAdmin.name}.`, 'success');
-                
-                // Muat pesanan awal di panel admin
-                loadAdminOrders();
-            } else {
-                showNotification('Login gagal. Nomor WhatsApp atau kata sandi salah.', 'error');
-            }
-        });
-        
-        // Load default pesanan admin (Dummy data)
-        function loadAdminOrders() {
-            const sampleOrders = [
-                {
-                    name: 'Budi Santoso',
-                    phone: '081234567890',
-                    address: 'Jl. Merdeka No. 10, Jakarta',
-                    device: 'Laptop ASUS VivoBook',
-                    description: 'Layar tidak menampilkan gambar',
-                    status: 'Processing'
-                },
-                {
-                    name: 'Ani Permata',
-                    phone: '081234567891',
-                    address: 'Jl. Sudirman No. 5, Bandung',
-                    device: 'Smartphone Xiaomi Redmi Note 10',
-                    description: 'Baterai cepat habis',
-                    status: 'Completed'
-                }
-            ];
-            
-            const adminOrderList = document.getElementById('adminOrderList');
-            adminOrderList.innerHTML = '';
-            
-            sampleOrders.forEach(order => {
-                const orderCard = document.createElement('div');
-                orderCard.className = 'order-card';
-                orderCard.innerHTML = `
-                    <h4>${order.name}</h4>
-                    <p><i class="fas fa-phone"></i> ${order.phone}</p>
-                    <p><i class="fas fa-map-marker-alt"></i> ${order.address}</p>
-                    <p><i class="fas fa-laptop"></i> ${order.device}</p>
-                    <p><i class="fas fa-exclamation-triangle"></i> ${order.description}</p>
-                    <span class="status-badge status-${order.status.toLowerCase()}">Status: ${order.status}</span>
-                    <div style="margin-top: 10px;">
-                        <button class="btn-success" style="margin-right: 5px;" onclick="updateOrderStatus(this, 'Processing')">
-                            <i class="fas fa-cogs"></i> Proses
-                        </button>
-                        <button class="btn-warning" onclick="updateOrderStatus(this, 'Completed')">
-                            <i class="fas fa-check"></i> Selesai
-                        </button>
+    function renderAdminAnn() {
+        const container = document.getElementById('admin-ann-list');
+        container.innerHTML = '';
+        announcements.forEach(a => {
+            container.innerHTML += `
+                <div class="list-item">
+                    <span>${a.text} <span class="badge ${a.status === 'on' ? 'badge-on' : 'badge-off'}">${a.status.toUpperCase()}</span></span>
+                    <div>
+                        <button class="btn-sm btn-success" onclick="toggleAnn(${a.id})">Toggle</button>
+                        <button class="btn-sm btn-danger" onclick="deleteAnn(${a.id})">Hapus</button>
                     </div>
-                `;
-                adminOrderList.appendChild(orderCard);
-            });
+                </div>`;
+        });
+    }
+
+    // --- REPAIR ITEMS MGMT ---
+    function addRepairItem() {
+        const name = document.getElementById('itemRepairName').value;
+        if(!name) return;
+        repairItems.push(name);
+        localStorage.setItem('repairItems', JSON.stringify(repairItems));
+        document.getElementById('itemRepairName').value = '';
+        renderRepairItems();
+    }
+
+    function deleteRepairItem(index) {
+        repairItems.splice(index, 1);
+        localStorage.setItem('repairItems', JSON.stringify(repairItems));
+        renderRepairItems();
+    }
+
+    function renderRepairItems() {
+        const adminList = document.getElementById('admin-item-list');
+        const custList = document.getElementById('cust-service-list');
+        adminList.innerHTML = '';
+        custList.innerHTML = '';
+
+        repairItems.forEach((item, index) => {
+            adminList.innerHTML += `
+                <div class="list-item">
+                    <span>${item}</span>
+                    <button class="btn-sm btn-danger" onclick="deleteRepairItem(${index})">Hapus</button>
+                </div>`;
+            custList.innerHTML += `<div class="badge badge-on" style="padding:10px; font-size:1rem">${item}</div>`;
+        });
+    }
+
+    // --- ORDER SYSTEM ---
+    document.getElementById('orderForm').onsubmit = (e) => {
+        e.preventDefault();
+        const newOrder = {
+            id: Date.now(),
+            name: document.getElementById('custName').value,
+            wa: document.getElementById('custWA').value,
+            device: document.getElementById('custDevice').value,
+            problem: document.getElementById('custProblem').value,
+            status: 'Pending',
+            time: new Date().toLocaleString()
+        };
+        orders.push(newOrder);
+        localStorage.setItem('orders', JSON.stringify(orders));
+        showToast("Pesanan Terkirim!");
+        e.target.reset();
+        renderOrders();
+        renderCustHistory();
+    };
+
+    function renderOrders() {
+        const container = document.getElementById('admin-order-list');
+        container.innerHTML = orders.length ? '' : '<p>Belum ada pesanan.</p>';
+        orders.forEach(o => {
+            container.innerHTML += `
+                <div class="order-card">
+                    <h4>${o.name} (${o.device})</h4>
+                    <p>${o.problem}</p>
+                    <div style="margin-top:10px">
+                        <button class="btn-sm btn-wa" onclick="sendWA('${o.wa}', '${o.name}', '${o.device}')">
+                            <i class="fab fa-whatsapp"></i> Chat WA
+                        </button>
+                        <button class="btn-sm btn-danger" onclick="deleteOrder(${o.id})">Hapus</button>
+                    </div>
+                </div>`;
+        });
+    }
+
+    function sendWA(phone, name, device) {
+        let formattedPhone = phone.startsWith('0') ? '62' + phone.slice(1) : phone;
+        const msg = encodeURIComponent(`Halo ${name}, kami dari Pro-Tech. Terkait servis ${device} Anda, sudah kami terima. Mohon tunggu update selanjutnya.`);
+        window.open(`https://wa.me/${formattedPhone}?text=${msg}`, '_blank');
+    }
+
+    function deleteOrder(id) {
+        orders = orders.filter(o => o.id !== id);
+        localStorage.setItem('orders', JSON.stringify(orders));
+        renderOrders();
+    }
+
+    function renderCustHistory() {
+        const h = document.getElementById('cust-history');
+        h.innerHTML = orders.length ? 'Pesanan terakhir Anda sedang diproses.' : 'Belum ada riwayat.';
+    }
+
+    // --- AUTH ---
+    function loginAdmin() {
+        const wa = document.getElementById('authWA').value;
+        const pass = document.getElementById('authPass').value;
+        const admin = admins.find(a => a.phone === wa && a.password === pass);
+        
+        if(admin) {
+            document.getElementById('admin-auth').style.display = 'none';
+            document.getElementById('admin-dashboard').style.display = 'block';
+            document.getElementById('activeAdminName').textContent = admin.name;
+        } else {
+            alert("Login Gagal!");
         }
-        
-        // Logout Admin
-        document.getElementById('logoutBtn').addEventListener('click', function() {
-            document.getElementById('dashboardSection').style.display = 'none';
-            document.getElementById('loginSection').style.display = 'block';
-            document.getElementById('loginPhone').value = '';
-            document.getElementById('loginPassword').value = '';
-            showNotification('Anda telah logout dari sistem.', 'info');
-        });
-        
-        // Send announcement
-        document.getElementById('sendAnnouncement').addEventListener('click', function() {
-            const announcementText = document.getElementById('announcementText').value;
-            if (announcementText.trim() !== '') {
-                showNotification('Pengumuman berhasil dikirim!', 'success');
-                document.getElementById('announcementText').value = '';
-            } else {
-                showNotification('Silakan masukkan teks pengumuman.', 'error');
-            }
-        });
-        
-        // Inisialisasi awal
-        window.addEventListener('load', function() {
-            document.getElementById('notificationCount').textContent = '3';
-            document.getElementById('orderHistory').innerHTML = '<p>Belum ada riwayat pesanan</p>';
-            document.getElementById('adminOrderList').innerHTML = '<p>Belum ada pesanan</p>';
-        });
-    </script>
+    }
+
+    function logout() {
+        document.getElementById('admin-auth').style.display = 'block';
+        document.getElementById('admin-dashboard').style.display = 'none';
+    }
+
+    // --- RECEIPT SYSTEM ---
+    function calcTotal() {
+        const h = parseInt(document.getElementById('sHarga').value) || 0;
+        const j = parseInt(document.getElementById('sJasa').value) || 0;
+        document.getElementById('sTotal').textContent = (h + j).toLocaleString();
+    }
+
+    function printReceipt() {
+        const nama = document.getElementById('sNama').value;
+        const barang = document.getElementById('sBarang').value;
+        const harga = document.getElementById('sHarga').value;
+        const jasa = document.getElementById('sJasa').value;
+        const total = document.getElementById('sTotal').textContent;
+
+        if(!nama || !barang) return alert("Lengkapi data struk!");
+
+        document.getElementById('pTgl').textContent = "Tanggal: " + new Date().toLocaleDateString();
+        document.getElementById('pNama').textContent = nama;
+        document.getElementById('pBarang').textContent = barang;
+        document.getElementById('pHarga').textContent = parseInt(harga).toLocaleString();
+        document.getElementById('pJasa').textContent = parseInt(jasa).toLocaleString();
+        document.getElementById('pTotal').textContent = total;
+
+        window.print();
+    }
+
+    // Initial Load
+    window.onload = () => {
+        renderNotif();
+        renderAdminAnn();
+        renderRepairItems();
+        renderOrders();
+        renderCustHistory();
+    };
+
+    // Close Notif if click outside
+    window.onclick = () => document.getElementById('notifDropdown').classList.remove('active');
+</script>
+
 </body>
 </html>
