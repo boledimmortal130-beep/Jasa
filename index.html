@@ -309,6 +309,9 @@
     let repairItems = JSON.parse(localStorage.getItem('repairItems')) || ['Smartphone', 'Laptop', 'TV'];
     let orders = JSON.parse(localStorage.getItem('orders')) || [];
     let admins = JSON.parse(localStorage.getItem('registered_admins')) || [];
+    
+    // Variabel untuk menyimpan sesi login admin
+    let loggedInAdmin = JSON.parse(localStorage.getItem('loggedInAdmin')) || null;
 
     // --- CLOCK & TOAST ---
     function updateClock() {
@@ -345,7 +348,12 @@
         localStorage.setItem('registered_admins', JSON.stringify(admins));
         
         showToast("Registrasi Berhasil! Silakan Login.");
-        toggleAuth(false);
+        // Clear form after successful registration
+        document.getElementById('regName').value = '';
+        document.getElementById('regWA').value = '';
+        document.getElementById('regPass').value = '';
+        document.getElementById('regCode').value = '';
+        toggleAuth(false); // Switch to login form
     }
 
     function loginAdmin() {
@@ -354,19 +362,28 @@
         const user = admins.find(a => a.phone === wa && a.password === pass);
 
         if(user) {
+            loggedInAdmin = { name: user.name, phone: user.phone };
+            localStorage.setItem('loggedInAdmin', JSON.stringify(loggedInAdmin)); // Simpan sesi login
+            
             document.getElementById('admin-auth').style.display = 'none';
             document.getElementById('admin-dashboard').style.display = 'block';
             document.getElementById('activeAdminName').textContent = user.name;
             showToast("Selamat Datang, " + user.name);
-            renderOrders(); // Pastikan order di-render setelah login
+            renderOrders(); // Render orders setelah login
         } else {
             alert("Nomor WA atau Password salah!");
         }
     }
 
     function logout() {
+        loggedInAdmin = null;
+        localStorage.removeItem('loggedInAdmin'); // Hapus sesi login
+        
         document.getElementById('admin-auth').style.display = 'block';
         document.getElementById('admin-dashboard').style.display = 'none';
+        // Clear login form fields
+        document.getElementById('loginWA').value = '';
+        document.getElementById('loginPass').value = '';
         showToast("Anda telah keluar.");
     }
 
@@ -406,7 +423,7 @@
     }
 
     // --- CORE LOGIC (ORDERS, ANN, REPAIR) ---
-    // New function for customer to submit order via WhatsApp
+    // Function for customer to submit order via WhatsApp
     function submitOrderViaWhatsApp() {
         const name = document.getElementById('custName').value.trim();
         const wa = document.getElementById('custWA').value.trim();
@@ -419,7 +436,7 @@
         }
 
         // 1. Construct WhatsApp message for Admin
-        let adminPhone = ADMIN_CONTACT_WA.startsWith('0') ? '62' + ADMIN_CONTACT_WA.slice(1) : ADMIN_CONTACT_WA;
+        let adminPhone = ADMIN_CONTACT_WA;
         const waMessage = encodeURIComponent(
             `*PESANAN SERVIS BARU VIA CUSTOMER APP*\n\n` +
             `Nama Pelanggan: ${name}\n` +
@@ -440,7 +457,7 @@
             time: new Date().toLocaleString(),
             status: 'Pending' // Initial status for new WhatsApp orders
         };
-        orders.push(newOrder);
+        orders.unshift(newOrder); // unshift to add to the beginning of the array (newest first)
         localStorage.setItem('orders', JSON.stringify(orders));
 
         showToast("Pesanan Anda telah dikirim via WhatsApp dan tercatat di sistem!");
@@ -460,15 +477,16 @@
                     <h4>${o.name} <span class="status-badge ${statusClass}">${o.status}</span></h4>
                     <p><b>Unit:</b> ${o.device}</p>
                     <p><b>Keluhan:</b> ${o.problem}</p>
+                    <p><b>Waktu Pesan:</b> ${o.time}</p>
                     <p><b>WhatsApp:</b> ${o.wa}</p>
                     <div class="order-card-actions">
-                        <button class="btn-sm btn-success" onclick="updateOrderStatus(${o.id}, 'Received')">
-                            <i class="fas fa-check-circle"></i> Terima Pesanan
+                        <button class="btn-sm btn-success" ${o.status === 'Received' ? 'disabled' : ''} onclick="updateOrderStatus(${o.id}, 'Received')">
+                            <i class="fas fa-check-circle"></i> Terima
                         </button>
-                        <button class="btn-sm btn-primary" onclick="updateOrderStatus(${o.id}, 'Processing')">
-                            <i class="fas fa-cogs"></i> Proses Servis
+                        <button class="btn-sm" ${o.status === 'Processing' ? 'disabled' : ''} onclick="updateOrderStatus(${o.id}, 'Processing')" style="background-color: var(--warning); color: white;">
+                            <i class="fas fa-cogs"></i> Proses
                         </button>
-                        <button class="btn-sm btn-secondary" onclick="updateOrderStatus(${o.id}, 'Completed')" style="background-color: var(--secondary); color: white;">
+                        <button class="btn-sm" ${o.status === 'Completed' ? 'disabled' : ''} onclick="updateOrderStatus(${o.id}, 'Completed')" style="background-color: var(--secondary); color: white;">
                             <i class="fas fa-award"></i> Selesai
                         </button>
                         <button class="btn-sm btn-danger" onclick="deleteOrder(${o.id})">
@@ -479,7 +497,7 @@
         });
     }
 
-    // New: Update Order Status & Send WhatsApp Notification
+    // Update Order Status & Send WhatsApp Notification
     function updateOrderStatus(id, newStatus) {
         let orderIndex = orders.findIndex(o => o.id === id);
         if (orderIndex !== -1) {
@@ -514,7 +532,7 @@
 
     // Customer Send WA to Admin (for general inquiries)
     function sendWhatsAppToAdmin() {
-        let adminPhone = ADMIN_CONTACT_WA.startsWith('0') ? '62' + ADMIN_CONTACT_WA.slice(1) : ADMIN_CONTACT_WA;
+        let adminPhone = ADMIN_CONTACT_WA;
         const customerName = document.getElementById('custName').value || 'Pelanggan Pro-Tech'; 
         const message = encodeURIComponent(`Halo Admin Pro-Tech, saya ${customerName} ingin bertanya mengenai layanan servis.`);
         window.open(`https://wa.me/${adminPhone}?text=${message}`, '_blank');
@@ -522,7 +540,11 @@
 
     function deleteOrder(id) { orders = orders.filter(o => o.id !== id); localStorage.setItem('orders', JSON.stringify(orders)); renderOrders(); renderCustHistory(); }
     
-    function renderCustHistory() { document.getElementById('cust-history').innerHTML = orders.length ? `Terdeteksi <b>${orders.length}</b> Unit sedang dalam proses penanganan teknisi.` : 'Antrean kosong.'; }
+    function renderCustHistory() { 
+        // Display only active (non-completed) orders for customer view
+        const activeOrders = orders.filter(o => o.status !== 'Completed');
+        document.getElementById('cust-history').innerHTML = activeOrders.length ? `Terdeteksi <b>${activeOrders.length}</b> Unit sedang dalam proses penanganan teknisi.` : 'Antrean kosong.'; 
+    }
 
     function addAnnouncement() { 
         const txt = document.getElementById('annText').value; 
@@ -541,9 +563,11 @@
 
     function renderNotif() {
         const l = document.getElementById('notifList');
-        document.getElementById('notifCount').textContent = announcements.length;
-        l.innerHTML = announcements.length ? '' : '<p>Kosong.</p>';
-        announcements.forEach(a => l.innerHTML += `<div class="notif-item"><b>Info:</b> ${a.text}</div>`);
+        const activeAnn = announcements.filter(a => a.status === 'on'); // Only show active announcements
+        document.getElementById('notifCount').textContent = activeAnn.length;
+        
+        l.innerHTML = activeAnn.length ? '' : '<p style="font-size:0.8rem; color:var(--gray); text-align:center;">Tidak ada pengumuman saat ini.</p>';
+        activeAnn.forEach(a => l.innerHTML += `<div class="notif-item"><b>Info:</b> ${a.text}</div>`);
     }
 
     function addRepairItem() {
@@ -564,12 +588,54 @@
     function deleteRepairItem(i) { repairItems.splice(i, 1); localStorage.setItem('repairItems', JSON.stringify(repairItems)); renderRepairItems(); }
 
     // --- INIT ---
-    document.getElementById('nav-cust').onclick = () => { document.getElementById('panel-cust').style.display = 'block'; document.getElementById('panel-admin').style.display = 'none'; document.getElementById('nav-cust').classList.add('active'); document.getElementById('nav-admin').classList.remove('active'); };
-    document.getElementById('nav-admin').onclick = () => { document.getElementById('panel-cust').style.display = 'none'; document.getElementById('panel-admin').style.display = 'block'; document.getElementById('nav-admin').classList.add('active'); document.getElementById('nav-cust').classList.remove('active'); };
+    document.getElementById('nav-cust').onclick = () => { 
+        document.getElementById('panel-cust').style.display = 'block'; 
+        document.getElementById('panel-admin').style.display = 'none'; 
+        document.getElementById('nav-cust').classList.add('active'); 
+        document.getElementById('nav-admin').classList.remove('active'); 
+    };
+
+    document.getElementById('nav-admin').onclick = () => { 
+        document.getElementById('panel-cust').style.display = 'none'; 
+        document.getElementById('panel-admin').style.display = 'block'; 
+        document.getElementById('nav-admin').classList.add('active'); 
+        document.getElementById('nav-cust').classList.remove('active'); 
+        
+        // Cek sesi login admin saat beralih ke panel admin
+        if (loggedInAdmin) {
+            document.getElementById('admin-auth').style.display = 'none';
+            document.getElementById('admin-dashboard').style.display = 'block';
+            document.getElementById('activeAdminName').textContent = loggedInAdmin.name;
+            renderOrders(); // Render orders jika sudah login
+        } else {
+            document.getElementById('admin-auth').style.display = 'block';
+            document.getElementById('admin-dashboard').style.display = 'none';
+        }
+    };
+
     document.getElementById('notifBtn').onclick = (e) => { e.stopPropagation(); document.getElementById('notifDropdown').classList.toggle('active'); };
     window.onclick = () => document.getElementById('notifDropdown').classList.remove('active');
 
-    window.onload = () => { renderNotif(); renderAdminAnn(); renderRepairItems(); renderOrders(); renderCustHistory(); };
+    window.onload = () => { 
+        renderNotif(); 
+        renderAdminAnn(); 
+        renderRepairItems(); 
+        renderOrders(); 
+        renderCustHistory(); 
+
+        // Auto-login admin jika ada sesi tersimpan
+        if (loggedInAdmin) {
+            // Ini akan memastikan panel admin terlihat saat halaman pertama kali dimuat jika admin sudah login
+            // Namun, untuk navigasi antar tab, fungsi nav-admin.onclick sudah menghandle
+            // Jika ingin langsung menampilkan dashboard admin tanpa harus klik tab admin setelah refresh,
+            // Anda bisa mengubah display CSS untuk #panel-admin di sini, atau mengatur default state lebih awal.
+            // Untuk saat ini, asumsikan user akan klik tab Admin jika ingin mengakses dashboard.
+            // Jika ingin otomatis langsung ke admin dashboard, tambahkan:
+            // document.getElementById('nav-admin').click(); 
+            // Tapi ini bisa konflik jika user sedang di tab customer.
+            // Jadi lebih baik biarkan user klik tab admin, dan auto-login akan aktif saat itu.
+        }
+    };
 </script>
 
 </body>
