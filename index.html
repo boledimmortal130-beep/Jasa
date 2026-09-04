@@ -73,7 +73,40 @@
         .receipt-summary h3 { color: var(--secondary); font-size: 1.5rem; }
 
         /* Order Cards */
-        .order-card { border-left: 4px solid var(--primary); padding: 15px; background: #f8fafc; border-radius: 0 12px 12px 0; margin-bottom: 15px; border: 1px solid var(--border); border-left: 4px solid var(--primary); }
+        .order-card { 
+            border-left: 4px solid var(--primary); 
+            padding: 15px; 
+            background: #f8fafc; 
+            border-radius: 0 12px 12px 0; 
+            margin-bottom: 15px; 
+            border: 1px solid var(--border); 
+            border-left: 4px solid var(--primary); 
+        }
+        .order-card-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+            border-top: 1px solid #e0e7ed;
+            padding-top: 15px;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+
+        .status-pending { background-color: #ffedd5; color: #f97316; }
+        .status-received { background-color: #dbeafe; color: #2563eb; }
+        .status-processing { background-color: #fef9c3; color: #eab308; }
+        .status-completed { background-color: #d1fae5; color: #065f46; }
+
 
         /* Sidebar */
         .badge-service { background: #e0f2fe; color: #0369a1; padding: 8px 15px; border-radius: 12px; font-size: 0.8rem; font-weight: 700; border: 1px solid #bae6fd; }
@@ -139,7 +172,7 @@
                 </form>
             </div>
 
-            <!-- NEW: Customer WA ke Admin -->
+            <!-- Customer WA ke Admin -->
             <div class="card">
                 <div class="card-header"><h2><i class="fab fa-whatsapp"></i> Ada Pertanyaan? Hubungi Kami!</h2></div>
                 <p style="margin-bottom: 15px; font-size: 0.9rem; color: var(--gray);">
@@ -375,7 +408,8 @@
     // --- CORE LOGIC (ORDERS, ANN, REPAIR) ---
     document.getElementById('orderForm').onsubmit = (e) => {
         e.preventDefault();
-        orders.push({ id: Date.now(), name: document.getElementById('custName').value, wa: document.getElementById('custWA').value, device: document.getElementById('custDevice').value, problem: document.getElementById('custProblem').value, time: new Date().toLocaleString() });
+        // Add status: 'Pending' to new orders
+        orders.push({ id: Date.now(), name: document.getElementById('custName').value, wa: document.getElementById('custWA').value, device: document.getElementById('custDevice').value, problem: document.getElementById('custProblem').value, time: new Date().toLocaleString(), status: 'Pending' });
         localStorage.setItem('orders', JSON.stringify(orders));
         showToast("Pesanan Terkirim!");
         e.target.reset();
@@ -387,7 +421,28 @@
         const list = document.getElementById('admin-order-list');
         list.innerHTML = orders.length ? '' : '<p>Tidak ada antrean.</p>';
         orders.forEach(o => {
-            list.innerHTML += `<div class="order-card"><h4>${o.name} (${o.device})</h4><p>${o.problem}</p><button class="btn-sm btn-wa" onclick="sendWA('${o.wa}', '${o.name}', '${o.device}')"><i class="fab fa-whatsapp"></i> Chat WA</button><button class="btn-sm btn-danger" onclick="deleteOrder(${o.id})">Hapus</button></div>`;
+            const statusClass = `status-${o.status.toLowerCase()}`;
+            list.innerHTML += `
+                <div class="order-card">
+                    <h4>${o.name} <span class="status-badge ${statusClass}">${o.status}</span></h4>
+                    <p><b>Unit:</b> ${o.device}</p>
+                    <p><b>Keluhan:</b> ${o.problem}</p>
+                    <p><b>WhatsApp:</b> ${o.wa}</p>
+                    <div class="order-card-actions">
+                        <button class="btn-sm btn-success" onclick="updateOrderStatus(${o.id}, 'Received')">
+                            <i class="fas fa-check-circle"></i> Terima Pesanan
+                        </button>
+                        <button class="btn-sm btn-primary" onclick="updateOrderStatus(${o.id}, 'Processing')">
+                            <i class="fas fa-cogs"></i> Proses Servis
+                        </button>
+                        <button class="btn-sm btn-secondary" onclick="updateOrderStatus(${o.id}, 'Completed')" style="background-color: var(--secondary); color: white;">
+                            <i class="fas fa-award"></i> Selesai
+                        </button>
+                        <button class="btn-sm btn-danger" onclick="deleteOrder(${o.id})">
+                            <i class="fas fa-trash"></i> Hapus
+                        </button>
+                    </div>
+                </div>`;
         });
     }
 
@@ -396,17 +451,50 @@
         window.open(`https://wa.me/${p}?text=${encodeURIComponent('Halo '+nm+', kami dari Pro-Tech. Unit '+dv+' Anda sedang kami kerjakan.')}`, '_blank');
     }
 
-    // NEW: Customer Send WA to Admin
+    // New: Update Order Status & Send WhatsApp Notification
+    function updateOrderStatus(id, newStatus) {
+        let orderIndex = orders.findIndex(o => o.id === id);
+        if (orderIndex !== -1) {
+            orders[orderIndex].status = newStatus;
+            localStorage.setItem('orders', JSON.stringify(orders));
+            showToast(`Status pesanan ${orders[orderIndex].name} diubah menjadi ${newStatus}`);
+            sendWhatsappStatusUpdate(orders[orderIndex].wa, orders[orderIndex].name, orders[orderIndex].device, newStatus);
+            renderOrders(); // Re-render to update badges and buttons
+        }
+    }
+
+    function sendWhatsappStatusUpdate(phone, name, device, status) {
+        let formattedPhone = phone.startsWith('0') ? '62' + phone.slice(1) : phone;
+        let message = "";
+
+        switch (status) {
+            case 'Received':
+                message = `Halo Bpk/Ibu ${name},\n\nPesanan servis unit ${device} Anda telah kami terima di sistem Pro-Tech. Teknisi kami akan segera melakukan pemeriksaan dan diagnosa.\n\nTerima kasih atas kepercayaan Anda!`;
+                break;
+            case 'Processing':
+                message = `Halo Bpk/Ibu ${name},\n\nUnit ${device} Anda saat ini sedang dalam proses pengerjaan oleh teknisi kami. Kami akan segera mengabari Anda jika perbaikan telah selesai.\n\nTerima kasih atas kesabaran Anda.`;
+                break;
+            case 'Completed':
+                message = `Halo Bpk/Ibu ${name},\n\nKabar gembira! Unit ${device} Anda telah *selesai diperbaiki* dan siap untuk diambil. Mohon konfirmasi jadwal pengambilan.\n\nTerima kasih telah menggunakan jasa Pro-Tech.`;
+                break;
+            default:
+                message = `Halo Bpk/Ibu ${name},\n\nAda pembaruan status untuk unit ${device} Anda di Pro-Tech. Mohon cek aplikasi atau hubungi admin untuk detail lebih lanjut.`;
+                break;
+        }
+        window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`, '_blank');
+    }
+
+    // Customer Send WA to Admin
     function sendWhatsAppToAdmin() {
         let adminPhone = ADMIN_CONTACT_WA.startsWith('0') ? '62' + ADMIN_CONTACT_WA.slice(1) : ADMIN_CONTACT_WA;
-        const customerName = document.getElementById('custName').value || 'Pelanggan Pro-Tech'; // Optional: Use name if filled
+        const customerName = document.getElementById('custName').value || 'Pelanggan Pro-Tech'; 
         const message = encodeURIComponent(`Halo Admin Pro-Tech, saya ${customerName} ingin bertanya mengenai layanan servis.`);
         window.open(`https://wa.me/${adminPhone}?text=${message}`, '_blank');
     }
 
     function deleteOrder(id) { orders = orders.filter(o => o.id !== id); localStorage.setItem('orders', JSON.stringify(orders)); renderOrders(); renderCustHistory(); }
     
-    function renderCustHistory() { document.getElementById('cust-history').innerHTML = orders.length ? `Ada <b>${orders.length}</b> unit dalam antrean.` : 'Antrean kosong.'; }
+    function renderCustHistory() { document.getElementById('cust-history').innerHTML = orders.length ? `Terdeteksi <b>${orders.length}</b> Unit sedang dalam proses penanganan teknisi.` : 'Antrean kosong.'; }
 
     function addAnnouncement() { 
         const txt = document.getElementById('annText').value; 
