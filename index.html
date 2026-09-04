@@ -138,6 +138,19 @@
                     <button type="submit"><i class="fas fa-paper-plane"></i> Kirim Pesanan</button>
                 </form>
             </div>
+
+            <!-- NEW: Customer WA ke Admin -->
+            <div class="card">
+                <div class="card-header"><h2><i class="fab fa-whatsapp"></i> Ada Pertanyaan? Hubungi Kami!</h2></div>
+                <p style="margin-bottom: 15px; font-size: 0.9rem; color: var(--gray);">
+                    Jika Anda memiliki pertanyaan lebih lanjut, ingin mengecek status servis, atau ada hal lain yang ingin disampaikan, jangan ragu untuk menghubungi admin kami.
+                </p>
+                <button class="btn-wa" onclick="sendWhatsAppToAdmin()">
+                    <i class="fab fa-whatsapp"></i> Chat Admin Sekarang
+                </button>
+            </div>
+            <!-- END NEW -->
+
         </div>
 
         <!-- ADMIN PANEL -->
@@ -256,6 +269,8 @@
 <script>
     // Kode Otorisasi Khusus (Hanya diketahui pemilik)
     const SUPER_SECURE_CODE = "PRO-TECH-ADMIN-SECURE-99X#-2024";
+    // Nomor WhatsApp Admin untuk pelanggan menghubungi
+    const ADMIN_CONTACT_WA = "6281234567890"; // Ganti dengan nomor WA admin yang valid
 
     let announcements = JSON.parse(localStorage.getItem('announcements')) || [];
     let repairItems = JSON.parse(localStorage.getItem('repairItems')) || ['Smartphone', 'Laptop', 'TV'];
@@ -379,6 +394,14 @@
     function sendWA(ph, nm, dv) {
         let p = ph.startsWith('0') ? '62' + ph.slice(1) : ph;
         window.open(`https://wa.me/${p}?text=${encodeURIComponent('Halo '+nm+', kami dari Pro-Tech. Unit '+dv+' Anda sedang kami kerjakan.')}`, '_blank');
+    }
+
+    // NEW: Customer Send WA to Admin
+    function sendWhatsAppToAdmin() {
+        let adminPhone = ADMIN_CONTACT_WA.startsWith('0') ? '62' + ADMIN_CONTACT_WA.slice(1) : ADMIN_CONTACT_WA;
+        const customerName = document.getElementById('custName').value || 'Pelanggan Pro-Tech'; // Optional: Use name if filled
+        const message = encodeURIComponent(`Halo Admin Pro-Tech, saya ${customerName} ingin bertanya mengenai layanan servis.`);
+        window.open(`https://wa.me/${adminPhone}?text=${message}`, '_blank');
     }
 
     function deleteOrder(id) { orders = orders.filter(o => o.id !== id); localStorage.setItem('orders', JSON.stringify(orders)); renderOrders(); renderCustHistory(); }
