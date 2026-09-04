@@ -3,76 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pro-Tech: Sistem Perbaikan Elektronik</title>
+    <title>Pro-Tech | Smart Electronics Repair</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary: #4361ee;
-            --secondary: #3a0ca3;
-            --success: #4cc9f0;
-            --warning: #f72585;
-            --dark: #212529;
-            --light: #f8f9fa;
-            --gray: #6c757d;
-            --border: #dee2e6;
-            --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #06b6d4;
+            --accent: #f43f5e;
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', sans-serif; }
         
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: #f0f2f5; color: var(--dark); line-height: 1.6; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        
-        /* Header & Nav */
-        header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 20px 0; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow); }
+        body { 
+            background: var(--bg-body); 
+            color: var(--text-main); 
+            line-height: 1.6;
+            background-image: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.1) 0px, transparent 50%), 
+                              radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.1) 0px, transparent 50%);
+            min-height: 100vh;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        /* Header Modern */
+        header { 
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            padding: 15px 0; 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            border-bottom: 1px solid var(--border);
+        }
         .header-content { display: flex; justify-content: space-between; align-items: center; }
-        .logo { display: flex; align-items: center; gap: 10px; }
-        nav ul { display: flex; list-style: none; gap: 15px; }
-        nav a { color: white; text-decoration: none; padding: 8px 15px; border-radius: 5px; transition: 0.3s; }
-        nav a.active { background: rgba(255, 255, 255, 0.2); }
-
-        /* Notification */
-        .notification-container { position: relative; margin-left: auto; margin-right: 20px; }
-        .notification-icon { cursor: pointer; font-size: 1.5rem; position: relative; }
-        .notification-count { position: absolute; top: -5px; right: -5px; background: var(--warning); color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 0.7rem; display: flex; justify-content: center; align-items: center; }
-        .notification-dropdown { position: absolute; top: 100%; right: 0; background: white; width: 300px; border-radius: 10px; box-shadow: var(--shadow); padding: 15px; display: none; margin-top: 10px; color: var(--dark); }
-        .notification-dropdown.active { display: block; }
-        .notif-item { padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
-
-        /* Time Display */
-        .time-display { text-align: center; padding: 10px; background: var(--primary); color: white; margin-bottom: 20px; font-weight: bold; }
-
-        /* Layout */
-        .main-content { display: grid; grid-template-columns: 1fr 300px; gap: 20px; }
-        .card { background: white; border-radius: 10px; padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow); }
-        .card-header { border-bottom: 1px solid var(--border); margin-bottom: 15px; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 12px; color: var(--primary); font-size: 1.5rem; font-weight: 800; }
         
-        /* Forms */
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: 600; }
-        input, textarea, select { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 5px; }
-        button { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.3s; background: var(--primary); color: white; }
-        button:hover { opacity: 0.9; transform: translateY(-2px); }
-        .btn-sm { padding: 5px 10px; font-size: 0.8rem; }
-        .btn-danger { background: var(--warning); }
-        .btn-success { background: #2ecc71; }
-        .btn-wa { background: #25d366; }
+        nav ul { display: flex; list-style: none; gap: 8px; background: #f1f5f9; padding: 5px; border-radius: 12px; }
+        nav a { 
+            color: var(--text-muted); 
+            text-decoration: none; 
+            padding: 8px 20px; 
+            border-radius: 10px; 
+            transition: 0.3s; 
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        nav a.active { background: white; color: var(--primary); box-shadow: var(--shadow); }
 
-        /* Dynamic Lists */
-        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border: 1px solid var(--border); margin-bottom: 5px; border-radius: 5px; }
-        .badge { padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; }
-        .badge-on { background: #d4edda; color: #155724; }
-        .badge-off { background: #f8d7da; color: #721c24; }
+        .notification-icon { 
+            background: white; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+            border-radius: 12px; cursor: pointer; border: 1px solid var(--border); position: relative;
+        }
+        .notification-count { position: absolute; top: -5px; right: -5px; background: var(--accent); color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 0.7rem; display: flex; justify-content: center; align-items: center; border: 2px solid white; }
 
-        /* Receipt Print Area */
-        #printArea { display: none; padding: 20px; border: 1px solid #000; width: 300px; font-family: monospace; }
+        .time-display { text-align: center; padding: 10px; font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
+
+        /* Dashboard Layout */
+        .main-content { display: grid; grid-template-columns: 1fr 320px; gap: 24px; padding-bottom: 50px; }
+        .card { background: var(--bg-card); border-radius: 20px; padding: 24px; margin-bottom: 24px; border: 1px solid var(--border); box-shadow: var(--shadow); transition: 0.3s; }
+        .card:hover { transform: translateY(-2px); }
+        .card-header { margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .card-header h2 { font-size: 1.25rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+
+        /* Form Styling */
+        .form-group { margin-bottom: 18px; }
+        label { display: block; margin-bottom: 6px; font-size: 0.9rem; font-weight: 600; color: var(--text-main); }
+        input, textarea, select { 
+            width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 12px; 
+            background: #f8fafc; transition: 0.3s; font-size: 0.95rem;
+        }
+        input:focus { outline: none; border-color: var(--primary); background: white; box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); }
+        
+        button { 
+            background: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 12px; 
+            cursor: pointer; font-weight: 700; transition: 0.3s; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        button:hover { background: var(--primary-dark); box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3); }
+
+        .btn-add-item { background: #f1f5f9; color: var(--text-main); border: 1px dashed var(--text-muted); margin-bottom: 15px; }
+        .btn-add-item:hover { background: #e2e8f0; }
+        .btn-success { background: var(--secondary); }
+        .btn-danger { background: var(--accent); }
+
+        /* Struk Table Builder */
+        .receipt-builder-table { width: 100%; margin-bottom: 15px; border-collapse: collapse; }
+        .receipt-row { display: grid; grid-template-columns: 1fr 120px 40px; gap: 10px; margin-bottom: 10px; align-items: center; }
+        
+        /* Badges & Status */
+        .badge-service { background: #eef2ff; color: var(--primary); padding: 8px 16px; border-radius: 10px; font-size: 0.9rem; font-weight: 600; border: 1px solid #e0e7ff; }
+        
+        /* History & Order Cards */
+        .order-card { background: #f8fafc; border-radius: 15px; padding: 15px; margin-bottom: 15px; border-left: 4px solid var(--primary); }
+        
+        /* Print Struk Area */
+        #printArea { display: none; }
         @media print {
             body * { visibility: hidden; }
             #printArea, #printArea * { visibility: visible; }
-            #printArea { position: absolute; left: 0; top: 0; display: block; }
+            #printArea { position: fixed; left: 0; top: 0; width: 100%; display: block; padding: 40px; color: black; background: white; }
+            .no-print { display: none; }
         }
+
+        .receipt-total-box { background: #1e293b; color: white; padding: 20px; border-radius: 15px; text-align: right; }
+        .receipt-total-box h3 { font-size: 1.5rem; }
 
         @media (max-width: 768px) {
             .main-content { grid-template-columns: 1fr; }
+            nav a { padding: 8px 12px; font-size: 0.8rem; }
         }
     </style>
 </head>
@@ -81,101 +125,110 @@
 <header>
     <div class="container">
         <div class="header-content">
-            <div class="logo"><i class="fas fa-microchip"></i> <h1>Pro-Tech</h1></div>
-            <div class="notification-container">
+            <div class="logo"><i class="fas fa-bolt"></i> <span>PRO-TECH</span></div>
+            
+            <div style="display: flex; align-items: center; gap: 15px;">
                 <div class="notification-icon" id="notifBtn">
                     <i class="fas fa-bell"></i>
                     <span class="notification-count" id="notifCount">0</span>
+                    <div class="notification-dropdown" id="notifDropdown">
+                        <h4 style="margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px;">Notifikasi</h4>
+                        <div id="notifList"></div>
+                    </div>
                 </div>
-                <div class="notification-dropdown" id="notifDropdown">
-                    <h3>Pemberitahuan</h3>
-                    <div id="notifList"></div>
-                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#" class="active" id="nav-cust">Customer</a></li>
+                        <li><a href="#" id="nav-admin">Admin</a></li>
+                    </ul>
+                </nav>
             </div>
-            <nav>
-                <ul>
-                    <li><a href="#" class="active" id="nav-cust">Customer</a></li>
-                    <li><a href="#" id="nav-admin">Admin</a></li>
-                </ul>
-            </nav>
         </div>
     </div>
 </header>
 
-<div class="time-display" id="clock">Loading Time...</div>
+<div class="time-display" id="clock">Loading...</div>
 
 <div class="container">
     <div class="main-content">
         <!-- CUSTOMER PANEL -->
         <div id="panel-cust">
             <div class="card">
-                <div class="card-header"><h2><i class="fas fa-tools"></i> Layanan Perbaikan Kami</h2></div>
-                <div id="cust-service-list" style="display: flex; gap: 10px; flex-wrap: wrap;">
-                    <!-- Diisi via JS -->
-                </div>
+                <div class="card-header"><h2><i class="fas fa-microchip"></i> Layanan Kami</h2></div>
+                <div id="cust-service-list" style="display: flex; gap: 10px; flex-wrap: wrap;"></div>
             </div>
 
             <div class="card">
-                <div class="card-header"><h2><i class="fas fa-edit"></i> Form Pesanan Servis</h2></div>
+                <div class="card-header"><h2><i class="fas fa-file-signature"></i> Buat Pesanan Servis</h2></div>
                 <form id="orderForm">
-                    <div class="form-group"><label>Nama Lengkap</label><input type="text" id="custName" required></div>
-                    <div class="form-group"><label>WhatsApp (Contoh: 0812...)</label><input type="tel" id="custWA" required></div>
-                    <div class="form-group"><label>Nama Barang</label><input type="text" id="custDevice" required></div>
-                    <div class="form-group"><label>Keluhan</label><textarea id="custProblem" rows="3"></textarea></div>
-                    <button type="submit">Kirim Pesanan</button>
+                    <div class="grid-form" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="form-group"><label>Nama Pelanggan</label><input type="text" id="custName" placeholder="Masukkan nama" required></div>
+                        <div class="form-group"><label>Nomor WhatsApp</label><input type="tel" id="custWA" placeholder="08xxx" required></div>
+                    </div>
+                    <div class="form-group"><label>Tipe Perangkat</label><input type="text" id="custDevice" placeholder="Contoh: Laptop ASUS ROG" required></div>
+                    <div class="form-group"><label>Deskripsi Kerusakan</label><textarea id="custProblem" rows="3" placeholder="Ceritakan keluhan perangkat Anda..."></textarea></div>
+                    <button type="submit"><i class="fas fa-paper-plane"></i> Kirim ke Sistem</button>
                 </form>
             </div>
         </div>
 
         <!-- ADMIN PANEL -->
         <div id="panel-admin" style="display: none;">
-            <!-- Login Admin -->
             <div id="admin-auth" class="card">
-                <h2>Login Admin</h2>
-                <div class="form-group"><label>Nomor WA</label><input type="text" id="authWA"></div>
+                <h2 style="text-align:center; margin-bottom: 20px;">Admin Authentication</h2>
+                <div class="form-group"><label>WhatsApp</label><input type="text" id="authWA"></div>
                 <div class="form-group"><label>Password</label><input type="password" id="authPass"></div>
-                <button onclick="loginAdmin()">Masuk</button>
-                <p style="margin-top:10px; font-size:0.8rem">Kode Daftar: <b>PRO-SERVICE-99</b></p>
+                <button onclick="loginAdmin()">Login Securely</button>
             </div>
 
-            <!-- Dashboard Admin -->
             <div id="admin-dashboard" style="display: none;">
-                <div class="card">
-                    <div class="card-header"><h2>Dashboard Admin</h2><button class="btn-danger" onclick="logout()">Logout</button></div>
-                    <p>Selamat Datang, <b id="activeAdminName">Admin</b></p>
+                <div class="card" style="background: linear-gradient(135deg, #6366f1, #a855f7); color: white;">
+                    <div class="card-header"><h2 style="color:white">Admin Console</h2><button onclick="logout()" class="btn-danger btn-sm" style="width:auto">Logout</button></div>
+                    <p>Aktif: <b id="activeAdminName">Admin</b></p>
                 </div>
 
-                <!-- Manajemen Pengumuman -->
+                <!-- Input Pengumuman -->
                 <div class="card">
                     <div class="card-header"><h2>Kelola Pengumuman</h2></div>
-                    <div class="form-group"><input type="text" id="annText" placeholder="Isi pengumuman baru..."></div>
-                    <button onclick="addAnnouncement()">Tambah Pengumuman</button>
-                    <div id="admin-ann-list" style="margin-top:15px;"></div>
+                    <div class="form-group"><input type="text" id="annText" placeholder="Ketik info baru..."></div>
+                    <button onclick="addAnnouncement()">Broadcast Info</button>
+                    <div id="admin-ann-list" style="margin-top:20px"></div>
                 </div>
 
-                <!-- Manajemen Barang Servis -->
+                <!-- Kelola Layanan -->
                 <div class="card">
-                    <div class="card-header"><h2>Kelola Daftar Barang (Layanan)</h2></div>
-                    <div class="form-group"><input type="text" id="itemRepairName" placeholder="Contoh: Laptop, TV, HP..."></div>
-                    <button onclick="addRepairItem()">Tambah Layanan</button>
-                    <div id="admin-item-list" style="margin-top:15px;"></div>
+                    <div class="card-header"><h2>Daftar Layanan Perbaikan</h2></div>
+                    <div class="form-group"><input type="text" id="itemRepairName" placeholder="Nama Barang..."></div>
+                    <button onclick="addRepairItem()">Update Katalog</button>
+                    <div id="admin-item-list" style="margin-top:20px"></div>
                 </div>
 
-                <!-- Daftar Pesanan -->
+                <!-- Struk Builder dengan Multi Item -->
                 <div class="card">
-                    <div class="card-header"><h2>Daftar Pesanan Masuk</h2></div>
-                    <div id="admin-order-list"></div>
-                </div>
-
-                <!-- Cetak Struk -->
-                <div class="card">
-                    <div class="card-header"><h2>Buat Struk Pembayaran</h2></div>
+                    <div class="card-header"><h2><i class="fas fa-file-invoice-dollar"></i> Cetak Struk Digital</h2></div>
                     <div class="form-group"><label>Nama Pelanggan</label><input type="text" id="sNama"></div>
-                    <div class="form-group"><label>Nama Barang</label><input type="text" id="sBarang"></div>
-                    <div class="form-group"><label>Harga Part (Rp)</label><input type="number" id="sHarga" value="0" oninput="calcTotal()"></div>
-                    <div class="form-group"><label>Biaya Jasa (Rp)</label><input type="number" id="sJasa" value="0" oninput="calcTotal()"></div>
-                    <div class="form-group"><h3>Total: Rp <span id="sTotal">0</span></h3></div>
-                    <button class="btn-success" onclick="printReceipt()">Cetak Struk</button>
+                    
+                    <div id="receipt-items-container">
+                        <label>Item & Biaya</label>
+                        <div class="receipt-row">
+                            <input type="text" placeholder="Nama Barang/Jasa" class="r-item-name">
+                            <input type="number" placeholder="Harga" class="r-item-price" oninput="calcTotal()">
+                            <span></span>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-add-item" onclick="addReceiptRow()"><i class="fas fa-plus"></i> Tambah Item</button>
+                    
+                    <div class="receipt-total-box">
+                        <p style="font-size: 0.9rem; opacity: 0.8;">Total Pembayaran</p>
+                        <h3>Rp <span id="sTotal">0</span></h3>
+                    </div>
+                    <button class="btn-success" style="margin-top: 15px;" onclick="printReceipt()"><i class="fas fa-print"></i> Cetak Sekarang</button>
+                </div>
+
+                <!-- Pesanan Masuk -->
+                <div class="card">
+                    <div class="card-header"><h2>Pesanan Masuk</h2></div>
+                    <div id="admin-order-list"></div>
                 </div>
             </div>
         </div>
@@ -183,203 +236,185 @@
         <!-- SIDEBAR -->
         <div class="sidebar">
             <div class="card">
-                <h3>Info Toko</h3>
-                <p><i class="fas fa-map-marker-alt"></i> Jl. Elektronik No. 1</p>
-                <p><i class="fas fa-phone"></i> 0812-3456-7890</p>
+                <h3>Toko Info</h3>
+                <div style="margin-top:10px; font-size: 0.9rem; color: var(--text-muted);">
+                    <p><i class="fas fa-clock"></i> 09:00 - 21:00</p>
+                    <p><i class="fas fa-phone-alt"></i> 0812-3456-7890</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Mall Tekno Lantai 2</p>
+                </div>
             </div>
-            <div class="card" id="history-box">
-                <h3>Riwayat Anda</h3>
-                <div id="cust-history" style="font-size: 0.8rem;">Belum ada pesanan.</div>
+            <div class="card">
+                <h3>Statistik Sistem</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
+                    <div style="background: #f1f5f9; padding: 10px; border-radius: 10px; text-align: center;">
+                        <small>Pesanan</small><br><b>124</b>
+                    </div>
+                    <div style="background: #f1f5f9; padding: 10px; border-radius: 10px; text-align: center;">
+                        <small>Selesai</small><br><b>98</b>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Print Hidden Area -->
+<!-- PRINT AREA (HIDDEN) -->
 <div id="printArea">
-    <h2 style="text-align:center">STRUK SERVIS PRO-TECH</h2>
+    <div style="text-align:center; margin-bottom: 20px;">
+        <h1 style="color: #6366f1;">PRO-TECH</h1>
+        <p>Smart Electronics Repair Center</p>
+        <p style="font-size: 0.8rem;">Jl. Elektronik Raya No. 45 | WA: 0812-3456-7890</p>
+    </div>
     <hr>
-    <p id="pTgl"></p>
-    <p>Pelanggan: <span id="pNama"></span></p>
-    <p>Barang: <span id="pBarang"></span></p>
-    <hr>
-    <p>Harga Part: Rp <span id="pHarga"></span></p>
-    <p>Biaya Jasa: Rp <span id="pJasa"></span></p>
-    <hr>
-    <h3>TOTAL: Rp <span id="pTotal"></span></h3>
-    <br>
-    <p style="text-align:center">Terima kasih atas kepercayaan Anda!</p>
+    <div style="display:flex; justify-content: space-between; margin: 20px 0;">
+        <p><b>Pelanggan:</b> <span id="pNama"></span></p>
+        <p id="pTgl"></p>
+    </div>
+    <table style="width:100%; border-collapse: collapse; margin-bottom: 20px;">
+        <thead>
+            <tr style="border-bottom: 2px solid #000; text-align: left;">
+                <th style="padding: 10px 0;">Item/Deskripsi</th>
+                <th style="text-align: right;">Harga</th>
+            </tr>
+        </thead>
+        <tbody id="pItemsBody"></tbody>
+    </table>
+    <div style="text-align: right; border-top: 2px solid #000; padding-top: 10px;">
+        <h2>TOTAL: Rp <span id="pTotal"></span></h2>
+    </div>
+    <div style="margin-top: 50px; text-align: center; font-size: 0.8rem;">
+        <p>Barang yang sudah diservis memiliki garansi 30 hari.</p>
+        <p>Terima kasih atas kunjungan Anda!</p>
+    </div>
 </div>
 
-<div class="notification" id="toast">Notifikasi</div>
-
 <script>
-    // Database Sederhana (Local Storage)
+    // --- Data Management ---
     let announcements = JSON.parse(localStorage.getItem('announcements')) || [];
-    let repairItems = JSON.parse(localStorage.getItem('repairItems')) || ['Handphone', 'Laptop', 'TV'];
+    let repairItems = JSON.parse(localStorage.getItem('repairItems')) || ['Smartphone', 'Laptop', 'Console', 'Television'];
     let orders = JSON.parse(localStorage.getItem('orders')) || [];
-    let admins = JSON.parse(localStorage.getItem('registered_admins')) || [{name: 'Owner', phone: '0812', password: '123'}];
+    let admins = [{name: 'Owner Pro-Tech', phone: '0812', password: '123'}];
 
-    // --- UTILS ---
-    function showToast(msg) {
-        const t = document.getElementById('toast');
-        t.textContent = msg;
-        t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), 3000);
-    }
+    // --- Clock ---
+    setInterval(() => {
+        document.getElementById('clock').innerHTML = `<i class="far fa-clock"></i> ${new Date().toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'medium' })}`;
+    }, 1000);
 
-    function updateClock() {
-        document.getElementById('clock').textContent = new Date().toLocaleString('id-ID');
-    }
-    setInterval(updateClock, 1000);
+    // --- Nav Control ---
+    const navs = ['nav-cust', 'nav-admin'];
+    const panels = ['panel-cust', 'panel-admin'];
 
-    // --- TAB NAVIGATION ---
-    document.getElementById('nav-cust').onclick = () => {
-        document.getElementById('panel-cust').style.display = 'block';
-        document.getElementById('panel-admin').style.display = 'none';
-        document.getElementById('nav-cust').classList.add('active');
-        document.getElementById('nav-admin').classList.remove('active');
-    };
-    document.getElementById('nav-admin').onclick = () => {
-        document.getElementById('panel-cust').style.display = 'none';
-        document.getElementById('panel-admin').style.display = 'block';
-        document.getElementById('nav-admin').classList.add('active');
-        document.getElementById('nav-cust').classList.remove('active');
-    };
+    navs.forEach((nav, idx) => {
+        document.getElementById(nav).onclick = () => {
+            navs.forEach(n => document.getElementById(n).classList.remove('active'));
+            panels.forEach(p => document.getElementById(p).style.display = 'none');
+            document.getElementById(nav).classList.add('active');
+            document.getElementById(panels[idx]).style.display = 'block';
+        };
+    });
 
-    // --- NOTIFICATION SYSTEM ---
-    document.getElementById('notifBtn').onclick = (e) => {
-        e.stopPropagation();
-        document.getElementById('notifDropdown').classList.toggle('active');
-    };
-
+    // --- Announcement ---
     function renderNotif() {
         const list = document.getElementById('notifList');
-        const activeAnn = announcements.filter(a => a.status === 'on');
-        document.getElementById('notifCount').textContent = activeAnn.length;
-        
-        list.innerHTML = activeAnn.length ? '' : '<p>Tidak ada pengumuman baru</p>';
-        activeAnn.forEach(a => {
-            list.innerHTML += `<div class="notif-item"><b>Info:</b> ${a.text}</div>`;
-        });
+        const active = announcements.filter(a => a.status === 'on');
+        document.getElementById('notifCount').textContent = active.length;
+        list.innerHTML = active.length ? '' : '<p style="font-size:0.8rem; color:gray">Tidak ada notifikasi</p>';
+        active.forEach(a => list.innerHTML += `<div style="padding:10px 0; border-bottom:1px solid #eee; font-size:0.8rem"><i class="fas fa-info-circle" style="color:#6366f1"></i> ${a.text}</div>`);
     }
 
-    // --- ANNOUNCEMENT MGMT ---
     function addAnnouncement() {
-        const text = document.getElementById('annText').value;
-        if(!text) return;
-        announcements.push({ id: Date.now(), text, status: 'on' });
+        const val = document.getElementById('annText').value;
+        if(!val) return;
+        announcements.push({ id: Date.now(), text: val, status: 'on' });
         localStorage.setItem('announcements', JSON.stringify(announcements));
         document.getElementById('annText').value = '';
         renderAdminAnn();
         renderNotif();
     }
 
-    function toggleAnn(id) {
-        announcements = announcements.map(a => a.id === id ? {...a, status: a.status === 'on' ? 'off' : 'on'} : a);
-        saveAndRenderAnn();
-    }
-
     function deleteAnn(id) {
         announcements = announcements.filter(a => a.id !== id);
-        saveAndRenderAnn();
-    }
-
-    function saveAndRenderAnn() {
         localStorage.setItem('announcements', JSON.stringify(announcements));
         renderAdminAnn();
         renderNotif();
     }
 
     function renderAdminAnn() {
-        const container = document.getElementById('admin-ann-list');
-        container.innerHTML = '';
+        const list = document.getElementById('admin-ann-list');
+        list.innerHTML = '';
         announcements.forEach(a => {
-            container.innerHTML += `
-                <div class="list-item">
-                    <span>${a.text} <span class="badge ${a.status === 'on' ? 'badge-on' : 'badge-off'}">${a.status.toUpperCase()}</span></span>
-                    <div>
-                        <button class="btn-sm btn-success" onclick="toggleAnn(${a.id})">Toggle</button>
-                        <button class="btn-sm btn-danger" onclick="deleteAnn(${a.id})">Hapus</button>
-                    </div>
+            list.innerHTML += `
+                <div class="list-item" style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:#f8fafc; border-radius:10px; margin-bottom:5px">
+                    <span style="font-size:0.9rem">${a.text}</span>
+                    <button class="btn-danger btn-sm" onclick="deleteAnn(${a.id})" style="width:auto; padding:5px 10px">Hapus</button>
                 </div>`;
         });
     }
 
-    // --- REPAIR ITEMS MGMT ---
+    // --- Repair Items ---
+    function renderRepairItems() {
+        const alist = document.getElementById('admin-item-list');
+        const clist = document.getElementById('cust-service-list');
+        alist.innerHTML = ''; clist.innerHTML = '';
+        repairItems.forEach((item, idx) => {
+            alist.innerHTML += `<div class="list-item" style="display:flex; justify-content:space-between; padding:10px; background:#f8fafc; border-radius:10px; margin-bottom:5px"><span>${item}</span><button class="btn-danger btn-sm" onclick="deleteRepairItem(${idx})" style="width:auto; padding:5px 10px">X</button></div>`;
+            clist.innerHTML += `<div class="badge-service">${item}</div>`;
+        });
+    }
+
     function addRepairItem() {
-        const name = document.getElementById('itemRepairName').value;
-        if(!name) return;
-        repairItems.push(name);
+        const val = document.getElementById('itemRepairName').value;
+        if(!val) return;
+        repairItems.push(val);
         localStorage.setItem('repairItems', JSON.stringify(repairItems));
         document.getElementById('itemRepairName').value = '';
         renderRepairItems();
     }
 
-    function deleteRepairItem(index) {
-        repairItems.splice(index, 1);
+    function deleteRepairItem(idx) {
+        repairItems.splice(idx, 1);
         localStorage.setItem('repairItems', JSON.stringify(repairItems));
         renderRepairItems();
     }
 
-    function renderRepairItems() {
-        const adminList = document.getElementById('admin-item-list');
-        const custList = document.getElementById('cust-service-list');
-        adminList.innerHTML = '';
-        custList.innerHTML = '';
-
-        repairItems.forEach((item, index) => {
-            adminList.innerHTML += `
-                <div class="list-item">
-                    <span>${item}</span>
-                    <button class="btn-sm btn-danger" onclick="deleteRepairItem(${index})">Hapus</button>
-                </div>`;
-            custList.innerHTML += `<div class="badge badge-on" style="padding:10px; font-size:1rem">${item}</div>`;
-        });
-    }
-
-    // --- ORDER SYSTEM ---
+    // --- Order System ---
     document.getElementById('orderForm').onsubmit = (e) => {
         e.preventDefault();
-        const newOrder = {
+        const order = {
             id: Date.now(),
             name: document.getElementById('custName').value,
             wa: document.getElementById('custWA').value,
             device: document.getElementById('custDevice').value,
-            problem: document.getElementById('custProblem').value,
-            status: 'Pending',
-            time: new Date().toLocaleString()
+            problem: document.getElementById('custProblem').value
         };
-        orders.push(newOrder);
+        orders.push(order);
         localStorage.setItem('orders', JSON.stringify(orders));
-        showToast("Pesanan Terkirim!");
         e.target.reset();
+        alert("Pesanan terkirim!");
         renderOrders();
-        renderCustHistory();
     };
 
     function renderOrders() {
-        const container = document.getElementById('admin-order-list');
-        container.innerHTML = orders.length ? '' : '<p>Belum ada pesanan.</p>';
+        const list = document.getElementById('admin-order-list');
+        list.innerHTML = orders.length ? '' : '<p>Belum ada order masuk.</p>';
         orders.forEach(o => {
-            container.innerHTML += `
+            list.innerHTML += `
                 <div class="order-card">
-                    <h4>${o.name} (${o.device})</h4>
-                    <p>${o.problem}</p>
-                    <div style="margin-top:10px">
-                        <button class="btn-sm btn-wa" onclick="sendWA('${o.wa}', '${o.name}', '${o.device}')">
-                            <i class="fab fa-whatsapp"></i> Chat WA
-                        </button>
+                    <b>${o.name}</b> (${o.wa})<br>
+                    <small>Unit: ${o.device}</small><br>
+                    <p style="font-size:0.85rem; color:#64748b">${o.problem}</p>
+                    <div style="display:flex; gap:5px; margin-top:10px">
+                        <button class="btn-sm btn-success" onclick="sendWA('${o.wa}', '${o.name}', '${o.device}')">WA</button>
                         <button class="btn-sm btn-danger" onclick="deleteOrder(${o.id})">Hapus</button>
                     </div>
                 </div>`;
         });
     }
 
-    function sendWA(phone, name, device) {
-        let formattedPhone = phone.startsWith('0') ? '62' + phone.slice(1) : phone;
-        const msg = encodeURIComponent(`Halo ${name}, kami dari Pro-Tech. Terkait servis ${device} Anda, sudah kami terima. Mohon tunggu update selanjutnya.`);
-        window.open(`https://wa.me/${formattedPhone}?text=${msg}`, '_blank');
+    function sendWA(wa, name, device) {
+        const phone = wa.startsWith('0') ? '62' + wa.slice(1) : wa;
+        const msg = encodeURIComponent(`Halo ${name}, pesanan servis ${device} Anda sudah kami terima di Pro-Tech. Kami akan segera memprosesnya.`);
+        window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
     }
 
     function deleteOrder(id) {
@@ -388,67 +423,82 @@
         renderOrders();
     }
 
-    function renderCustHistory() {
-        const h = document.getElementById('cust-history');
-        h.innerHTML = orders.length ? 'Pesanan terakhir Anda sedang diproses.' : 'Belum ada riwayat.';
+    // --- Receipt Multi Item System ---
+    function addReceiptRow() {
+        const container = document.getElementById('receipt-items-container');
+        const row = document.createElement('div');
+        row.className = 'receipt-row';
+        row.innerHTML = `
+            <input type="text" placeholder="Item" class="r-item-name">
+            <input type="number" placeholder="Harga" class="r-item-price" oninput="calcTotal()">
+            <button class="btn-danger btn-sm" onclick="this.parentElement.remove(); calcTotal()" style="padding: 10px; border-radius: 10px;">X</button>
+        `;
+        container.appendChild(row);
     }
 
-    // --- AUTH ---
+    function calcTotal() {
+        const prices = document.querySelectorAll('.r-item-price');
+        let total = 0;
+        prices.forEach(p => total += (parseInt(p.value) || 0));
+        document.getElementById('sTotal').textContent = total.toLocaleString('id-ID');
+    }
+
+    function printReceipt() {
+        const name = document.getElementById('sNama').value;
+        const total = document.getElementById('sTotal').textContent;
+        const itemNames = document.querySelectorAll('.r-item-name');
+        const itemPrices = document.querySelectorAll('.r-item-price');
+
+        if(!name || itemNames.length === 0) return alert("Isi minimal 1 barang & nama pelanggan!");
+
+        document.getElementById('pNama').textContent = name;
+        document.getElementById('pTgl').textContent = new Date().toLocaleDateString('id-ID');
+        document.getElementById('pTotal').textContent = total;
+
+        const body = document.getElementById('pItemsBody');
+        body.innerHTML = '';
+        itemNames.forEach((n, idx) => {
+            const price = parseInt(itemPrices[idx].value) || 0;
+            body.innerHTML += `
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 8px 0;">${n.value || 'Item'}</td>
+                    <td style="text-align: right;">Rp ${price.toLocaleString('id-ID')}</td>
+                </tr>`;
+        });
+
+        window.print();
+    }
+
+    // --- Auth ---
     function loginAdmin() {
         const wa = document.getElementById('authWA').value;
         const pass = document.getElementById('authPass').value;
-        const admin = admins.find(a => a.phone === wa && a.password === pass);
-        
-        if(admin) {
+        const user = admins.find(a => a.phone === wa && a.password === pass);
+        if(user) {
             document.getElementById('admin-auth').style.display = 'none';
             document.getElementById('admin-dashboard').style.display = 'block';
-            document.getElementById('activeAdminName').textContent = admin.name;
-        } else {
-            alert("Login Gagal!");
-        }
+            document.getElementById('activeAdminName').textContent = user.name;
+        } else alert("Akses Ditolak!");
     }
-
+    
     function logout() {
         document.getElementById('admin-auth').style.display = 'block';
         document.getElementById('admin-dashboard').style.display = 'none';
     }
 
-    // --- RECEIPT SYSTEM ---
-    function calcTotal() {
-        const h = parseInt(document.getElementById('sHarga').value) || 0;
-        const j = parseInt(document.getElementById('sJasa').value) || 0;
-        document.getElementById('sTotal').textContent = (h + j).toLocaleString();
-    }
-
-    function printReceipt() {
-        const nama = document.getElementById('sNama').value;
-        const barang = document.getElementById('sBarang').value;
-        const harga = document.getElementById('sHarga').value;
-        const jasa = document.getElementById('sJasa').value;
-        const total = document.getElementById('sTotal').textContent;
-
-        if(!nama || !barang) return alert("Lengkapi data struk!");
-
-        document.getElementById('pTgl').textContent = "Tanggal: " + new Date().toLocaleDateString();
-        document.getElementById('pNama').textContent = nama;
-        document.getElementById('pBarang').textContent = barang;
-        document.getElementById('pHarga').textContent = parseInt(harga).toLocaleString();
-        document.getElementById('pJasa').textContent = parseInt(jasa).toLocaleString();
-        document.getElementById('pTotal').textContent = total;
-
-        window.print();
-    }
-
-    // Initial Load
+    // --- Initial Load ---
     window.onload = () => {
         renderNotif();
         renderAdminAnn();
         renderRepairItems();
         renderOrders();
-        renderCustHistory();
     };
 
-    // Close Notif if click outside
+    // --- Notif Click Out ---
+    document.getElementById('notifBtn').onclick = (e) => {
+        e.stopPropagation();
+        document.getElementById('notifDropdown').classList.toggle('active');
+    };
     window.onclick = () => document.getElementById('notifDropdown').classList.remove('active');
 </script>
 
