@@ -69,7 +69,7 @@
 
         /* Struk Design (for admin form) */
         .receipt-row-item { display: grid; grid-template-columns: 1fr 140px auto; gap: 10px; margin-bottom: 10px; }
-        .receipt-summary { background: var(--dark); color: white; padding: 20px; border-radius: 12px; text-align: right; margin-top: 15px; }
+        .receipt-summary { background: var(--dark); color: white; padding: 20px; border-radius: var(--radius); text-align: right; margin-top: 15px; }
         .receipt-summary h3 { color: var(--secondary); font-size: 1.5rem; }
 
         /* Order Cards */
@@ -188,22 +188,17 @@
                     <div class="form-group"><label>Nomor WhatsApp</label><input type="tel" id="custWA" required></div>
                     <div class="form-group"><label>Nama Barang / Tipe Unit</label><input type="text" id="custDevice" required></div>
                     <div class="form-group"><label>Deskripsi Keluhan</label><textarea id="custProblem" rows="3"></textarea></div>
-                    <button type="button" onclick="submitOrderViaWhatsApp()"><i class="fab fa-whatsapp"></i> Kirim Pesanan Via WhatsApp</button>
+                    <button type="button" onclick="submitOrderViaWhatsApp()" style="width: 100%"><i class="fab fa-whatsapp"></i> Kirim Pesanan Via WhatsApp</button>
                 </form>
             </div>
 
-            <!-- Customer WA ke Admin -->
             <div class="card">
                 <div class="card-header"><h2><i class="fab fa-whatsapp"></i> Ada Pertanyaan? Hubungi Kami!</h2></div>
-                <p style="margin-bottom: 15px; font-size: 0.9rem; color: var(--gray);">
-                    Jika Anda memiliki pertanyaan lebih lanjut, ingin mengecek status servis, atau ada hal lain yang ingin disampaikan, jangan ragu untuk menghubungi admin kami.
-                </p>
+                <p style="margin-bottom: 15px; font-size: 0.9rem; color: var(--gray);">Hubungi admin kami untuk pertanyaan lebih lanjut atau pengecekan status.</p>
                 <button class="btn-wa" onclick="sendWhatsAppToAdmin()">
                     <i class="fab fa-whatsapp"></i> Chat Admin Sekarang
                 </button>
             </div>
-            <!-- END NEW -->
-
         </div>
 
         <!-- ADMIN PANEL -->
@@ -216,17 +211,16 @@
                     <div class="form-group"><label>Nama Admin</label><input type="text" id="loginAdminName" required></div>
                     <div class="form-group"><label>Password</label><input type="password" id="loginAdminPass" required></div>
                     <button onclick="loginAdmin()" style="width:100%"><i class="fas fa-sign-in-alt"></i> Masuk</button>
-                    <!-- Register form removed for simplicity based on previous interaction, focusing on existing admin login -->
-                    <!-- <div class="auth-footer">Belum punya akun? <a href="#" onclick="toggleAuth(true)">Daftar Admin</a></div> -->
+                    <div class="auth-footer">Belum punya akun? <a href="#" onclick="toggleAuth(true)">Daftar Admin</a></div>
                 </div>
 
-                <!-- Register Form (kept for functionality, but not displayed by default) -->
+                <!-- Register Form -->
                 <div id="register-box" class="card" style="display: none;">
                     <div class="card-header"><h2><i class="fas fa-user-plus"></i> Daftar Admin</h2></div>
-                    <div class="form-group"><label>Nama Lengkap</label><input type="text" id="regName"></div>
-                    <div class="form-group"><label>Nomor WA</label><input type="text" id="regWA"></div>
-                    <div class="form-group"><label>Password</label><input type="password" id="regPass"></div>
-                    <div class="form-group"><label>Kode Otorisasi Khusus</label><input type="text" id="regCode" placeholder="Minta ke Super Admin"></div>
+                    <div class="form-group"><label>Nama Lengkap</label><input type="text" id="regName" required></div>
+                    <div class="form-group"><label>Nomor WhatsApp</label><input type="tel" id="regWA" required></div>
+                    <div class="form-group"><label>Password</label><input type="password" id="regPass" required></div>
+                    <div class="form-group"><label>Kode Otorisasi Khusus</label><input type="text" id="regCode" placeholder="Minta ke Super Admin" required></div>
                     <button onclick="registerAdmin()" class="btn-success" style="width:100%"><i class="fas fa-save"></i> Daftarkan</button>
                     <div class="auth-footer">Sudah punya akun? <a href="#" onclick="toggleAuth(false)">Login Sekarang</a></div>
                 </div>
@@ -244,7 +238,7 @@
                     <div class="card-header"><h2><i class="fas fa-file-invoice"></i> Buat Struk Pembayaran</h2></div>
                     <div class="form-group"><label>Nama Pelanggan</label><input type="text" id="sNama" required></div>
                     <div class="form-group"><label>Unit Servis</label><input type="text" id="sBarang" required></div>
-                    <div class="form-group"><label>Masa Garansi</label><input type="text" id="sGaransi" placeholder="Contoh: 30 Hari / 1 Bulan"></div>
+                    <div class="form-group"><label>Masa Garansi</label><input type="text" id="sGaransi" placeholder="Contoh: 30 Hari"></div>
                     <div id="receipt-items-container" style="border-top:1px solid #eee; padding-top:15px">
                         <label>Item & Biaya</label>
                         <div class="receipt-row-item">
@@ -266,22 +260,6 @@
                     <div class="card-header"><h2><i class="fas fa-history"></i> History Pesanan</h2></div>
                     <div id="admin-order-list"></div>
                 </div>
-
-                <!-- Pengumuman -->
-                <div class="card">
-                    <div class="card-header"><h2><i class="fas fa-bullhorn"></i> Kelola Pengumuman</h2></div>
-                    <div class="form-group"><input type="text" id="annText" placeholder="Ketik info..."></div>
-                    <button onclick="addAnnouncement()">Kirim</button>
-                    <div id="admin-ann-list" style="margin-top:15px"></div>
-                </div>
-
-                <!-- Katalog -->
-                <div class="card">
-                    <div class="card-header"><h2><i class="fas fa-screwdriver-wrench"></i> Kelola Katalog Layanan</h2></div>
-                    <div class="form-group"><input type="text" id="itemRepairName" placeholder="Nama layanan..."></div>
-                    <button onclick="addRepairItem()">Tambah</button>
-                    <div id="admin-item-list" style="margin-top:15px"></div>
-                </div>
             </div>
         </div>
 
@@ -292,19 +270,16 @@
                 <p><i class="fas fa-map-marker-alt"></i> Mall Tekno Blok A-12</p>
                 <p><i class="fas fa-phone"></i> 0899-1286-742</p>
             </div>
-            <div class="card">
-                <h3>Monitor Riwayat</h3>
-                <div id="cust-history" style="font-size: 0.85rem; color: var(--gray);">Belum ada antrean perbaikan.</div>
-            </div>
+            <!-- Fitur "Monitor Riwayat" telah dihapus -->
         </div>
     </div>
 </div>
 
-<!-- PRINT AREA (DIDESAIN ULANG) -->
+<!-- PRINT AREA -->
 <div id="printArea">
     <div style="text-align:center;">
-        <div class="header-text">PRO-TECH SERVICE</div>
-        <div class="small-text">Mall Tekno Blok A-12 | WA: 0899-1286-742</div>
+        <div style="font-size: 14px; font-weight: bold;">PRO-TECH SERVICE</div>
+        <div style="font-size: 11px;">Mall Tekno Blok A-12 | WA: 0899-1286-742</div>
     </div>
     <div class="divider"></div>
     <table>
@@ -315,19 +290,13 @@
         <tr><td>Garansi</td><td>: <span id="pGaransi"></span></td></tr>
     </table>
     <div class="divider"></div>
-    <table>
-        <thead>
-            <tr><th style="text-align:left;">Item</th><th style="text-align:right;">Subtotal</th></tr>
-        </thead>
-        <tbody id="pItemsBody">
-            <!-- Item-item struk akan di-generate di sini -->
-        </tbody>
+    <table id="pItemsTable">
+        <thead><tr><th style="text-align:left;">Item</th><th style="text-align:right;">Subtotal</th></tr></thead>
+        <tbody id="pItemsBody"></tbody>
     </table>
     <div class="divider"></div>
-    <div class="total-section">
-        <h3>TOTAL: Rp <span id="pTotal"></span></h3>
-    </div>
-    <div class="footer-note">
+    <div class="total-section"><h3>TOTAL: Rp <span id="pTotal"></span></h3></div>
+    <div style="font-size: 10px; text-align: center; margin-top: 15px;">
         <p>Terima kasih telah mempercayai kami.</p>
         <p>Barang yang sudah diservis harap dicek kembali.</p>
     </div>
@@ -338,30 +307,28 @@
 <script>
     // Kode Otorisasi Khusus (Hanya diketahui pemilik)
     const SUPER_SECURE_CODE = "PRO-TECH-ADMIN-SECURE-99X#-2024";
-    // Nomor WhatsApp Admin untuk pelanggan menghubungi
-    const ADMIN_CONTACT_WA = "628991286742"; // UPDATED ADMIN WHATSAPP NUMBER
+    // Nomor WhatsApp Admin untuk pelanggan menghubungi (nomor bisnis utama)
+    const ADMIN_CONTACT_WA = "628991286742"; 
 
     let announcements = JSON.parse(localStorage.getItem('announcements')) || [];
     let repairItems = JSON.parse(localStorage.getItem('repairItems')) || ['Smartphone', 'Laptop', 'TV'];
     let orders = JSON.parse(localStorage.getItem('orders')) || [];
-    let admins = JSON.parse(localStorage.getItem('registered_admins')) || [
-        { name: "Andi", phone: "628991286742", password: "admin123" } // Contoh admin default
-    ]; // Ditambahkan admin default untuk demo
     
-    // Variabel untuk menyimpan sesi login admin
+    // Admin default untuk pengujian awal
+    let admins = JSON.parse(localStorage.getItem('registered_admins')) || [
+        { name: "Andi", password: "admin123", phone: "6281234567890" } // Contoh admin: nama, password, dan nomor WA pribadi (opsional)
+    ]; 
+    
     let loggedInAdmin = JSON.parse(localStorage.getItem('loggedInAdmin')) || null;
 
     // --- CLOCK & TOAST ---
-    function updateClock() {
-        document.getElementById('clock').innerHTML = `<i class="far fa-clock"></i> ${new Date().toLocaleString('id-ID')}`;
-    }
+    function updateClock() { document.getElementById('clock').innerHTML = `<i class="far fa-clock"></i> ${new Date().toLocaleString('id-ID')}`; }
     setInterval(updateClock, 1000);
     updateClock();
 
     function showToast(msg) {
         const t = document.getElementById('toast');
-        t.textContent = msg;
-        t.classList.add('show');
+        t.textContent = msg; t.classList.add('show');
         setTimeout(() => t.classList.remove('show'), 3000);
     }
 
@@ -371,7 +338,6 @@
         document.getElementById('register-box').style.display = isRegister ? 'block' : 'none';
     }
 
-    // Hanya untuk registrasi admin baru (opsional, karena fokus ke login nama admin)
     function registerAdmin() {
         const name = document.getElementById('regName').value.trim();
         const wa = document.getElementById('regWA').value.trim();
@@ -380,10 +346,10 @@
 
         if(!name || !wa || !pass || !code) return alert("Semua kolom harus diisi!");
         if(code !== SUPER_SECURE_CODE) return alert("KODE OTORISASI SALAH! Anda tidak berhak mendaftar.");
-        if(admins.find(a => a.name === name)) return alert("Nama Admin sudah terdaftar!"); // Cek berdasarkan nama
+        if(admins.find(a => a.name === name)) return alert("Nama Admin sudah terdaftar!");
         if(admins.find(a => a.phone === wa)) return alert("Nomor WA sudah terdaftar!");
 
-        const newAdmin = { name, phone: wa, password: pass };
+        const newAdmin = { name, password: pass, phone: wa };
         admins.push(newAdmin);
         localStorage.setItem('registered_admins', JSON.stringify(admins));
         
@@ -392,7 +358,7 @@
         document.getElementById('regWA').value = '';
         document.getElementById('regPass').value = '';
         document.getElementById('regCode').value = '';
-        toggleAuth(false);
+        toggleAuth(false); // Kembali ke form login
     }
 
     function loginAdmin() {
@@ -403,12 +369,7 @@
         if(user) {
             loggedInAdmin = { name: user.name, phone: user.phone }; // Simpan nama dan phone admin
             localStorage.setItem('loggedInAdmin', JSON.stringify(loggedInAdmin));
-            
-            document.getElementById('admin-auth').style.display = 'none';
-            document.getElementById('admin-dashboard').style.display = 'block';
-            document.getElementById('activeAdminName').textContent = user.name;
-            showToast("Selamat Datang, " + user.name);
-            renderOrders();
+            location.reload(); // Reload untuk menginisialisasi dashboard dengan status login
         } else {
             alert("Nama Admin atau Password salah!");
         }
@@ -417,12 +378,7 @@
     function logout() {
         loggedInAdmin = null;
         localStorage.removeItem('loggedInAdmin');
-        
-        // Hapus juga admin dari daftar registered_admins jika diperlukan (opsional)
-        // admins = admins.filter(a => a.name !== loggedInAdmin.name);
-        // localStorage.setItem('registered_admins', JSON.stringify(admins));
-
-        location.reload(); // Reload halaman untuk kembali ke tampilan awal/login
+        location.reload(); // Reload halaman untuk kembali ke tampilan login
     }
 
     // --- DYNAMIC STRUK ---
@@ -443,7 +399,7 @@
     function printReceipt() {
         const namaPelanggan = document.getElementById('sNama').value.trim();
         const unitServis = document.getElementById('sBarang').value.trim();
-        const masaGaransi = document.getElementById('sGaransi').value.trim() || "-"; // Ambil nilai garansi
+        const masaGaransi = document.getElementById('sGaransi').value.trim() || "-";
 
         if(!namaPelanggan || !unitServis) return alert("Isi nama pelanggan & unit!");
         if(!loggedInAdmin) return alert("Harap login sebagai Admin untuk mencetak struk.");
@@ -453,7 +409,7 @@
         document.getElementById('pAdmin').textContent = loggedInAdmin.name; // Nama admin yang sedang login
         document.getElementById('pNama').textContent = namaPelanggan;
         document.getElementById('pBarang').textContent = unitServis;
-        document.getElementById('pGaransi').textContent = masaGaransi; // Set garansi
+        document.getElementById('pGaransi').textContent = masaGaransi;
         document.getElementById('pTotal').textContent = document.getElementById('sTotal').textContent;
 
         const pItemsBody = document.getElementById('pItemsBody');
@@ -475,7 +431,6 @@
     }
 
     // --- CORE LOGIC (ORDERS, ANN, REPAIR) ---
-    // Function for customer to submit order via WhatsApp
     function submitOrderViaWhatsApp() {
         const name = document.getElementById('custName').value.trim();
         const wa = document.getElementById('custWA').value.trim();
@@ -487,7 +442,6 @@
             return;
         }
 
-        // 1. Construct WhatsApp message for Admin
         let adminPhone = ADMIN_CONTACT_WA;
         const waMessage = encodeURIComponent(
             `*PESANAN SERVIS BARU VIA CUSTOMER APP*\n\n` +
@@ -499,24 +453,16 @@
         );
         window.open(`https://wa.me/${adminPhone}?text=${waMessage}`, '_blank');
 
-        // 2. Save order to local storage (for Admin Dashboard History)
         const newOrder = {
-            id: Date.now(),
-            name: name,
-            wa: wa,
-            device: device,
-            problem: problem,
-            time: new Date().toLocaleString(),
-            status: 'Pending' // Initial status for new WhatsApp orders
+            id: Date.now(), name: name, wa: wa, device: device,
+            problem: problem, time: new Date().toLocaleString(), status: 'Pending'
         };
-        orders.unshift(newOrder); // unshift to add to the beginning of the array (newest first)
+        orders.unshift(newOrder);
         localStorage.setItem('orders', JSON.stringify(orders));
 
         showToast("Pesanan Anda telah dikirim via WhatsApp dan tercatat di sistem!");
-        // Reset form fields
         document.getElementById('orderForm').reset();
-        renderOrders(); // Re-render admin dashboard orders
-        renderCustHistory(); // Update customer's history display
+        renderOrders();
     }
 
     function renderOrders() {
@@ -549,7 +495,6 @@
         });
     }
 
-    // Update Order Status & Send WhatsApp Notification
     function updateOrderStatus(id, newStatus) {
         let orderIndex = orders.findIndex(o => o.id === id);
         if (orderIndex !== -1) {
@@ -557,32 +502,22 @@
             localStorage.setItem('orders', JSON.stringify(orders));
             showToast(`Status pesanan ${orders[orderIndex].name} diubah menjadi ${newStatus}`);
             sendWhatsappStatusUpdate(orders[orderIndex].wa, orders[orderIndex].name, orders[orderIndex].device, newStatus);
-            renderOrders(); // Re-render to update badges and buttons
+            renderOrders();
         }
     }
 
     function sendWhatsappStatusUpdate(phone, name, device, status) {
         let formattedPhone = phone.startsWith('0') ? '62' + phone.slice(1) : phone;
         let message = "";
-
         switch (status) {
-            case 'Received':
-                message = `Halo Bpk/Ibu ${name},\n\nPesanan servis unit *${device}* Anda telah kami *terima* di sistem Pro-Tech. Teknisi kami akan segera melakukan pemeriksaan dan diagnosa.\n\nTerima kasih atas kepercayaan Anda!`;
-                break;
-            case 'Processing':
-                message = `Halo Bpk/Ibu ${name},\n\nUnit *${device}* Anda saat ini sedang dalam *proses pengerjaan* oleh teknisi kami. Kami akan segera mengabari Anda jika perbaikan telah selesai.\n\nTerima kasih atas kesabaran Anda.`;
-                break;
-            case 'Completed':
-                message = `Halo Bpk/Ibu ${name},\n\nKabar gembira! Unit *${device}* Anda telah *selesai diperbaiki* dan siap untuk diambil. Mohon konfirmasi jadwal pengambilan.\n\nTerima kasih telah menggunakan jasa Pro-Tech.`;
-                break;
-            default: // Fallback for 'Pending' or other statuses if needed
-                message = `Halo Bpk/Ibu ${name},\n\nAda pembaruan status untuk unit *${device}* Anda di Pro-Tech. Status terbaru: *${status}*. Mohon cek aplikasi atau hubungi admin untuk detail lebih lanjut.`;
-                break;
+            case 'Received': message = `Halo Bpk/Ibu ${name},\n\nPesanan servis unit *${device}* Anda telah kami *terima* di sistem Pro-Tech. Teknisi kami akan segera melakukan pemeriksaan dan diagnosa.\n\nTerima kasih atas kepercayaan Anda!`; break;
+            case 'Processing': message = `Halo Bpk/Ibu ${name},\n\nUnit *${device}* Anda saat ini sedang dalam *proses pengerjaan* oleh teknisi kami. Kami akan segera mengabari Anda jika perbaikan telah selesai.\n\nTerima kasih atas kesabaran Anda.`; break;
+            case 'Completed': message = `Halo Bpk/Ibu ${name},\n\nKabar gembira! Unit *${device}* Anda telah *selesai diperbaiki* dan siap untuk diambil. Mohon konfirmasi jadwal pengambilan.\n\nTerima kasih telah menggunakan jasa Pro-Tech.`; break;
+            default: message = `Halo Bpk/Ibu ${name},\n\nAda pembaruan status untuk unit *${device}* Anda di Pro-Tech. Status terbaru: *${status}*. Mohon cek aplikasi atau hubungi admin untuk detail lebih lanjut.`; break;
         }
         window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`, '_blank');
     }
 
-    // Customer Send WA to Admin (for general inquiries)
     function sendWhatsAppToAdmin() {
         let adminPhone = ADMIN_CONTACT_WA;
         const customerName = document.getElementById('custName').value || 'Pelanggan Pro-Tech'; 
@@ -590,54 +525,21 @@
         window.open(`https://wa.me/${adminPhone}?text=${message}`, '_blank');
     }
 
-    function deleteOrder(id) { orders = orders.filter(o => o.id !== id); localStorage.setItem('orders', JSON.stringify(orders)); renderOrders(); renderCustHistory(); }
+    function deleteOrder(id) { orders = orders.filter(o => o.id !== id); localStorage.setItem('orders', JSON.stringify(orders)); renderOrders(); }
     
-    function renderCustHistory() { 
-        // Display only active (non-completed) orders for customer view
-        const activeOrders = orders.filter(o => o.status !== 'Completed');
-        document.getElementById('cust-history').innerHTML = activeOrders.length ? `Terdeteksi <b>${activeOrders.length}</b> Unit sedang dalam proses penanganan teknisi.` : 'Antrean kosong.'; 
+    function renderRepairItems() {
+        const cl = document.getElementById('cust-service-list'); cl.innerHTML = '';
+        repairItems.forEach(it => cl.innerHTML += `<div class="badge-service">${it}</div>`);
     }
-
-    function addAnnouncement() { 
-        const txt = document.getElementById('annText').value; 
-        if(!txt) return; announcements.push({ id: Date.now(), text: txt, status: 'on' }); 
-        localStorage.setItem('announcements', JSON.stringify(announcements)); 
-        document.getElementById('annText').value = ''; 
-        renderAdminAnn(); renderNotif(); 
-    }
-
-    function renderAdminAnn() {
-        const c = document.getElementById('admin-ann-list'); c.innerHTML = '';
-        announcements.forEach(a => c.innerHTML += `<div class="list-item"><span>${a.text}</span><button class="btn-sm btn-danger" onclick="deleteAnn(${a.id})">X</button></div>`);
-    }
-
-    function deleteAnn(id) { announcements = announcements.filter(a => a.id !== id); localStorage.setItem('announcements', JSON.stringify(announcements)); renderAdminAnn(); renderNotif(); }
 
     function renderNotif() {
         const l = document.getElementById('notifList');
-        const activeAnn = announcements.filter(a => a.status === 'on'); // Only show active announcements
+        const activeAnn = announcements.filter(a => a.status === 'on');
         document.getElementById('notifCount').textContent = activeAnn.length;
         
         l.innerHTML = activeAnn.length ? '' : '<p style="font-size:0.8rem; color:var(--gray); text-align:center;">Tidak ada pengumuman saat ini.</p>';
         activeAnn.forEach(a => l.innerHTML += `<div class="notif-item"><b>Info:</b> ${a.text}</div>`);
     }
-
-    function addRepairItem() {
-        const n = document.getElementById('itemRepairName').value; if(!n) return;
-        repairItems.push(n); localStorage.setItem('repairItems', JSON.stringify(repairItems));
-        document.getElementById('itemRepairName').value = ''; renderRepairItems();
-    }
-
-    function renderRepairItems() {
-        const al = document.getElementById('admin-item-list'); const cl = document.getElementById('cust-service-list');
-        al.innerHTML = ''; cl.innerHTML = '';
-        repairItems.forEach((it, i) => {
-            al.innerHTML += `<div class="list-item"><span>${it}</span><button class="btn-sm btn-danger" onclick="deleteRepairItem(${i})">X</button></div>`;
-            cl.innerHTML += `<div class="badge-service">${it}</div>`;
-        });
-    }
-
-    function deleteRepairItem(i) { repairItems.splice(i, 1); localStorage.setItem('repairItems', JSON.stringify(repairItems)); renderRepairItems(); }
 
     // --- INIT ---
     document.getElementById('nav-cust').onclick = () => { 
@@ -653,15 +555,15 @@
         document.getElementById('nav-admin').classList.add('active'); 
         document.getElementById('nav-cust').classList.remove('active'); 
         
-        // Cek sesi login admin saat beralih ke panel admin
         if (loggedInAdmin) {
             document.getElementById('admin-auth').style.display = 'none';
             document.getElementById('admin-dashboard').style.display = 'block';
             document.getElementById('activeAdminName').textContent = loggedInAdmin.name;
-            renderOrders(); // Render orders jika sudah login
+            renderOrders();
         } else {
             document.getElementById('admin-auth').style.display = 'block';
             document.getElementById('admin-dashboard').style.display = 'none';
+            toggleAuth(false); // Pastikan menampilkan form login secara default
         }
     };
 
@@ -671,22 +573,23 @@
     window.onload = () => { 
         updateClock();
         renderNotif(); 
-        renderAdminAnn(); 
         renderRepairItems(); 
         renderOrders(); 
-        renderCustHistory(); 
 
-        // Auto-login admin jika ada sesi tersimpan
         if (loggedInAdmin) {
-            // Langsung tampilkan dashboard jika admin sudah login
-            document.getElementById('panel-cust').style.display = 'none'; // Pastikan panel customer tersembunyi
-            document.getElementById('panel-admin').style.display = 'block'; // Tampilkan panel admin
-            document.getElementById('nav-admin').classList.add('active'); // Aktifkan tombol nav admin
-            document.getElementById('nav-cust').classList.remove('active'); // Non-aktifkan tombol nav customer
+            // Jika admin sudah login, langsung tampilkan dashboard admin
+            document.getElementById('panel-cust').style.display = 'none';
+            document.getElementById('panel-admin').style.display = 'block';
+            document.getElementById('nav-admin').classList.add('active');
+            document.getElementById('nav-cust').classList.remove('active');
             document.getElementById('admin-auth').style.display = 'none';
             document.getElementById('admin-dashboard').style.display = 'block';
             document.getElementById('activeAdminName').textContent = loggedInAdmin.name;
-            renderOrders();
+        } else {
+            // Jika admin belum login, pastikan panel admin menampilkan form login
+            document.getElementById('panel-admin').style.display = 'none'; // Default ke customer
+            document.getElementById('admin-auth').style.display = 'block'; // Sembunyikan dashboard
+            toggleAuth(false); // Pastikan form login yang tampil
         }
     };
 </script>
