@@ -54,7 +54,7 @@
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem; }
         input, textarea, select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: #f8fafc; }
-        input:focus, textarea:focus { outline: none; border-color: var(--primary); background: white; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary); background: white; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); }
         
         button { padding: 12px 24px; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; transition: 0.2s; background: var(--primary); color: white; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
         button:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2); }
@@ -127,6 +127,32 @@
         /* Sidebar */
         .badge-service { background: #e0f2fe; color: #0369a1; padding: 8px 15px; border-radius: 12px; font-size: 0.8rem; font-weight: 700; border: 1px solid #bae6fd; }
 
+        /* ===== CSS FITUR PENGATURAN TAMPILAN ===== */
+        .theme-section-title {
+            font-weight: 700;
+            margin: 15px 0 10px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            font-size: 0.95rem;
+        }
+        .theme-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .color-presets { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+        .color-preset {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 4px solid white;
+            padding: 0;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: 0.2s;
+        }
+        .color-preset:hover { transform: scale(1.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        .color-preset.active { border-color: var(--dark); box-shadow: 0 0 0 3px rgba(79,70,229,0.3); transform: scale(1.05); }
+        .theme-info-box { background: #f1f5f9; padding: 12px 15px; border-radius: 12px; border-left: 4px solid var(--primary); font-size: 0.9rem; color: var(--gray); margin-top: 10px; }
+
         /* CSS KHUSUS CETAK (PRINT) */
         #printArea { display: none; }
         @media print {
@@ -135,9 +161,9 @@
             #printArea { 
                 position: absolute; left: 0; top: 0; width: 100%; 
                 display: block; 
-                font-family: 'Courier New', Courier, monospace; /* Font Monospace untuk kesan struk */
-                font-size: 12px; /* Ukuran font lebih kecil */
-                padding: 15px; /* Padding lebih kecil */
+                font-family: 'Courier New', Courier, monospace;
+                font-size: 12px;
+                padding: 15px;
                 color: #000;
                 line-height: 1.4;
             }
@@ -149,8 +175,6 @@
             #printArea .total-section { text-align: right; margin-top: 10px; }
             #printArea .total-section h3 { font-size: 16px; margin: 0; padding: 0; }
             #printArea .footer-note { font-size: 10px; text-align: center; margin-top: 15px; }
-
-            /* Hide scrollbars during print */
             body { overflow: hidden; }
         }
 
@@ -159,6 +183,7 @@
             .header-content { flex-direction: column; height: auto; padding: 10px; }
             .service-item { flex-direction: column; }
             .service-item-actions { width: 100%; justify-content: flex-end; }
+            .theme-row { grid-template-columns: 1fr; }
         }
         
         .notification { position: fixed; bottom: 20px; right: 20px; padding: 15px 25px; border-radius: 12px; background: var(--dark); color: white; transform: translateY(200%); transition: 0.3s; z-index: 999; }
@@ -254,6 +279,96 @@
                     <p>Selamat Datang, <b id="activeAdminName">Admin</b></p>
                 </div>
 
+                <!-- ===== PENGATURAN TAMPILAN ===== -->
+                <div class="card" id="themeSettingsCard">
+                    <div class="card-header">
+                        <h2><i class="fas fa-palette"></i> Pengaturan Tampilan</h2>
+                    </div>
+                    <form id="themeForm" onsubmit="event.preventDefault(); saveThemeSettings();">
+                        <div class="form-group">
+                            <label>Mode Warna</label>
+                            <select id="themeMode" onchange="handleThemeModeChange()">
+                                <option value="manual">Manual – Atur Sendiri</option>
+                                <option value="auto">Otomatis – Siang/Malam</option>
+                            </select>
+                        </div>
+
+                        <!-- Panel Manual -->
+                        <div id="themeManualSettings">
+                            <div class="form-group">
+                                <label>Warna Utama Aplikasi</label>
+                                <div class="color-presets" id="manualPrimary"></div>
+                            </div>
+                            <div class="form-group">
+                                <label>Background Halaman</label>
+                                <select id="manualBg">
+                                    <option value="light">☀️ Terang & Lembut (Default)</option>
+                                    <option value="dark">🌙 Gelap (Dark)</option>
+                                    <option value="gradient-primary">🌈 Gradasi Sesuai Warna Utama</option>
+                                    <option value="gradient-blue-purple">💠 Gradasi Biru-Ungu</option>
+                                    <option value="gradient-cyan-blue">🌊 Gradasi Cyan-Biru</option>
+                                    <option value="gradient-green">💚 Gradasi Hijau</option>
+                                    <option value="gradient-red">❤️ Gradasi Merah</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Panel Otomatis -->
+                        <div id="themeAutoSettings" style="display:none;">
+                            <div class="theme-info-box">
+                                <i class="fas fa-clock"></i> Mode ini akan otomatis berganti warna antara tema siang dan malam.
+                            </div>
+
+                            <div class="theme-section-title">
+                                <i class="fas fa-sun" style="margin-right:8px;"></i> Tema Siang (06.00 – 17.59)
+                            </div>
+                            <div class="theme-row">
+                                <div class="form-group">
+                                    <label>Warna Utama Siang</label>
+                                    <div class="color-presets" id="autoDayPrimary"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Background Siang</label>
+                                    <select id="autoDayBg">
+                                        <option value="light">☀️ Terang & Lembut</option>
+                                        <option value="gradient-primary">🌈 Gradasi Sesuai Warna Utama</option>
+                                        <option value="gradient-blue-purple">💠 Gradasi Biru-Ungu</option>
+                                        <option value="gradient-cyan-blue">🌊 Gradasi Cyan-Biru</option>
+                                        <option value="gradient-green">💚 Gradasi Hijau</option>
+                                        <option value="gradient-red">❤️ Gradasi Merah</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="theme-section-title">
+                                <i class="fas fa-moon" style="margin-right:8px;"></i> Tema Malam (18.00 – 05.59)
+                            </div>
+                            <div class="theme-row">
+                                <div class="form-group">
+                                    <label>Warna Utama Malam</label>
+                                    <div class="color-presets" id="autoNightPrimary"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Background Malam</label>
+                                    <select id="autoNightBg">
+                                        <option value="dark">🌙 Gelap (Dark)</option>
+                                        <option value="gradient-primary">🌈 Gradasi Sesuai Warna Utama</option>
+                                        <option value="gradient-blue-purple">💠 Gradasi Biru-Ungu</option>
+                                        <option value="gradient-cyan-blue">🌊 Gradasi Cyan-Biru</option>
+                                        <option value="gradient-green">💚 Gradasi Hijau</option>
+                                        <option value="gradient-red">❤️ Gradasi Merah</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top:15px;">
+                            <button type="submit" class="btn-success"><i class="fas fa-save"></i> Simpan Pengaturan</button>
+                            <button type="button" class="btn-outline" onclick="resetThemeSettings()"><i class="fas fa-undo-alt"></i> Reset Default</button>
+                        </div>
+                    </form>
+                </div>
+
                 <!-- Struk Multi Item -->
                 <div class="card">
                     <div class="card-header"><h2><i class="fas fa-file-invoice"></i> Buat Struk Pembayaran</h2></div>
@@ -335,7 +450,7 @@
         <div class="sidebar">
             <div class="card">
                 <h3>Info Toko</h3>
-                <p><i class="fas fa-map-marker-alt"></i>Blok krasag Rt 001 Rw 001 Ds Gamel Kec Plered Kab Cirebon. a'didin</p>
+                <p><i class="fas fa-map-marker-alt"></i> Blok Krasag, Gamel, Plered, Cirebon</p>
                 <p><i class="fas fa-phone"></i> 0899-1286-742</p>
             </div>
         </div>
@@ -346,7 +461,7 @@
 <div id="printArea">
     <div style="text-align:center;">
         <div style="font-size: 14px; font-weight: bold;">PRO-TECH SERVICE</div>
-        <div style="font-size: 11px;">Mall Tekno Blok A-12 | WA: 0899-1286-742</div>
+        <div style="font-size: 11px;">Blok Krasag, Gamel, Plered | WA: 0899-1286-742</div>
     </div>
     <div class="divider"></div>
     <table>
@@ -372,36 +487,64 @@
 <div class="notification" id="toast">Notifikasi</div>
 
 <script>
-    // ====== KONFIGURASI ======
-    // Kode Otorisasi Khusus (Hanya diketahui pemilik)
+    // ====== KONFIGURASI DASAR ======
     const SUPER_SECURE_CODE = "PRO-TECH-ADMIN-SECURE-99X#-2024";
-    // Nomor WhatsApp Admin untuk pelanggan menghubungi (nomor bisnis utama)
     const ADMIN_CONTACT_WA = "628991286742";
 
     // ====== DATA STORAGE ======
     let announcements = JSON.parse(localStorage.getItem('announcements')) || [];
-    let currentEditingAnnId = null; // Untuk proses edit pengumuman
-    
+    let currentEditingAnnId = null;
+
     let repairItems = JSON.parse(localStorage.getItem('repairItems')) || [];
-    let currentEditingServiceIndex = null; // Untuk proses edit layanan
-    
+    let currentEditingServiceIndex = null;
+
     let orders = JSON.parse(localStorage.getItem('orders')) || [];
-    
-    // Admin default untuk pengujian awal
+
     let admins = JSON.parse(localStorage.getItem('registered_admins')) || [
         { name: "Andi", password: "admin123", phone: "6281234567890" }
     ];
-    
+
     let loggedInAdmin = JSON.parse(localStorage.getItem('loggedInAdmin')) || null;
 
+    // ====== PENGATURAN TEMA / TAMPILAN ======
+    const themeColors = [
+        { name: "Indigo", main: "#4f46e5", dark: "#3730a3", secondary: "#06b6d4" },
+        { name: "Biru", main: "#2563eb", dark: "#1e40af", secondary: "#0ea5e9" },
+        { name: "Toska", main: "#0d9488", dark: "#0f766e", secondary: "#14b8a6" },
+        { name: "Hijau", main: "#10b981", dark: "#047857", secondary: "#34d399" },
+        { name: "Orange", main: "#f59e0b", dark: "#b45309", secondary: "#fbbf24" },
+        { name: "Merah", main: "#ef4444", dark: "#991b1b", secondary: "#f87171" },
+        { name: "Pink", main: "#ec4899", dark: "#be185d", secondary: "#f472b6" },
+        { name: "Ungu", main: "#8b5cf6", dark: "#6d28d9", secondary: "#a78bfa" }
+    ];
+
+    function getDefaultThemeSettings() {
+        return {
+            mode: "manual",
+            primary: "#4f46e5",
+            background: "light",
+            autoDayPrimary: "#4f46e5",
+            autoDayBackground: "light",
+            autoNightPrimary: "#06b6d4",
+            autoNightBackground: "dark"
+        };
+    }
+
+    let themeSettings = JSON.parse(localStorage.getItem('protechThemeSettings')) || getDefaultThemeSettings();
+    let lastAppliedThemeSlot = '';
+
     // ====== CLOCK & TOAST ======
-    function updateClock() { document.getElementById('clock').innerHTML = `<i class="far fa-clock"></i> ${new Date().toLocaleString('id-ID')}`; }
+    function updateClock() {
+        document.getElementById('clock').innerHTML = `<i class="far fa-clock"></i> ${new Date().toLocaleString('id-ID')}`;
+        checkAutoThemeChange();
+    }
     setInterval(updateClock, 1000);
     updateClock();
 
     function showToast(msg) {
         const t = document.getElementById('toast');
-        t.textContent = msg; t.classList.add('show');
+        t.textContent = msg;
+        t.classList.add('show');
         setTimeout(() => t.classList.remove('show'), 3000);
     }
 
@@ -431,7 +574,7 @@
         document.getElementById('regWA').value = '';
         document.getElementById('regPass').value = '';
         document.getElementById('regCode').value = '';
-        toggleAuth(false); // Kembali ke form login
+        toggleAuth(false);
     }
 
     function loginAdmin() {
@@ -500,23 +643,17 @@
         }
 
         if (currentEditingServiceIndex !== null) {
-            // Mode Edit: perbarui data lama
             repairItems[currentEditingServiceIndex] = input;
             showToast("Layanan berhasil diperbarui!");
         } else {
-            // Mode Tambah Baru
             repairItems.push(input);
             showToast("Layanan berhasil ditambahkan!");
         }
 
-        // Simpan ke localStorage
         localStorage.setItem('repairItems', JSON.stringify(repairItems));
-        
-        // Reset form dan render ulang
         resetServiceForm();
         renderServiceList();
-        renderRepairItems(); // Untuk tampilan customer
-        renderNotif(); // Jika layanan muncul di notifikasi, bisa disesuaikan
+        renderRepairItems();
     }
 
     function editService(index) {
@@ -816,6 +953,202 @@
         activeAnn.forEach(a => l.innerHTML += `<div class="notif-item"><b>Info:</b> ${a.text}</div>`);
     }
 
+    // ====== PENGATURAN TEMA (BACKGROUND & WARNA) ======
+    function renderBackgroundOptions(selectId, selectedValue) {
+        const select = document.getElementById(selectId);
+        if (!select) return;
+
+        const options = globalBackgroundOptions(selectId);
+        select.innerHTML = '';
+        options.forEach(opt => {
+            const option = document.createElement('option');
+            option.value = opt.value;
+            option.textContent = opt.label;
+            if (opt.value === selectedValue) option.selected = true;
+            select.appendChild(option);
+        });
+    }
+
+    function globalBackgroundOptions(selectId) {
+        // Untuk manual: semua opsi tersedia
+        // Untuk auto: tidak menampilkan "dark" di siang? tapi tetap valid.
+        const allOptions = [
+            { value: "light", label: "☀️ Terang & Lembut" },
+            { value: "dark", label: "🌙 Gelap (Dark)" },
+            { value: "gradient-primary", label: "🌈 Gradasi Sesuai Warna Utama" },
+            { value: "gradient-blue-purple", label: "💠 Gradasi Biru-Ungu" },
+            { value: "gradient-cyan-blue", label: "🌊 Gradasi Cyan-Biru" },
+            { value: "gradient-green", label: "💚 Gradasi Hijau" },
+            { value: "gradient-red", label: "❤️ Gradasi Merah" }
+        ];
+
+        // Untuk siang: hide dark (supaya tetap terang)
+        if (selectId === 'autoDayBg') {
+            return allOptions.filter(opt => opt.value !== 'dark');
+        }
+        return allOptions;
+    }
+
+    function renderColorPicker(containerId, selectedColor) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        container.innerHTML = '';
+        let found = false;
+
+        themeColors.forEach(color => {
+            const chip = document.createElement('button');
+            chip.type = 'button';
+            chip.className = 'color-preset';
+            chip.style.background = color.main;
+            chip.dataset.color = color.main;
+            chip.title = color.name;
+
+            if (color.main.toLowerCase() === String(selectedColor).toLowerCase()) {
+                chip.classList.add('active');
+                found = true;
+            }
+
+            chip.onclick = () => {
+                container.querySelectorAll('.color-preset').forEach(el => el.classList.remove('active'));
+                chip.classList.add('active');
+            };
+            container.appendChild(chip);
+        });
+
+        // Jika tidak cocok, pilih warna pertama
+        if (!found && container.firstChild) {
+            container.firstChild.classList.add('active');
+        }
+    }
+
+    function handleThemeModeChange() {
+        const mode = document.getElementById('themeMode').value;
+        document.getElementById('themeManualSettings').style.display = mode === 'manual' ? 'block' : 'none';
+        document.getElementById('themeAutoSettings').style.display = mode === 'auto' ? 'block' : 'none';
+    }
+
+    function renderThemeSettingsForm() {
+        const mode = themeSettings.mode === 'auto' ? 'auto' : 'manual';
+        document.getElementById('themeMode').value = mode;
+
+        renderBackgroundOptions('manualBg', themeSettings.background || 'light');
+        renderBackgroundOptions('autoDayBg', themeSettings.autoDayBackground || 'light');
+        renderBackgroundOptions('autoNightBg', themeSettings.autoNightBackground || 'dark');
+
+        renderColorPicker('manualPrimary', themeSettings.primary || '#4f46e5');
+        renderColorPicker('autoDayPrimary', themeSettings.autoDayPrimary || '#4f46e5');
+        renderColorPicker('autoNightPrimary', themeSettings.autoNightPrimary || '#06b6d4');
+
+        handleThemeModeChange();
+    }
+
+    function getActiveColor(containerId) {
+        const active = document.querySelector(`#${containerId} .color-preset.active`);
+        return active ? active.dataset.color : '#4f46e5';
+    }
+
+    function saveThemeSettings() {
+        const mode = document.getElementById('themeMode').value;
+        let newSettings = { ...themeSettings };
+
+        if (mode === 'manual') {
+            newSettings.mode = 'manual';
+            newSettings.primary = getActiveColor('manualPrimary');
+            newSettings.background = document.getElementById('manualBg').value;
+        } else {
+            newSettings.mode = 'auto';
+            newSettings.autoDayPrimary = getActiveColor('autoDayPrimary');
+            newSettings.autoDayBackground = document.getElementById('autoDayBg').value;
+            newSettings.autoNightPrimary = getActiveColor('autoNightPrimary');
+            newSettings.autoNightBackground = document.getElementById('autoNightBg').value;
+        }
+
+        themeSettings = newSettings;
+        localStorage.setItem('protechThemeSettings', JSON.stringify(themeSettings));
+        applyThemeSettings(true);
+        showToast('Pengaturan tampilan berhasil disimpan!');
+    }
+
+    function resetThemeSettings() {
+        themeSettings = getDefaultThemeSettings();
+        localStorage.setItem('protechThemeSettings', JSON.stringify(themeSettings));
+        renderThemeSettingsForm();
+        applyThemeSettings(true);
+        showToast('Pengaturan tampilan di-reset ke default.');
+    }
+
+    function applyBackgroundStyle(bgStyle, primaryColor) {
+        const body = document.body;
+        const root = document.documentElement.style;
+        const color = themeColors.find(c => c.main === primaryColor) || themeColors[0];
+
+        // Set variabel warna utama
+        root.setProperty('--primary', color.main);
+        root.setProperty('--primary-dark', color.dark);
+        root.setProperty('--secondary', color.secondary);
+
+        if (bgStyle === 'light') {
+            body.style.background = '';
+            body.style.backgroundColor = '#f1f5f9';
+            body.style.backgroundImage = 'radial-gradient(at 0% 0%, rgba(79, 70, 229, 0.06) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.06) 0px, transparent 50%)';
+        } else if (bgStyle === 'dark') {
+            body.style.background = '';
+            body.style.backgroundColor = '#0f172a';
+            body.style.backgroundImage = 'radial-gradient(at 0% 0%, rgba(79, 70, 229, 0.12) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.12) 0px, transparent 50%)';
+        } else {
+            // Set semua properti background
+            body.style.backgroundColor = '';
+            body.style.backgroundImage = '';
+
+            const gradientMap = {
+                'gradient-primary': `linear-gradient(135deg, ${color.dark}, ${color.main}, ${color.secondary})`,
+                'gradient-blue-purple': 'linear-gradient(135deg, #3730a3, #4f46e5, #2563eb)',
+                'gradient-cyan-blue': 'linear-gradient(135deg, #155e75, #0e7490, #06b6d4)',
+                'gradient-green': 'linear-gradient(135deg, #064e3b, #059669, #34d399)',
+                'gradient-red': 'linear-gradient(135deg, #7f1d1d, #ef4444, #fbbf24)'
+            };
+
+            body.style.background = gradientMap[bgStyle] || gradientMap['gradient-primary'];
+        }
+    }
+
+    function applyThemeSettings(force = false) {
+        const s = themeSettings;
+        let activePrimary = s.primary || '#4f46e5';
+        let activeBg = s.background || 'light';
+
+        if (s.mode === 'auto') {
+            const hour = new Date().getHours();
+            const isDay = hour >= 6 && hour < 18;
+            const slot = isDay ? 'day' : 'night';
+
+            if (!force && slot === lastAppliedThemeSlot) return;
+
+            lastAppliedThemeSlot = slot;
+            activePrimary = isDay ? (s.autoDayPrimary || '#4f46e5') : (s.autoNightPrimary || '#06b6d4');
+            activeBg = isDay ? (s.autoDayBackground || 'light') : (s.autoNightBackground || 'dark');
+        }
+
+        applyBackgroundStyle(activeBg, activePrimary);
+
+        // Update badge waktu di header
+        const clock = document.getElementById('clock');
+        if (s.mode === 'auto') {
+            const hour = new Date().getHours();
+            const isDay = hour >= 6 && hour < 18;
+            clock.innerHTML = `<i class="far fa-clock"></i> ${new Date().toLocaleString('id-ID')} • ${isDay ? '☀️ Siang' : '🌙 Malam'}`;
+        } else {
+            clock.innerHTML = `<i class="far fa-clock"></i> ${new Date().toLocaleString('id-ID')} • Pengaturan Manual`;
+        }
+    }
+
+    function checkAutoThemeChange() {
+        if (themeSettings && themeSettings.mode === 'auto') {
+            applyThemeSettings();
+        }
+    }
+
     // ====== NAVIGASI & INITIALISASI ======
     document.getElementById('nav-cust').onclick = () => { 
         document.getElementById('panel-cust').style.display = 'block'; 
@@ -851,6 +1184,10 @@
     window.onclick = () => document.getElementById('notifDropdown').classList.remove('active');
 
     window.onload = () => { 
+        // Muat tema tersimpan
+        renderThemeSettingsForm();
+        applyThemeSettings(true);
+
         updateClock();
         renderNotif(); 
         renderRepairItems(); 
