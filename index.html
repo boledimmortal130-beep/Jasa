@@ -54,7 +54,7 @@
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem; }
         input, textarea, select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: #f8fafc; }
-        input:focus { outline: none; border-color: var(--primary); background: white; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); }
+        input:focus, textarea:focus { outline: none; border-color: var(--primary); background: white; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); }
         
         button { padding: 12px 24px; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; transition: 0.2s; background: var(--primary); color: white; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
         button:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2); }
@@ -63,6 +63,7 @@
         .btn-wa { background: #25d366; }
         .btn-outline { background: transparent; border: 1px dashed var(--gray); color: var(--gray); }
         .btn-sm { padding: 8px 12px; font-size: 0.8rem; border-radius: 8px; }
+        .btn-edit { background: #f59e0b; }
 
         /* Auth Helper */
         .auth-footer { text-align: center; margin-top: 15px; font-size: 0.9rem; }
@@ -108,6 +109,21 @@
         .status-processing { background-color: #fef9c3; color: #eab308; }
         .status-completed { background-color: #d1fae5; color: #065f46; }
 
+        /* Service Item List Admin */
+        .service-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--primary);
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            gap: 10px;
+        }
+        .service-item-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
         /* Sidebar */
         .badge-service { background: #e0f2fe; color: #0369a1; padding: 8px 15px; border-radius: 12px; font-size: 0.8rem; font-weight: 700; border: 1px solid #bae6fd; }
 
@@ -138,7 +154,12 @@
             body { overflow: hidden; }
         }
 
-        @media (max-width: 768px) { .main-content { grid-template-columns: 1fr; } .header-content { flex-direction: column; height: auto; padding: 10px; } }
+        @media (max-width: 768px) { 
+            .main-content { grid-template-columns: 1fr; } 
+            .header-content { flex-direction: column; height: auto; padding: 10px; }
+            .service-item { flex-direction: column; }
+            .service-item-actions { width: 100%; justify-content: flex-end; }
+        }
         
         .notification { position: fixed; bottom: 20px; right: 20px; padding: 15px 25px; border-radius: 12px; background: var(--dark); color: white; transform: translateY(200%); transition: 0.3s; z-index: 999; }
         .notification.show { transform: translateY(0); }
@@ -255,7 +276,35 @@
                     <button class="btn-success" onclick="printReceipt()" style="width:100%; margin-top:15px"><i class="fas fa-print"></i> Cetak Struk</button>
                 </div>
 
-                <!-- Pengumuman Management -->
+                <!-- FITUR BARU: KELOLA LAYANAN KAMI -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-tools"></i> Kelola Layanan Kami</h2>
+                    </div>
+                    
+                    <!-- Form Tambah / Edit Layanan -->
+                    <form id="serviceForm" onsubmit="event.preventDefault(); saveService();" style="border-bottom:1px solid var(--border); padding-bottom: 20px; margin-bottom: 20px;">
+                        <div class="form-group">
+                            <label for="serviceName">Nama Barang / Layanan</label>
+                            <input type="text" id="serviceName" placeholder="Contoh: Smartphone, Laptop, TV, AC, dll." required>
+                        </div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                            <button type="submit" id="serviceSaveBtn" class="btn-success">
+                                <i class="fas fa-save"></i> Tambah Layanan
+                            </button>
+                            <button type="button" class="btn-outline btn-sm" id="serviceCancelBtn" style="display:none;" onclick="resetServiceForm()">
+                                <i class="fas fa-times"></i> Batal Edit
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Daftar Layanan -->
+                    <h3 style="margin-bottom: 15px;"><i class="fas fa-list-alt"></i> Daftar Layanan / Barang</h3>
+                    <div id="serviceList" style="margin-top: 10px;"></div>
+                </div>
+                <!-- AKHIR FITUR BARU -->
+
+                <!-- Kelola Pengumuman -->
                 <div class="card">
                     <div class="card-header"><h2><i class="fas fa-bullhorn"></i> Kelola Pengumuman</h2></div>
                     <form id="announcementForm" onsubmit="event.preventDefault(); saveAnnouncement();">
@@ -289,7 +338,6 @@
                 <p><i class="fas fa-map-marker-alt"></i> Mall Tekno Blok A-12</p>
                 <p><i class="fas fa-phone"></i> 0899-1286-742</p>
             </div>
-            <!-- Fitur "Monitor Riwayat" telah dihapus -->
         </div>
     </div>
 </div>
@@ -324,24 +372,29 @@
 <div class="notification" id="toast">Notifikasi</div>
 
 <script>
+    // ====== KONFIGURASI ======
     // Kode Otorisasi Khusus (Hanya diketahui pemilik)
     const SUPER_SECURE_CODE = "PRO-TECH-ADMIN-SECURE-99X#-2024";
     // Nomor WhatsApp Admin untuk pelanggan menghubungi (nomor bisnis utama)
-    const ADMIN_CONTACT_WA = "628991286742"; 
+    const ADMIN_CONTACT_WA = "628991286742";
 
+    // ====== DATA STORAGE ======
     let announcements = JSON.parse(localStorage.getItem('announcements')) || [];
     let currentEditingAnnId = null; // Untuk proses edit pengumuman
+    
     let repairItems = JSON.parse(localStorage.getItem('repairItems')) || ['Smartphone', 'Laptop', 'TV'];
+    let currentEditingServiceIndex = null; // Untuk proses edit layanan
+    
     let orders = JSON.parse(localStorage.getItem('orders')) || [];
     
     // Admin default untuk pengujian awal
     let admins = JSON.parse(localStorage.getItem('registered_admins')) || [
         { name: "Andi", password: "admin123", phone: "6281234567890" }
-    ]; 
+    ];
     
     let loggedInAdmin = JSON.parse(localStorage.getItem('loggedInAdmin')) || null;
 
-    // --- CLOCK & TOAST ---
+    // ====== CLOCK & TOAST ======
     function updateClock() { document.getElementById('clock').innerHTML = `<i class="far fa-clock"></i> ${new Date().toLocaleString('id-ID')}`; }
     setInterval(updateClock, 1000);
     updateClock();
@@ -352,7 +405,7 @@
         setTimeout(() => t.classList.remove('show'), 3000);
     }
 
-    // --- AUTH LOGIC ---
+    // ====== AUTH LOGIC ======
     function toggleAuth(isRegister) {
         document.getElementById('login-box').style.display = isRegister ? 'none' : 'block';
         document.getElementById('register-box').style.display = isRegister ? 'block' : 'none';
@@ -387,9 +440,9 @@
         const user = admins.find(a => a.name === adminNameInput && a.password === passwordInput);
 
         if(user) {
-            loggedInAdmin = { name: user.name, phone: user.phone }; // Simpan nama dan phone admin
+            loggedInAdmin = { name: user.name, phone: user.phone };
             localStorage.setItem('loggedInAdmin', JSON.stringify(loggedInAdmin));
-            location.reload(); // Reload untuk menginisialisasi dashboard dengan status login
+            location.reload();
         } else {
             alert("Nama Admin atau Password salah!");
         }
@@ -398,16 +451,108 @@
     function logout() {
         loggedInAdmin = null;
         localStorage.removeItem('loggedInAdmin');
-        location.reload(); // Reload halaman untuk kembali ke tampilan login
+        location.reload();
     }
 
-    // --- PENGUMUMAN MANAGEMENT ---
+    // ====== FUNGSI KELOLA LAYANAN / BARANG ======
+    function renderServiceList() {
+        const list = document.getElementById('serviceList');
+        list.innerHTML = '';
+
+        if (repairItems.length === 0) {
+            list.innerHTML = '<div style="background:#f1f5f9; padding:20px; text-align:center; border-radius:12px; color:var(--gray);">Belum ada layanan. Silakan tambahkan layanan di form di atas.</div>';
+            return;
+        }
+
+        repairItems.forEach((item, index) => {
+            list.innerHTML += `
+                <div class="service-item">
+                    <span style="font-weight:600;">
+                        <i class="fas fa-microchip" style="margin-right:10px; color:var(--primary);"></i>${item}
+                    </span>
+                    <div class="service-item-actions">
+                        <button class="btn-sm btn-edit" onclick="editService(${index})">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn-sm btn-danger" onclick="deleteService(${index})">
+                            <i class="fas fa-trash"></i> Hapus
+                        </button>
+                    </div>
+                </div>`;
+        });
+    }
+
+    function resetServiceForm() {
+        currentEditingServiceIndex = null;
+        document.getElementById('serviceName').value = '';
+        const btn = document.getElementById('serviceSaveBtn');
+        btn.innerHTML = '<i class="fas fa-save"></i> Tambah Layanan';
+        btn.classList.add('btn-success');
+        btn.classList.remove('btn-edit');
+        document.getElementById('serviceCancelBtn').style.display = 'none';
+    }
+
+    function saveService() {
+        const input = document.getElementById('serviceName').value.trim();
+        if (!input) {
+            alert("Nama layanan tidak boleh kosong!");
+            return;
+        }
+
+        if (currentEditingServiceIndex !== null) {
+            // Mode Edit: perbarui data lama
+            repairItems[currentEditingServiceIndex] = input;
+            showToast("Layanan berhasil diperbarui!");
+        } else {
+            // Mode Tambah Baru
+            repairItems.push(input);
+            showToast("Layanan berhasil ditambahkan!");
+        }
+
+        // Simpan ke localStorage
+        localStorage.setItem('repairItems', JSON.stringify(repairItems));
+        
+        // Reset form dan render ulang
+        resetServiceForm();
+        renderServiceList();
+        renderRepairItems(); // Untuk tampilan customer
+        renderNotif(); // Jika layanan muncul di notifikasi, bisa disesuaikan
+    }
+
+    function editService(index) {
+        const service = repairItems[index];
+        if (!service) return;
+
+        currentEditingServiceIndex = index;
+        document.getElementById('serviceName').value = service;
+
+        const btn = document.getElementById('serviceSaveBtn');
+        btn.innerHTML = '<i class="fas fa-sync-alt"></i> Update Layanan';
+        btn.classList.remove('btn-success');
+        btn.classList.add('btn-edit');
+        document.getElementById('serviceCancelBtn').style.display = 'inline-flex';
+        document.getElementById('serviceName').focus();
+    }
+
+    function deleteService(index) {
+        if (!confirm('Hapus layanan ini dari daftar?')) return;
+
+        repairItems.splice(index, 1);
+        localStorage.setItem('repairItems', JSON.stringify(repairItems));
+        showToast("Layanan berhasil dihapus!");
+
+        if (currentEditingServiceIndex === index) resetServiceForm();
+        renderServiceList();
+        renderRepairItems();
+    }
+
+    // ====== PENGUMUMAN MANAGEMENT ======
     function renderAnnouncements() {
         const list = document.getElementById('announcementList');
         list.innerHTML = '';
 
         if (!announcements.length) {
-            list.innerHTML = '<div style="background:#f1f5f9; padding:20px; text-align:center; border-radius:12px; color:var(--grey);">Belum ada pengumuman. Buat pengumuman baru di atas.</div>';
+            list.innerHTML = '<div style="background:#f1f5f9; padding:20px; text-align:center; border-radius:12px; color:var(--gray);">Belum ada pengumuman. Buat pengumuman baru di atas.</div>';
             return;
         }
 
@@ -423,7 +568,7 @@
                         <button class="btn-sm" onclick="toggleAnnouncement(${a.id})" style="background-color:${isActive ? '#64748b' : '#10b981'}; color:white;">
                             <i class="fas ${isActive ? 'fa-toggle-off' : 'fa-toggle-on'}"></i> ${isActive ? 'Matikan' : 'Nyalakan'}
                         </button>
-                        <button class="btn-sm" onclick="editAnnouncement(${a.id})" style="background-color:#f59e0b; color:white;">
+                        <button class="btn-sm btn-edit" onclick="editAnnouncement(${a.id})">
                             <i class="fas fa-edit"></i> Edit
                         </button>
                         <button class="btn-sm btn-danger" onclick="deleteAnnouncement(${a.id})">
@@ -501,7 +646,7 @@
         if (currentEditingAnnId === id) resetAnnouncementForm();
     }
 
-    // --- DYNAMIC STRUK ---
+    // ====== STRUK / PEMBAYARAN ======
     function addReceiptRow() {
         const container = document.getElementById('receipt-items-container');
         const row = document.createElement('div');
@@ -524,9 +669,8 @@
         if(!namaPelanggan || !unitServis) return alert("Isi nama pelanggan & unit!");
         if(!loggedInAdmin) return alert("Harap login sebagai Admin untuk mencetak struk.");
 
-        // Set Data ke Area Cetak
         document.getElementById('pTgl').textContent = new Date().toLocaleDateString('id-ID');
-        document.getElementById('pAdmin').textContent = loggedInAdmin.name; // Nama admin yang sedang login
+        document.getElementById('pAdmin').textContent = loggedInAdmin.name;
         document.getElementById('pNama').textContent = namaPelanggan;
         document.getElementById('pBarang').textContent = unitServis;
         document.getElementById('pGaransi').textContent = masaGaransi;
@@ -550,7 +694,7 @@
         window.print();
     }
 
-    // --- CORE LOGIC (ORDERS, ANN, REPAIR) ---
+    // ====== PESANAN / ORDER ======
     function submitOrderViaWhatsApp() {
         const name = document.getElementById('custName').value.trim();
         const wa = document.getElementById('custWA').value.trim();
@@ -640,18 +784,29 @@
 
     function sendWhatsAppToAdmin() {
         let adminPhone = ADMIN_CONTACT_WA;
-        const customerName = document.getElementById('custName').value || 'Pelanggan Pro-Tech'; 
+        const customerName = document.getElementById('custName').value || 'Pelanggan Pro-Tech';
         const message = encodeURIComponent(`Halo Admin Pro-Tech, saya ${customerName} ingin bertanya mengenai layanan servis.`);
         window.open(`https://wa.me/${adminPhone}?text=${message}`, '_blank');
     }
 
-    function deleteOrder(id) { orders = orders.filter(o => o.id !== id); localStorage.setItem('orders', JSON.stringify(orders)); renderOrders(); }
-    
+    function deleteOrder(id) { 
+        orders = orders.filter(o => o.id !== id); 
+        localStorage.setItem('orders', JSON.stringify(orders)); 
+        renderOrders(); 
+    }
+
+    // ====== TAMPILKAN LAYANAN UNTUK CUSTOMER ======
     function renderRepairItems() {
-        const cl = document.getElementById('cust-service-list'); cl.innerHTML = '';
+        const cl = document.getElementById('cust-service-list');
+        cl.innerHTML = '';
+        if (repairItems.length === 0) {
+            cl.innerHTML = '<p style="color:var(--gray); font-style:italic;">Layanan akan segera hadir!</p>';
+            return;
+        }
         repairItems.forEach(it => cl.innerHTML += `<div class="badge-service">${it}</div>`);
     }
 
+    // ====== NOTIFIKASI / LONCENG ======
     function renderNotif() {
         const l = document.getElementById('notifList');
         const activeAnn = announcements.filter(a => a.status === 'on');
@@ -661,7 +816,7 @@
         activeAnn.forEach(a => l.innerHTML += `<div class="notif-item"><b>Info:</b> ${a.text}</div>`);
     }
 
-    // --- INIT ---
+    // ====== NAVIGASI & INITIALISASI ======
     document.getElementById('nav-cust').onclick = () => { 
         document.getElementById('panel-cust').style.display = 'block'; 
         document.getElementById('panel-admin').style.display = 'none'; 
@@ -680,15 +835,19 @@
             document.getElementById('admin-dashboard').style.display = 'block';
             document.getElementById('activeAdminName').textContent = loggedInAdmin.name;
             renderOrders();
-            renderAnnouncements(); // Muat daftar pengumuman untuk admin
+            renderAnnouncements();
+            renderServiceList();
         } else {
             document.getElementById('admin-auth').style.display = 'block';
             document.getElementById('admin-dashboard').style.display = 'none';
-            toggleAuth(false); // Pastikan menampilkan form login secara default
+            toggleAuth(false);
         }
     };
 
-    document.getElementById('notifBtn').onclick = (e) => { e.stopPropagation(); document.getElementById('notifDropdown').classList.toggle('active'); };
+    document.getElementById('notifBtn').onclick = (e) => { 
+        e.stopPropagation(); 
+        document.getElementById('notifDropdown').classList.toggle('active'); 
+    };
     window.onclick = () => document.getElementById('notifDropdown').classList.remove('active');
 
     window.onload = () => { 
@@ -698,7 +857,6 @@
         renderOrders(); 
 
         if (loggedInAdmin) {
-            // Jika admin sudah login, langsung tampilkan dashboard admin
             document.getElementById('panel-cust').style.display = 'none';
             document.getElementById('panel-admin').style.display = 'block';
             document.getElementById('nav-admin').classList.add('active');
@@ -706,12 +864,12 @@
             document.getElementById('admin-auth').style.display = 'none';
             document.getElementById('admin-dashboard').style.display = 'block';
             document.getElementById('activeAdminName').textContent = loggedInAdmin.name;
-            renderAnnouncements(); // Muat daftar pengumuman
+            renderAnnouncements();
+            renderServiceList();
         } else {
-            // Jika admin belum login, pastikan panel admin menampilkan form login
-            document.getElementById('panel-admin').style.display = 'none'; // Default ke customer
-            document.getElementById('admin-auth').style.display = 'block'; // Sembunyikan dashboard
-            toggleAuth(false); // Pastikan form login yang tampil
+            document.getElementById('panel-admin').style.display = 'none';
+            document.getElementById('admin-auth').style.display = 'block';
+            toggleAuth(false);
         }
     };
 </script>
