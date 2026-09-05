@@ -67,7 +67,7 @@
         .auth-footer { text-align: center; margin-top: 15px; font-size: 0.9rem; }
         .auth-footer a { color: var(--primary); text-decoration: none; font-weight: 700; }
 
-        /* Struk Design */
+        /* Struk Design (for admin form) */
         .receipt-row-item { display: grid; grid-template-columns: 1fr 140px auto; gap: 10px; margin-bottom: 10px; }
         .receipt-summary { background: var(--dark); color: white; padding: 20px; border-radius: 12px; text-align: right; margin-top: 15px; }
         .receipt-summary h3 { color: var(--secondary); font-size: 1.5rem; }
@@ -111,11 +111,31 @@
         /* Sidebar */
         .badge-service { background: #e0f2fe; color: #0369a1; padding: 8px 15px; border-radius: 12px; font-size: 0.8rem; font-weight: 700; border: 1px solid #bae6fd; }
 
+        /* CSS KHUSUS CETAK (PRINT) */
         #printArea { display: none; }
         @media print {
             body * { visibility: hidden; }
             #printArea, #printArea * { visibility: visible; }
-            #printArea { position: absolute; left: 0; top: 0; width: 100%; display: block; font-family: monospace; }
+            #printArea { 
+                position: absolute; left: 0; top: 0; width: 100%; 
+                display: block; 
+                font-family: 'Courier New', Courier, monospace; /* Font Monospace untuk kesan struk */
+                font-size: 12px; /* Ukuran font lebih kecil */
+                padding: 15px; /* Padding lebih kecil */
+                color: #000;
+                line-height: 1.4;
+            }
+            #printArea table { width: 100%; border-collapse: collapse; margin-bottom: 5px; }
+            #printArea table td, #printArea table th { padding: 2px 0; }
+            #printArea .header-text { font-size: 14px; font-weight: bold; margin-bottom: 5px; }
+            #printArea .small-text { font-size: 11px; }
+            #printArea .divider { border-top: 1px dashed #000; margin: 8px 0; }
+            #printArea .total-section { text-align: right; margin-top: 10px; }
+            #printArea .total-section h3 { font-size: 16px; margin: 0; padding: 0; }
+            #printArea .footer-note { font-size: 10px; text-align: center; margin-top: 15px; }
+
+            /* Hide scrollbars during print */
+            body { overflow: hidden; }
         }
 
         @media (max-width: 768px) { .main-content { grid-template-columns: 1fr; } .header-content { flex-direction: column; height: auto; padding: 10px; } }
@@ -193,13 +213,14 @@
                 <!-- Login Form -->
                 <div id="login-box" class="card">
                     <div class="card-header"><h2><i class="fas fa-lock"></i> Login Admin</h2></div>
-                    <div class="form-group"><label>Nomor WA</label><input type="text" id="loginWA"></div>
-                    <div class="form-group"><label>Password</label><input type="password" id="loginPass"></div>
+                    <div class="form-group"><label>Nama Admin</label><input type="text" id="loginAdminName" required></div>
+                    <div class="form-group"><label>Password</label><input type="password" id="loginAdminPass" required></div>
                     <button onclick="loginAdmin()" style="width:100%"><i class="fas fa-sign-in-alt"></i> Masuk</button>
-                    <div class="auth-footer">Belum punya akun? <a href="#" onclick="toggleAuth(true)">Daftar Admin</a></div>
+                    <!-- Register form removed for simplicity based on previous interaction, focusing on existing admin login -->
+                    <!-- <div class="auth-footer">Belum punya akun? <a href="#" onclick="toggleAuth(true)">Daftar Admin</a></div> -->
                 </div>
 
-                <!-- Register Form -->
+                <!-- Register Form (kept for functionality, but not displayed by default) -->
                 <div id="register-box" class="card" style="display: none;">
                     <div class="card-header"><h2><i class="fas fa-user-plus"></i> Daftar Admin</h2></div>
                     <div class="form-group"><label>Nama Lengkap</label><input type="text" id="regName"></div>
@@ -220,15 +241,16 @@
 
                 <!-- Struk Multi Item -->
                 <div class="card">
-                    <div class="card-header"><h2><i class="fas fa-file-invoice"></i> Buat Struk</h2></div>
-                    <div class="form-group"><label>Nama Pelanggan</label><input type="text" id="sNama"></div>
-                    <div class="form-group"><label>Unit Servis</label><input type="text" id="sBarang"></div>
+                    <div class="card-header"><h2><i class="fas fa-file-invoice"></i> Buat Struk Pembayaran</h2></div>
+                    <div class="form-group"><label>Nama Pelanggan</label><input type="text" id="sNama" required></div>
+                    <div class="form-group"><label>Unit Servis</label><input type="text" id="sBarang" required></div>
+                    <div class="form-group"><label>Masa Garansi</label><input type="text" id="sGaransi" placeholder="Contoh: 30 Hari / 1 Bulan"></div>
                     <div id="receipt-items-container" style="border-top:1px solid #eee; padding-top:15px">
                         <label>Item & Biaya</label>
                         <div class="receipt-row-item">
                             <input type="text" placeholder="Nama Jasa/Part" class="r-item-name">
                             <input type="number" placeholder="Harga" class="r-item-price" oninput="calcTotal()">
-                            <span></span>
+                            <button class="btn-danger btn-sm" onclick="this.parentElement.remove(); calcTotal()">X</button>
                         </div>
                     </div>
                     <button type="button" class="btn-outline btn-sm" onclick="addReceiptRow()" style="margin-top:10px">+ Tambah Baris</button>
@@ -268,7 +290,7 @@
             <div class="card">
                 <h3>Info Toko</h3>
                 <p><i class="fas fa-map-marker-alt"></i> Mall Tekno Blok A-12</p>
-                <p><i class="fas fa-phone"></i> 0899-1286-742</p> <!-- Updated here -->
+                <p><i class="fas fa-phone"></i> 0899-1286-742</p>
             </div>
             <div class="card">
                 <h3>Monitor Riwayat</h3>
@@ -278,23 +300,37 @@
     </div>
 </div>
 
-<!-- PRINT AREA -->
+<!-- PRINT AREA (DIDESAIN ULANG) -->
 <div id="printArea">
-    <div style="text-align:center">
-        <h2>PRO-TECH SERVICE</h2>
-        <p>Mall Tekno Blok A-12 | WA: 0899-1286-742</p> <!-- Updated here -->
+    <div style="text-align:center;">
+        <div class="header-text">PRO-TECH SERVICE</div>
+        <div class="small-text">Mall Tekno Blok A-12 | WA: 0899-1286-742</div>
     </div>
-    <hr style="border: 1px dashed #000; margin: 15px 0">
-    <p id="pTgl"></p>
-    <p>Nama: <span id="pNama"></span></p>
-    <p>Unit: <span id="pBarang"></span></p>
-    <hr style="border: 1px dashed #000; margin: 15px 0">
-    <table style="width:100%">
-        <thead><tr style="text-align:left"><th>Item</th><th style="text-align:right">Subtotal</th></tr></thead>
-        <tbody id="pItemsBody"></tbody>
+    <div class="divider"></div>
+    <table>
+        <tr><td style="width: 30%;">Tgl</td><td>: <span id="pTgl"></span></td></tr>
+        <tr><td>Admin</td><td>: <span id="pAdmin"></span></td></tr>
+        <tr><td>Pelanggan</td><td>: <span id="pNama"></span></td></tr>
+        <tr><td>Unit</td><td>: <span id="pBarang"></span></td></tr>
+        <tr><td>Garansi</td><td>: <span id="pGaransi"></span></td></tr>
     </table>
-    <hr style="border: 1px dashed #000; margin: 15px 0">
-    <h3 style="text-align:right">TOTAL: Rp <span id="pTotal"></span></h3>
+    <div class="divider"></div>
+    <table>
+        <thead>
+            <tr><th style="text-align:left;">Item</th><th style="text-align:right;">Subtotal</th></tr>
+        </thead>
+        <tbody id="pItemsBody">
+            <!-- Item-item struk akan di-generate di sini -->
+        </tbody>
+    </table>
+    <div class="divider"></div>
+    <div class="total-section">
+        <h3>TOTAL: Rp <span id="pTotal"></span></h3>
+    </div>
+    <div class="footer-note">
+        <p>Terima kasih telah mempercayai kami.</p>
+        <p>Barang yang sudah diservis harap dicek kembali.</p>
+    </div>
 </div>
 
 <div class="notification" id="toast">Notifikasi</div>
@@ -308,7 +344,9 @@
     let announcements = JSON.parse(localStorage.getItem('announcements')) || [];
     let repairItems = JSON.parse(localStorage.getItem('repairItems')) || ['Smartphone', 'Laptop', 'TV'];
     let orders = JSON.parse(localStorage.getItem('orders')) || [];
-    let admins = JSON.parse(localStorage.getItem('registered_admins')) || [];
+    let admins = JSON.parse(localStorage.getItem('registered_admins')) || [
+        { name: "Andi", phone: "628991286742", password: "admin123" } // Contoh admin default
+    ]; // Ditambahkan admin default untuk demo
     
     // Variabel untuk menyimpan sesi login admin
     let loggedInAdmin = JSON.parse(localStorage.getItem('loggedInAdmin')) || null;
@@ -333,6 +371,7 @@
         document.getElementById('register-box').style.display = isRegister ? 'block' : 'none';
     }
 
+    // Hanya untuk registrasi admin baru (opsional, karena fokus ke login nama admin)
     function registerAdmin() {
         const name = document.getElementById('regName').value.trim();
         const wa = document.getElementById('regWA').value.trim();
@@ -341,6 +380,7 @@
 
         if(!name || !wa || !pass || !code) return alert("Semua kolom harus diisi!");
         if(code !== SUPER_SECURE_CODE) return alert("KODE OTORISASI SALAH! Anda tidak berhak mendaftar.");
+        if(admins.find(a => a.name === name)) return alert("Nama Admin sudah terdaftar!"); // Cek berdasarkan nama
         if(admins.find(a => a.phone === wa)) return alert("Nomor WA sudah terdaftar!");
 
         const newAdmin = { name, phone: wa, password: pass };
@@ -348,43 +388,41 @@
         localStorage.setItem('registered_admins', JSON.stringify(admins));
         
         showToast("Registrasi Berhasil! Silakan Login.");
-        // Clear form after successful registration
         document.getElementById('regName').value = '';
         document.getElementById('regWA').value = '';
         document.getElementById('regPass').value = '';
         document.getElementById('regCode').value = '';
-        toggleAuth(false); // Switch to login form
+        toggleAuth(false);
     }
 
     function loginAdmin() {
-        const wa = document.getElementById('loginWA').value.trim();
-        const pass = document.getElementById('loginPass').value.trim();
-        const user = admins.find(a => a.phone === wa && a.password === pass);
+        const adminNameInput = document.getElementById('loginAdminName').value.trim();
+        const passwordInput = document.getElementById('loginAdminPass').value.trim();
+        const user = admins.find(a => a.name === adminNameInput && a.password === passwordInput);
 
         if(user) {
-            loggedInAdmin = { name: user.name, phone: user.phone };
-            localStorage.setItem('loggedInAdmin', JSON.stringify(loggedInAdmin)); // Simpan sesi login
+            loggedInAdmin = { name: user.name, phone: user.phone }; // Simpan nama dan phone admin
+            localStorage.setItem('loggedInAdmin', JSON.stringify(loggedInAdmin));
             
             document.getElementById('admin-auth').style.display = 'none';
             document.getElementById('admin-dashboard').style.display = 'block';
             document.getElementById('activeAdminName').textContent = user.name;
             showToast("Selamat Datang, " + user.name);
-            renderOrders(); // Render orders setelah login
+            renderOrders();
         } else {
-            alert("Nomor WA atau Password salah!");
+            alert("Nama Admin atau Password salah!");
         }
     }
 
     function logout() {
         loggedInAdmin = null;
-        localStorage.removeItem('loggedInAdmin'); // Hapus sesi login
+        localStorage.removeItem('loggedInAdmin');
         
-        document.getElementById('admin-auth').style.display = 'block';
-        document.getElementById('admin-dashboard').style.display = 'none';
-        // Clear login form fields
-        document.getElementById('loginWA').value = '';
-        document.getElementById('loginPass').value = '';
-        showToast("Anda telah keluar.");
+        // Hapus juga admin dari daftar registered_admins jika diperlukan (opsional)
+        // admins = admins.filter(a => a.name !== loggedInAdmin.name);
+        // localStorage.setItem('registered_admins', JSON.stringify(admins));
+
+        location.reload(); // Reload halaman untuk kembali ke tampilan awal/login
     }
 
     // --- DYNAMIC STRUK ---
@@ -403,22 +441,36 @@
     }
 
     function printReceipt() {
-        const n = document.getElementById('sNama').value;
-        const b = document.getElementById('sBarang').value;
-        if(!n || !b) return alert("Isi nama pelanggan & unit!");
+        const namaPelanggan = document.getElementById('sNama').value.trim();
+        const unitServis = document.getElementById('sBarang').value.trim();
+        const masaGaransi = document.getElementById('sGaransi').value.trim() || "-"; // Ambil nilai garansi
 
-        document.getElementById('pTgl').textContent = "Tgl: " + new Date().toLocaleDateString('id-ID');
-        document.getElementById('pNama').textContent = n;
-        document.getElementById('pBarang').textContent = b;
+        if(!namaPelanggan || !unitServis) return alert("Isi nama pelanggan & unit!");
+        if(!loggedInAdmin) return alert("Harap login sebagai Admin untuk mencetak struk.");
+
+        // Set Data ke Area Cetak
+        document.getElementById('pTgl').textContent = new Date().toLocaleDateString('id-ID');
+        document.getElementById('pAdmin').textContent = loggedInAdmin.name; // Nama admin yang sedang login
+        document.getElementById('pNama').textContent = namaPelanggan;
+        document.getElementById('pBarang').textContent = unitServis;
+        document.getElementById('pGaransi').textContent = masaGaransi; // Set garansi
         document.getElementById('pTotal').textContent = document.getElementById('sTotal').textContent;
 
-        const body = document.getElementById('pItemsBody');
-        body.innerHTML = '';
+        const pItemsBody = document.getElementById('pItemsBody');
+        pItemsBody.innerHTML = '';
         const names = document.querySelectorAll('.r-item-name');
         const prices = document.querySelectorAll('.r-item-price');
+        
         names.forEach((item, i) => {
-            body.innerHTML += `<tr><td>${item.value}</td><td style="text-align:right">Rp ${(parseInt(prices[i].value)||0).toLocaleString('id-ID')}</td></tr>`;
+            const itemName = item.value.trim();
+            const itemPrice = parseInt(prices[i].value) || 0;
+            if(itemName) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${itemName}</td><td style="text-align:right">Rp ${itemPrice.toLocaleString('id-ID')}</td>`;
+                pItemsBody.appendChild(row);
+            }
         });
+
         window.print();
     }
 
@@ -617,6 +669,7 @@
     window.onclick = () => document.getElementById('notifDropdown').classList.remove('active');
 
     window.onload = () => { 
+        updateClock();
         renderNotif(); 
         renderAdminAnn(); 
         renderRepairItems(); 
@@ -625,15 +678,15 @@
 
         // Auto-login admin jika ada sesi tersimpan
         if (loggedInAdmin) {
-            // Ini akan memastikan panel admin terlihat saat halaman pertama kali dimuat jika admin sudah login
-            // Namun, untuk navigasi antar tab, fungsi nav-admin.onclick sudah menghandle
-            // Jika ingin langsung menampilkan dashboard admin tanpa harus klik tab admin setelah refresh,
-            // Anda bisa mengubah display CSS untuk #panel-admin di sini, atau mengatur default state lebih awal.
-            // Untuk saat ini, asumsikan user akan klik tab Admin jika ingin mengakses dashboard.
-            // Jika ingin otomatis langsung ke admin dashboard, tambahkan:
-            // document.getElementById('nav-admin').click(); 
-            // Tapi ini bisa konflik jika user sedang di tab customer.
-            // Jadi lebih baik biarkan user klik tab admin, dan auto-login akan aktif saat itu.
+            // Langsung tampilkan dashboard jika admin sudah login
+            document.getElementById('panel-cust').style.display = 'none'; // Pastikan panel customer tersembunyi
+            document.getElementById('panel-admin').style.display = 'block'; // Tampilkan panel admin
+            document.getElementById('nav-admin').classList.add('active'); // Aktifkan tombol nav admin
+            document.getElementById('nav-cust').classList.remove('active'); // Non-aktifkan tombol nav customer
+            document.getElementById('admin-auth').style.display = 'none';
+            document.getElementById('admin-dashboard').style.display = 'block';
+            document.getElementById('activeAdminName').textContent = loggedInAdmin.name;
+            renderOrders();
         }
     };
 </script>
