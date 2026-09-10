@@ -14,73 +14,162 @@
             --warning: #f43f5e;
             --dark: #0f172a;
             --light: #f8fafc;
-            --gray: #64748b;
-            --border: #e2e8f0;
+
+            --color-text: #0f172a;
+            --color-heading: #0f172a;
+            --color-muted: #64748b;
+            --color-border: #e2e8f0;
+
+            --bg-body: #f1f5f9;
+            --bg-header: rgba(255, 255, 255, 0.9);
+            --bg-card: #ffffff;
+            --bg-input: #f8fafc;
+            --bg-sidebar: #ffffff;
+            --bg-footer: transparent;
+            --bg-button: #4f46e5;
+            --bg-time: #4f46e5;
+
             --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
             --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
             --radius: 16px;
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: #f1f5f9; color: var(--dark); line-height: 1.6; min-height: 100vh; transition: background 0.5s ease, color 0.3s ease; }
+        body {
+            background: var(--bg-body);
+            background-attachment: fixed;
+            color: var(--color-text);
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: background 0.4s ease, color 0.3s ease;
+        }
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
         
-        header { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(226, 232, 240, 0.8); position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-sm); }
+        header {
+            background: var(--bg-header);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--color-border);
+            position: sticky; top: 0; z-index: 100;
+            box-shadow: var(--shadow-sm);
+            transition: background 0.4s ease;
+        }
         .header-content { display: flex; justify-content: space-between; align-items: center; height: 70px; }
         .logo { display: flex; align-items: center; gap: 12px; color: var(--primary); }
         .logo i { font-size: 1.8rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .logo h1 { font-size: 1.5rem; font-weight: 800; }
+        .logo h1 { font-size: 1.5rem; font-weight: 800; color: var(--primary); }
         
-        nav ul { display: flex; list-style: none; gap: 8px; background: #f1f5f9; padding: 4px; border-radius: 12px; }
-        nav a { color: var(--gray); text-decoration: none; padding: 8px 20px; border-radius: 10px; transition: 0.25s; font-weight: 600; font-size: 0.9rem; }
-        nav a.active { background: white; color: var(--primary); box-shadow: var(--shadow-sm); }
+        nav ul { display: flex; list-style: none; gap: 8px; background: var(--bg-input); padding: 4px; border-radius: 12px; }
+        nav a { color: var(--color-muted); text-decoration: none; padding: 8px 20px; border-radius: 10px; transition: 0.25s; font-weight: 600; font-size: 0.9rem; }
+        nav a.active { background: var(--bg-card); color: var(--primary); box-shadow: var(--shadow-sm); }
 
         .notification-container { position: relative; margin-left: auto; margin-right: 20px; }
-        .notification-icon { cursor: pointer; font-size: 1.3rem; position: relative; background: #f1f5f9; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; border-radius: 12px; color: var(--gray); }
-        .notification-count { position: absolute; top: -4px; right: -4px; background: var(--warning); color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 0.75rem; font-weight: bold; display: flex; justify-content: center; align-items: center; border: 2px solid white; }
-        .notification-dropdown { position: absolute; top: calc(100% + 10px); right: 0; background: white; width: 320px; border-radius: var(--radius); box-shadow: var(--shadow-md); padding: 20px; display: none; z-index: 110; border: 1px solid var(--border); animation: fadeIn 0.25s ease; }
+        .notification-icon { cursor: pointer; font-size: 1.3rem; position: relative; background: var(--bg-input); width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; border-radius: 12px; color: var(--color-muted); }
+        .notification-count { position: absolute; top: -4px; right: -4px; background: var(--warning); color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 0.75rem; font-weight: bold; display: flex; justify-content: center; align-items: center; border: 2px solid var(--bg-card); }
+        .notification-dropdown { position: absolute; top: calc(100% + 10px); right: 0; background: var(--bg-card); width: 320px; border-radius: var(--radius); box-shadow: var(--shadow-md); padding: 20px; display: none; z-index: 110; border: 1px solid var(--color-border); }
         .notification-dropdown.active { display: block; }
-        .notif-item { padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 0.85rem; }
+        .notif-item { padding: 8px 0; border-bottom: 1px solid var(--color-border); font-size: 0.85rem; }
 
-        .time-display { text-align: center; padding: 12px; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; font-weight: 700; font-size: 0.95rem; transition: background 0.3s; }
+        .time-display {
+            text-align: center; padding: 12px;
+            background: var(--bg-time);
+            color: white; font-weight: 700; font-size: 0.95rem;
+            transition: background 0.4s ease;
+        }
+
         .main-content { display: grid; grid-template-columns: 1fr 340px; gap: 24px; margin-top: 24px; }
-        .card { background: white; border-radius: var(--radius); padding: 24px; margin-bottom: 24px; box-shadow: var(--shadow-md); border: 1px solid rgba(226, 232, 240, 0.6); }
-        .card-header { border-bottom: 1px solid var(--border); margin-bottom: 20px; padding-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .card { background: var(--bg-card); border-radius: var(--radius); padding: 24px; margin-bottom: 24px; box-shadow: var(--shadow-md); border: 1px solid var(--color-border); transition: background 0.4s ease; }
+        .card-header { border-bottom: 1px solid var(--color-border); margin-bottom: 20px; padding-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
         .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem; }
-        input, textarea, select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: #f8fafc; }
-        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary); background: white; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); }
-        button { padding: 12px 24px; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; transition: 0.2s; background: var(--primary); color: white; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
-        button:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2); }
+        label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem; color: var(--color-text); }
+        input, textarea, select { width: 100%; padding: 12px; border: 1px solid var(--color-border); border-radius: 12px; background: var(--bg-input); color: var(--color-text); transition: background 0.3s ease; }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12); }
+        button { padding: 12px 24px; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; transition: 0.2s; background: var(--bg-button); color: white; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+        button:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); }
         .btn-danger { background: var(--warning); }
         .btn-success { background: var(--success); }
         .btn-wa { background: #25d366; }
-        .btn-outline { background: transparent; border: 1px dashed var(--gray); color: var(--gray); }
+        .btn-outline { background: transparent; border: 1px dashed var(--color-muted); color: var(--color-muted); }
         .btn-sm { padding: 8px 12px; font-size: 0.8rem; border-radius: 8px; }
         .btn-edit { background: #f59e0b; }
-        .auth-footer { text-align: center; margin-top: 15px; font-size: 0.9rem; }
+        .auth-footer { text-align: center; margin-top: 15px; font-size: 0.9rem; color: var(--color-muted); }
         .auth-footer a { color: var(--primary); text-decoration: none; font-weight: 700; }
         .receipt-row-item { display: grid; grid-template-columns: 1fr 140px auto; gap: 10px; margin-bottom: 10px; }
         .receipt-summary { background: var(--dark); color: white; padding: 20px; border-radius: var(--radius); text-align: right; margin-top: 15px; }
         .receipt-summary h3 { color: var(--secondary); font-size: 1.5rem; }
-        .order-card { border-left: 4px solid var(--primary); padding: 15px; background: #f8fafc; border-radius: 0 12px 12px 0; margin-bottom: 15px; border: 1px solid var(--border); border-left: 4px solid var(--primary); }
-        .order-card-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; border-top: 1px solid #e0e7ed; padding-top: 15px; }
+        .order-card { border-left: 4px solid var(--primary); padding: 15px; background: var(--bg-input); border-radius: 0 12px 12px 0; margin-bottom: 15px; border: 1px solid var(--color-border); border-left: 4px solid var(--primary); }
+        .order-card-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; border-top: 1px solid var(--color-border); padding-top: 15px; }
         .status-badge { display: inline-block; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; margin-left: 10px; vertical-align: middle; }
         .status-pending { background-color: #ffedd5; color: #f97316; }
         .status-received { background-color: #dbeafe; color: #2563eb; }
         .status-processing { background-color: #fef9c3; color: #eab308; }
         .status-completed { background-color: #d1fae5; color: #065f46; }
-        .service-item { display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); border-left: 4px solid var(--primary); background: #f8fafc; border-radius: 12px; padding: 12px 15px; margin-bottom: 10px; gap: 10px; }
+        .service-item { display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--color-border); border-left: 4px solid var(--primary); background: var(--bg-input); border-radius: 12px; padding: 12px 15px; margin-bottom: 10px; gap: 10px; }
         .service-item-actions { display: flex; gap: 6px; flex-shrink: 0; }
-        .badge-service { background: #e0f2fe; color: #0369a1; padding: 8px 15px; border-radius: 12px; font-size: 0.8rem; font-weight: 700; border: 1px solid #bae6fd; }
-        .theme-section-title { font-weight: 700; margin: 15px 0 10px; padding: 12px 16px; border-radius: 12px; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; font-size: 0.95rem; }
-        .theme-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .color-presets { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
-        .color-preset { width: 38px; height: 38px; border-radius: 50%; border: 4px solid white; padding: 0; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.2); transition: 0.2s; }
-        .color-preset:hover { transform: scale(1.15); }
-        .color-preset.active { border-color: var(--dark); box-shadow: 0 0 0 3px rgba(79,70,229,0.3); transform: scale(1.05); }
-        .theme-info-box { background: #f1f5f9; padding: 12px 15px; border-radius: 12px; border-left: 4px solid var(--primary); font-size: 0.9rem; color: var(--gray); margin-top: 10px; }
-        
+        .badge-service { background: var(--bg-input); color: var(--primary); padding: 8px 15px; border-radius: 12px; font-size: 0.8rem; font-weight: 700; border: 1px solid var(--color-border); }
+
+        /* ============ TEMA / PENGATURAN WARNA ============ */
+        .theme-section-title {
+            font-weight: 700;
+            margin: 20px 0 12px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            font-size: 0.95rem;
+        }
+        .picker-block {
+            padding: 14px;
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            background: var(--bg-input);
+            transition: background 0.3s ease;
+        }
+        .picker-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .picker-head label { margin: 0; font-weight: 700; font-size: 0.9rem; }
+        .picker-preview {
+            width: 30px; height: 30px;
+            border-radius: 8px;
+            border: 3px solid white;
+            box-shadow: 0 0 0 1px var(--color-border), 0 2px 6px rgba(0,0,0,0.15);
+            flex-shrink: 0;
+        }
+        .palette {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+        .swatch {
+            width: 26px; height: 26px;
+            border-radius: 6px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            padding: 0;
+            box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
+            transition: 0.15s;
+        }
+        .swatch:hover { transform: scale(1.18); }
+        .swatch.active { border-color: var(--color-heading); box-shadow: 0 0 0 2px var(--primary); }
+        .picker-custom {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: var(--color-muted);
+        }
+        .picker-custom input[type="color"] {
+            width: 42px; height: 32px; padding: 2px;
+            border-radius: 8px; cursor: pointer;
+            background: transparent; border: 1px solid var(--color-border);
+        }
+        .current-hex { font-family: 'Courier New', monospace; font-weight: 700; color: var(--color-muted); font-size: 0.8rem; letter-spacing: 0.5px; }
+
         #printArea { display: none; }
         @media print {
             body * { visibility: hidden; }
@@ -103,113 +192,21 @@
             .header-content { flex-direction: column; height: auto; padding: 10px; }
             .service-item { flex-direction: column; }
             .service-item-actions { width: 100%; justify-content: flex-end; }
-            .theme-row { grid-template-columns: 1fr; }
+            .swatch { width: 22px; height: 22px; }
         }
         
         .notification { position: fixed; bottom: 20px; right: 20px; padding: 15px 25px; border-radius: 12px; background: var(--dark); color: white; transform: translateY(200%); transition: 0.3s; z-index: 999; }
         .notification.show { transform: translateY(0); }
 
-        /* ===== THEME AUTO / LENGKAP ===== */
-        body.theme-light {
-            background-color: #f1f5f9;
-            background-image: radial-gradient(at 0% 0%, rgba(79,70,229,0.08) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(6,182,212,0.08) 0px, transparent 50%);
-            color: #0f172a;
-        }
-        body.theme-dark {
-            background-color: #0f172a;
-            background-image: none;
-            color: #e2e8f0;
-        }
-        body.theme-gradient {
-            background: linear-gradient(135deg, var(--primary-dark), var(--primary), var(--secondary)) fixed;
-            color: #fff;
-        }
-
-        body.theme-dark header,
-        body.theme-gradient header {
-            border-bottom-color: #334155;
-        }
-        body.theme-dark header {
-            background: rgba(15,23,42,0.85);
-        }
-        body.theme-gradient header {
-            background: rgba(255,255,255,0.2);
-        }
-
-        body.theme-dark nav ul { background: #1e293b; }
-        body.theme-dark nav a { color: #94a3b8; }
-        body.theme-dark nav a.active { background: #0f172a; color: var(--primary); }
-        body.theme-gradient nav ul { background: rgba(255,255,255,0.3); }
-        body.theme-gradient nav a { color: white; }
-        body.theme-gradient nav a.active { background: rgba(255,255,255,0.95); color: var(--primary); }
-
-        body.theme-dark .notification-icon { background: #1e293b; color: #94a3b8; }
-        body.theme-gradient .notification-icon { background: rgba(255,255,255,0.3); color: white; }
-        body.theme-dark .notification-dropdown { background: #1e293b; border-color: #334155; }
-        body.theme-gradient .notification-dropdown { background: rgba(255,255,255,0.95); border-color: rgba(255,255,255,0.4); color: #0f172a; }
-
-        body.theme-dark .card { background: #1e293b; border-color: #334155; }
-        body.theme-gradient .card { background: rgba(255,255,255,0.92); border-color: rgba(255,255,255,0.4); }
-        body.theme-dark .card-header { border-color: #334155; }
-        body.theme-gradient .card-header { border-color: rgba(255,255,255,0.4); }
-
-        body.theme-dark input,
-        body.theme-dark textarea,
-        body.theme-dark select {
-            background: #0f172a;
-            border-color: #334155;
-            color: #e2e8f0;
-        }
-        body.theme-dark input:focus,
-        body.theme-dark textarea:focus,
-        body.theme-dark select:focus {
-            background: #0f172a;
-        }
-        body.theme-gradient input,
-        body.theme-gradient textarea,
-        body.theme-gradient select {
-            background: rgba(255,255,255,0.7);
-            color: #0f172a;
-        }
-
-        body.theme-dark .order-card,
-        body.theme-dark .service-item,
-        body.theme-dark .theme-info-box,
-        body.theme-dark .notif-item {
-            background: #0f172a;
-            border-color: #334155;
-        }
-        body.theme-gradient .order-card,
-        body.theme-gradient .service-item,
-        body.theme-gradient .theme-info-box {
-            background: rgba(255,255,255,0.7);
-            border-color: rgba(255,255,255,0.3);
-        }
-
-        body.theme-dark .badge-service {
-            background: #134e4a;
-            color: white;
-            border-color: #115e59;
-        }
-        body.theme-dark .notification-count {
-            border-color: #1e293b;
-        }
-
         footer {
             text-align: center;
             padding: 20px 10px;
             font-size: 0.9rem;
-            color: var(--gray);
-            border-top: 1px solid var(--border);
+            color: var(--color-muted);
+            border-top: 1px solid var(--color-border);
             margin-top: 30px;
-        }
-        body.theme-dark footer {
-            color: #94a3b8;
-            border-top-color: #334155;
-        }
-        body.theme-gradient footer {
-            color: white;
-            border-top-color: rgba(255,255,255,0.3);
+            background: var(--bg-footer);
+            transition: background 0.4s ease, color 0.3s ease;
         }
     </style>
 </head>
@@ -261,7 +258,7 @@
             </div>
             <div class="card">
                 <div class="card-header"><h2><i class="fab fa-whatsapp"></i> Ada Pertanyaan? Hubungi Kami!</h2></div>
-                <p style="margin-bottom: 15px; font-size: 0.9rem; color: var(--gray);">Hubungi admin kami untuk pertanyaan lebih lanjut.</p>
+                <p style="margin-bottom: 15px; font-size: 0.9rem; color: var(--color-muted);">Hubungi admin kami untuk pertanyaan lebih lanjut.</p>
                 <button class="btn-wa" onclick="sendWhatsAppToAdmin()"><i class="fab fa-whatsapp"></i> Chat Admin Sekarang</button>
             </div>
         </div>
@@ -290,47 +287,27 @@
 
             <!-- DASHBOARD -->
             <div id="admin-dashboard" style="display: none;">
-                <div class="card" style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white;">
+                <div class="card" style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none;">
                     <div class="card-header" style="border:none"><h2 style="color:white">Dashboard</h2><button class="btn-danger btn-sm" onclick="logout()"><i class="fas fa-power-off"></i> Logout</button></div>
                     <p>Selamat Datang, <b id="activeAdminName">Admin</b></p>
                 </div>
 
-                <!-- Pengaturan tampilan -->
+                <!-- ============ PENGATURAN WARNA & BACKGROUND (BARU) ============ -->
                 <div class="card">
-                    <div class="card-header"><h2><i class="fas fa-palette"></i> Pengaturan Tampilan</h2></div>
+                    <div class="card-header"><h2><i class="fas fa-palette"></i> Pengaturan Warna & Background</h2></div>
+                    <p style="font-size: 0.85rem; color: var(--color-muted); margin-bottom: 10px;">
+                        <i class="fas fa-info-circle"></i> Atur warna dan background <b>satu per satu untuk setiap bagian</b>. Klik warna untuk pratinjau langsung, lalu simpan ke Firebase.
+                    </p>
                     <form id="themeForm" onsubmit="event.preventDefault(); saveThemeSettingsToFirebase();">
-                        <div class="form-group">
-                            <label>Mode Warna</label>
-                            <select id="themeMode" onchange="handleThemeModeChange()">
-                                <option value="manual">Manual</option>
-                                <option value="auto">Otomatis Siang/Malam</option>
-                            </select>
-                        </div>
-                        <div id="themeManualSettings">
-                            <div class="form-group"><label>Warna Utama</label><div class="color-presets" id="manualPrimary"></div></div>
-                            <div class="form-group"><label>Background</label><select id="manualBg">
-                                <option value="light">☀️ Terang</option>
-                                <option value="dark">🌙 Gelap</option>
-                                <option value="gradient-primary">🌈 Gradasi Warna Utama</option>
-                            </select></div>
-                        </div>
-                        <div id="themeAutoSettings" style="display:none;">
-                            <div class="theme-section-title"><i class="fas fa-sun"></i> Siang</div>
-                            <div class="form-group"><label>Warna Siang</label><div class="color-presets" id="autoDayPrimary"></div></div>
-                            <div class="form-group"><label>Background Siang</label><select id="autoDayBg">
-                                <option value="light">☀️ Terang</option>
-                                <option value="gradient-primary">🌈 Gradasi</option>
-                            </select></div>
-                            <div class="theme-section-title"><i class="fas fa-moon"></i> Malam</div>
-                            <div class="form-group"><label>Warna Malam</label><div class="color-presets" id="autoNightPrimary"></div></div>
-                            <div class="form-group"><label>Background Malam</label><select id="autoNightBg">
-                                <option value="dark">🌙 Gelap</option>
-                                <option value="gradient-primary">🌈 Gradasi</option>
-                            </select></div>
-                        </div>
-                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                            <button type="submit" class="btn-success"><i class="fas fa-save"></i> Simpan</button>
-                            <button type="button" class="btn-outline" onclick="resetThemeInFirebase()"><i class="fas fa-undo"></i> Reset</button>
+                        <div class="theme-section-title"><i class="fas fa-tint"></i> A. Warna Dasar & Teks</div>
+                        <div id="colorFields"></div>
+
+                        <div class="theme-section-title"><i class="fas fa-fill-drip"></i> B. Background Setiap Bagian</div>
+                        <div id="bgFields"></div>
+
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 18px;">
+                            <button type="submit" class="btn-success"><i class="fas fa-save"></i> Simpan Pengaturan</button>
+                            <button type="button" class="btn-outline" onclick="resetThemeInFirebase()"><i class="fas fa-undo"></i> Reset Default</button>
                         </div>
                     </form>
                 </div>
@@ -378,12 +355,12 @@
 
         <!-- Sidebar -->
         <div class="sidebar">
-            <div class="card">
+            <div class="card" style="background: var(--bg-sidebar);">
                 <h3>Info Toko</h3>
                 <p><i class="fas fa-map-marker-alt"></i> Blok Krasag, Gamel, Plered, Cirebon</p>
                 <p><i class="fas fa-phone"></i> 0899-1286-742</p>
-                <hr style="margin:10px 0;border:none;border-top:1px solid var(--border)">
-                <p style="font-size:0.8rem;color:var(--gray)">Pro-Tech Service</p>
+                <hr style="margin:10px 0;border:none;border-top:1px solid var(--color-border)">
+                <p style="font-size:0.8rem;color:var(--color-muted)">Pro-Tech Service</p>
             </div>
         </div>
     </div>
@@ -505,18 +482,12 @@ function syncAllFromFirebase() {
             localStorage.removeItem('protechThemeSettings');
         }
         renderThemeSettingsForm();
-        applyThemeSettings(true);
+        applyThemeSettings();
     }, (err) => console.warn(err));
 }
 
 function updateClock() {
-    let extra = '';
-    const h = new Date().getHours();
-    if (window.themeSettings?.mode === 'auto') {
-        extra = (h >= 6 && h < 18) ? '☀️ Siang' : '🌙 Malam';
-    }
-    document.getElementById('clock').innerHTML = `<i class="far fa-clock"></i> ${new Date().toLocaleString('id-ID')} ${extra}`;
-    if (window.themeSettings?.mode === 'auto') applyThemeSettings();
+    document.getElementById('clock').innerHTML = `<i class="far fa-clock"></i> ${new Date().toLocaleString('id-ID')}`;
 }
 setInterval(updateClock, 1000);
 
@@ -591,7 +562,7 @@ function renderServiceList() {
     const items = window.repairItems;
     list.innerHTML = '';
     if (!items || items.length === 0) {
-        list.innerHTML = '<p style="color:var(--gray); font-style:italic">Belum ada layanan</p>';
+        list.innerHTML = '<p style="color:var(--color-muted); font-style:italic">Belum ada layanan</p>';
         return;
     }
     items.forEach((item, index) => {
@@ -649,7 +620,7 @@ function renderAnnouncements() {
     const list = document.getElementById('announcementList');
     const items = window.announcements;
     list.innerHTML = '';
-    if (!items.length) { list.innerHTML = '<p style="color:var(--gray)">Tidak ada.</p>'; return; }
+    if (!items.length) { list.innerHTML = '<p style="color:var(--color-muted)">Tidak ada.</p>'; return; }
     items.forEach(a => {
         const isActive = a.status === 'on';
         list.innerHTML += `<div class="order-card">
@@ -767,116 +738,175 @@ function printReceipt() {
     window.print();
 }
 
-// ==================== TEMA ====================
-const themeColorsArr = [
-    { name: "Indigo", main: "#4f46e5", dark: "#3730a3", secondary:"#06b6d4"},
-    { name: "Biru", main: "#2563eb", dark: "#1e40af", secondary:"#0ea5e9"},
-    { name: "Toska", main: "#0d9488", dark: "#0f766e", secondary:"#14b8a6"},
-    { name: "Hijau", main: "#10b981", dark: "#047857", secondary:"#34d399"},
-    { name: "Orange", main: "#f59e0b", dark: "#b45309", secondary:"#fbbf24"},
-    { name: "Merah", main: "#ef4444", dark: "#991b1b", secondary:"#f87171"},
-    { name: "Pink", main: "#ec4899", dark: "#be185d", secondary:"#f472b6"}
+// ============================================================
+// ============ PENGATURAN WARNA & BACKGROUND (BARU) ==========
+// ============================================================
+
+// Palet warna lengkap (banyak pilihan)
+const PALETTE = [
+    '#000000','#0f172a','#1e293b','#334155','#475569','#64748b','#94a3b8','#cbd5e1','#e2e8f0','#f1f5f9','#f8fafc','#ffffff',
+    '#ef4444','#f43f5e','#ec4899','#d946ef','#a855f7','#8b5cf6','#6366f1','#4f46e5','#3b82f6','#0ea5e9','#06b6d4','#14b8a6',
+    '#10b981','#22c55e','#84cc16','#eab308','#f59e0b','#f97316','#dc2626','#b91c1c','#065f46','#1e3a8a','#4c1d95','#831843'
 ];
 
-function defaultTheme() { return { mode:"manual", primary:"#4f46e5", background:"light", autoDayPrimary:"#4f46e5", autoDayBackground:"light", autoNightPrimary:"#06b6d4", autoNightBackground:"dark"}; }
+// Field Warna Dasar & Teks
+const COLOR_FIELDS = [
+    { key: 'primary',   label: 'Warna Utama',         def: '#4f46e5', icon: 'fa-tint' },
+    { key: 'secondary', label: 'Warna Sekunder',      def: '#06b6d4', icon: 'fa-droplet' },
+    { key: 'text',      label: 'Warna Teks Isi',      def: '#0f172a', icon: 'fa-font' },
+    { key: 'heading',   label: 'Warna Teks Judul',    def: '#0f172a', icon: 'fa-heading' },
+    { key: 'muted',     label: 'Warna Teks Abu-Abu',  def: '#64748b', icon: 'fa-align-left' },
+    { key: 'border',    label: 'Warna Garis / Border',def: '#e2e8f0', icon: 'fa-border-all' }
+];
 
-function renderColorPicker(id, current) {
-    const container = document.getElementById(id);
-    container.innerHTML='';
-    themeColorsArr.forEach(c=>{
-        const btn=document.createElement('button');
-        btn.type='button';
-        btn.className='color-preset'+(c.main===current?' active':'');
-        btn.style.backgroundColor=c.main;
-        btn.onclick=()=>{
-            container.querySelectorAll('.color-preset').forEach(x=>x.classList.remove('active'));
-            btn.classList.add('active');
-        };
-        container.appendChild(btn);
+// Field Background Setiap Bagian (satu per satu)
+const BG_FIELDS = [
+    { key: 'bgBody',    label: 'Background Halaman Utama',   def: '#f1f5f9', icon: 'fa-window-maximize' },
+    { key: 'bgHeader',  label: 'Background Header / Navbar', def: '#ffffff', icon: 'fa-bars' },
+    { key: 'bgTime',    label: 'Background Jam / Running Text', def: '#4f46e5', icon: 'fa-clock' },
+    { key: 'bgCard',    label: 'Background Card / Panel',    def: '#ffffff', icon: 'fa-square' },
+    { key: 'bgInput',   label: 'Background Input / Form',    def: '#f8fafc', icon: 'fa-keyboard' },
+    { key: 'bgSidebar', label: 'Background Sidebar Info',    def: '#ffffff', icon: 'fa-columns' },
+    { key: 'bgButton',  label: 'Background Tombol Utama',    def: '#4f46e5', icon: 'fa-hand-pointer' },
+    { key: 'bgFooter',  label: 'Background Footer',          def: '#f1f5f9', icon: 'fa-shoe-prints' }
+];
+
+// Bangun HTML untuk satu picker
+function pickerHTML(field, value) {
+    const swatches = PALETTE.map(c =>
+        `<button type="button" class="swatch" data-key="${field.key}" data-color="${c}" style="background:${c};" title="${c}"></button>`
+    ).join('');
+    return `
+        <div class="picker-block">
+            <div class="picker-head">
+                <label><i class="fas ${field.icon}"></i> ${field.label}</label>
+                <div class="picker-preview" id="preview-${field.key}" style="background:${value};"></div>
+            </div>
+            <div class="palette">${swatches}</div>
+            <div class="picker-custom">
+                <i class="fas fa-eye-dropper"></i>
+                <span>Warna lain:</span>
+                <input type="color" class="native-color" data-key="${field.key}" value="${value}">
+                <span class="current-hex" id="hex-${field.key}">${value}</span>
+            </div>
+        </div>
+    `;
+}
+
+// Render panel (dipanggil saat data masuk dari Firebase atau awal)
+function renderThemeSettingsForm() {
+    const s = window.themeSettings || {};
+    const colorWrap = document.getElementById('colorFields');
+    const bgWrap = document.getElementById('bgFields');
+    if (!colorWrap || !bgWrap) return;
+
+    colorWrap.innerHTML = COLOR_FIELDS.map(f => pickerHTML(f, s[f.key] || f.def)).join('');
+    bgWrap.innerHTML = BG_FIELDS.map(f => pickerHTML(f, s[f.key] || f.def)).join('');
+
+    // Set state aktif untuk tiap picker
+    COLOR_FIELDS.concat(BG_FIELDS).forEach(f => markActiveSwatch(f.key, s[f.key] || f.def));
+}
+
+// Tandai swatch terpilih
+function markActiveSwatch(key, color) {
+    document.querySelectorAll(`.swatch[data-key="${key}"]`).forEach(sw => {
+        const isActive = sw.dataset.color.toLowerCase() === String(color).toLowerCase();
+        sw.classList.toggle('active', isActive);
     });
-    if (!current) container.firstChild?.classList.add('active');
 }
 
-function handleThemeModeChange(){
-    const mode=document.getElementById('themeMode').value;
-    document.getElementById('themeManualSettings').style.display=(mode==='manual'?'block':'none');
-    document.getElementById('themeAutoSettings').style.display=(mode==='auto'?'block':'none');
+// Event delegation: klik swatch
+document.addEventListener('click', (e) => {
+    const sw = e.target.closest('.swatch');
+    if (!sw) return;
+    setThemeValue(sw.dataset.key, sw.dataset.color);
+});
+
+// Event delegation: pakai color picker native
+document.addEventListener('input', (e) => {
+    const inp = e.target.closest('.native-color');
+    if (!inp) return;
+    setThemeValue(inp.dataset.key, inp.value);
+});
+
+// Set satu nilai tema & terapkan langsung
+function setThemeValue(key, color) {
+    if (!window.themeSettings) window.themeSettings = {};
+    window.themeSettings[key] = color;
+
+    const preview = document.getElementById('preview-' + key);
+    if (preview) preview.style.background = color;
+
+    const hexLabel = document.getElementById('hex-' + key);
+    if (hexLabel) hexLabel.textContent = color;
+
+    const nativeInp = document.querySelector(`.native-color[data-key="${key}"]`);
+    if (nativeInp) nativeInp.value = color;
+
+    markActiveSwatch(key, color);
+    applyThemeSettings();
 }
 
-function renderThemeSettingsForm(){
-    const t = window.themeSettings || defaultTheme();
-    document.getElementById('themeMode').value=t.mode||'manual';
-    renderColorPicker('manualPrimary', t.primary || '#4f46e5');
-    renderColorPicker('autoDayPrimary', t.autoDayPrimary || '#4f46e5');
-    renderColorPicker('autoNightPrimary', t.autoNightPrimary || '#06b6d4');
-    document.getElementById('manualBg').value = t.background || 'light';
-    document.getElementById('autoDayBg').value = t.autoDayBackground || 'light';
-    document.getElementById('autoNightBg').value = t.autoNightBackground || 'dark';
-    handleThemeModeChange();
+// Terapkan semua pengaturan ke CSS variable
+function applyThemeSettings() {
+    const s = window.themeSettings || {};
+    const r = document.documentElement.style;
+
+    // Warna dasar
+    const primary = s.primary || '#4f46e5';
+    r.setProperty('--primary', primary);
+    r.setProperty('--primary-dark', darken(primary, 20));
+    r.setProperty('--secondary', s.secondary || '#06b6d4');
+
+    // Warna teks
+    r.setProperty('--color-text', s.text || '#0f172a');
+    r.setProperty('--color-heading', s.heading || '#0f172a');
+    r.setProperty('--color-muted', s.muted || '#64748b');
+    r.setProperty('--color-border', s.border || '#e2e8f0');
+
+    // Background per bagian
+    r.setProperty('--bg-body', s.bgBody || '#f1f5f9');
+    r.setProperty('--bg-header', s.bgHeader || '#ffffff');
+    r.setProperty('--bg-card', s.bgCard || '#ffffff');
+    r.setProperty('--bg-input', s.bgInput || '#f8fafc');
+    r.setProperty('--bg-sidebar', s.bgSidebar || '#ffffff');
+    r.setProperty('--bg-footer', s.bgFooter || 'transparent');
+    r.setProperty('--bg-button', s.bgButton || primary);
+    r.setProperty('--bg-time', s.bgTime || primary);
 }
 
-function saveThemeSettingsToFirebase(){
-    const mode=document.getElementById('themeMode').value;
-    const activeManual = document.querySelector('#manualPrimary .color-preset.active')?.style.backgroundColor || '#4f46e5';
-    const activeDay = document.querySelector('#autoDayPrimary .color-preset.active')?.style.backgroundColor || '#4f46e5';
-    const activeNight = document.querySelector('#autoNightPrimary .color-preset.active')?.style.backgroundColor || '#06b6d4';
-
-    const theme = {
-        mode,
-        primary: rgbToHex(activeManual),
-        background: document.getElementById('manualBg').value,
-        autoDayPrimary: rgbToHex(activeDay),
-        autoDayBackground: document.getElementById('autoDayBg').value,
-        autoNightPrimary: rgbToHex(activeNight),
-        autoNightBackground: document.getElementById('autoNightBg').value
-    };
-    window.setRef(window.refDB(window.db,'themeSettings'), theme);
-    showToast('Tema disimpan ke firebase');
+// Helper: menggelapkan warna hex
+function darken(hex, percent) {
+    if (!hex || !hex.startsWith('#')) return '#3730a3';
+    let h = hex.replace('#', '');
+    if (h.length === 3) h = h.split('').map(c => c + c).join('');
+    const num = parseInt(h, 16);
+    let r = (num >> 16) & 255, g = (num >> 8) & 255, b = num & 255;
+    r = Math.max(0, Math.floor(r * (1 - percent / 100)));
+    g = Math.max(0, Math.floor(g * (1 - percent / 100)));
+    b = Math.max(0, Math.floor(b * (1 - percent / 100)));
+    return '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
 }
 
-function resetThemeInFirebase(){
-    window.setRef(window.refDB(window.db,'themeSettings'), defaultTheme());
+// Simpan ke Firebase
+function saveThemeSettingsToFirebase() {
+    const s = window.themeSettings || {};
+    window.setRef(window.refDB(window.db, 'themeSettings'), s).then(() => {
+        showToast('Pengaturan warna & background tersimpan!');
+    });
 }
 
-function rgbToHex(colorStr){
-    if (!colorStr || colorStr.startsWith('#')) return colorStr || '#4f46e5';
-    const m = colorStr.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
-    if (!m) return '#4f46e5';
-    return '#' + [m[1],m[2],m[3]].map(x => (+x).toString(16).padStart(2,'0')).join('');
+// Reset ke default
+function resetThemeInFirebase() {
+    if (!confirm('Reset semua warna & background ke default?')) return;
+    const def = {};
+    COLOR_FIELDS.forEach(f => def[f.key] = f.def);
+    BG_FIELDS.forEach(f => def[f.key] = f.def);
+    window.setRef(window.refDB(window.db, 'themeSettings'), def);
+    showToast('Direset ke default');
 }
 
-function applyThemeSettings(force) {
-    const t = window.themeSettings;
-    if (!t) { 
-        document.body.classList.remove('theme-dark','theme-gradient');
-        document.body.classList.add('theme-light');
-        return;
-    }
-    let primary = t.primary || '#4f46e5';
-    let bg = t.background || 'light';
-    if (t.mode === 'auto') {
-        const hour = new Date().getHours();
-        const isDay = hour >= 6 && hour < 18;
-        primary = isDay ? (t.autoDayPrimary || "#4f46e5") : (t.autoNightPrimary || "#06b6d4");
-        bg = isDay ? (t.autoDayBackground || "light") : (t.autoNightBackground || "dark");
-    }
-    document.documentElement.style.setProperty('--primary', primary);
-    const colorObj = themeColorsArr.find(c=>c.main===primary) || {dark:"#3730a3", secondary:"#06b6d4"};
-    document.documentElement.style.setProperty('--primary-dark', colorObj.dark);
-    document.documentElement.style.setProperty('--secondary', colorObj.secondary);
-
-    document.body.classList.remove('theme-light','theme-dark','theme-gradient');
-    document.body.style.background = '';
-
-    if (bg === 'dark') {
-        document.body.classList.add('theme-dark');
-    } else if (bg === 'gradient-primary') {
-        document.body.classList.add('theme-gradient');
-    } else {
-        document.body.classList.add('theme-light');
-    }
-}
-
+// ==================== LAIN-LAIN ====================
 function sendWhatsAppToAdmin(){
     const name = document.getElementById('custName').value || 'Pelanggan';
     const msg = encodeURIComponent(`Halo Admin, saya ${name} mau tanya servis.`);
@@ -887,7 +917,7 @@ function renderRepairItems(){
     const cl = document.getElementById('cust-service-list');
     cl.innerHTML='';
     const data = window.repairItems;
-    if (!data.length){ cl.innerHTML='<p style="color:var(--gray)">Layanan segera hadir.</p>'; return; }
+    if (!data.length){ cl.innerHTML='<p style="color:var(--color-muted)">Layanan segera hadir.</p>'; return; }
     data.forEach(item=>{
         const label = typeof item === 'string' ? item : item.label || '';
         cl.innerHTML += `<span class="badge-service">${label}</span>`;
@@ -898,7 +928,7 @@ function renderNotif(){
     const l = document.getElementById('notifList');
     const active = (window.announcements||[]).filter(a=>a.status==='on');
     document.getElementById('notifCount').textContent = active.length;
-    l.innerHTML = active.length ? '' : '<p style="color:var(--gray);font-size:0.85rem">Tidak ada</p>';
+    l.innerHTML = active.length ? '' : '<p style="color:var(--color-muted);font-size:0.85rem">Tidak ada</p>';
     active.forEach(a=>l.innerHTML += `<div class="notif-item"><b>Info:</b> ${a.text}</div>`);
 }
 
@@ -920,6 +950,7 @@ document.getElementById('nav-admin').onclick = () => {
     document.getElementById('admin-dashboard').style.display = isLogged ? 'block':'none';
     if (isLogged) {
         document.getElementById('activeAdminName').textContent = window.loggedInAdmin.name;
+        renderThemeSettingsForm();
     }
 };
 
@@ -930,6 +961,10 @@ document.getElementById('notifBtn').onclick = e => {
 window.onclick = () => document.getElementById('notifDropdown').classList.remove('active');
 
 window.addEventListener('load', () => {
+    updateClock();
+    applyThemeSettings();
+    renderThemeSettingsForm();
+
     if (window.loggedInAdmin) {
         document.getElementById('panel-cust').style.display='none';
         document.getElementById('panel-admin').style.display='block';
