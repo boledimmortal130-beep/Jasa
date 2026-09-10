@@ -22,7 +22,7 @@
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: #f1f5f9; color: var(--dark); line-height: 1.6; min-height: 100vh; background-image: radial-gradient(at 0% 0%, rgba(79, 70, 229, 0.06) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.06) 0px, transparent 50%); transition: background 0.5s ease, color 0.3s ease; }
+        body { background-color: #f1f5f9; color: var(--dark); line-height: 1.6; min-height: 100vh; transition: background 0.5s ease, color 0.3s ease; }
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
         
         header { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(226, 232, 240, 0.8); position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-sm); }
@@ -108,6 +108,109 @@
         
         .notification { position: fixed; bottom: 20px; right: 20px; padding: 15px 25px; border-radius: 12px; background: var(--dark); color: white; transform: translateY(200%); transition: 0.3s; z-index: 999; }
         .notification.show { transform: translateY(0); }
+
+        /* ===== THEME AUTO / LENGKAP ===== */
+        body.theme-light {
+            background-color: #f1f5f9;
+            background-image: radial-gradient(at 0% 0%, rgba(79,70,229,0.08) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(6,182,212,0.08) 0px, transparent 50%);
+            color: #0f172a;
+        }
+        body.theme-dark {
+            background-color: #0f172a;
+            background-image: none;
+            color: #e2e8f0;
+        }
+        body.theme-gradient {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary), var(--secondary)) fixed;
+            color: #fff;
+        }
+
+        body.theme-dark header,
+        body.theme-gradient header {
+            border-bottom-color: #334155;
+        }
+        body.theme-dark header {
+            background: rgba(15,23,42,0.85);
+        }
+        body.theme-gradient header {
+            background: rgba(255,255,255,0.2);
+        }
+
+        body.theme-dark nav ul { background: #1e293b; }
+        body.theme-dark nav a { color: #94a3b8; }
+        body.theme-dark nav a.active { background: #0f172a; color: var(--primary); }
+        body.theme-gradient nav ul { background: rgba(255,255,255,0.3); }
+        body.theme-gradient nav a { color: white; }
+        body.theme-gradient nav a.active { background: rgba(255,255,255,0.95); color: var(--primary); }
+
+        body.theme-dark .notification-icon { background: #1e293b; color: #94a3b8; }
+        body.theme-gradient .notification-icon { background: rgba(255,255,255,0.3); color: white; }
+        body.theme-dark .notification-dropdown { background: #1e293b; border-color: #334155; }
+        body.theme-gradient .notification-dropdown { background: rgba(255,255,255,0.95); border-color: rgba(255,255,255,0.4); color: #0f172a; }
+
+        body.theme-dark .card { background: #1e293b; border-color: #334155; }
+        body.theme-gradient .card { background: rgba(255,255,255,0.92); border-color: rgba(255,255,255,0.4); }
+        body.theme-dark .card-header { border-color: #334155; }
+        body.theme-gradient .card-header { border-color: rgba(255,255,255,0.4); }
+
+        body.theme-dark input,
+        body.theme-dark textarea,
+        body.theme-dark select {
+            background: #0f172a;
+            border-color: #334155;
+            color: #e2e8f0;
+        }
+        body.theme-dark input:focus,
+        body.theme-dark textarea:focus,
+        body.theme-dark select:focus {
+            background: #0f172a;
+        }
+        body.theme-gradient input,
+        body.theme-gradient textarea,
+        body.theme-gradient select {
+            background: rgba(255,255,255,0.7);
+            color: #0f172a;
+        }
+
+        body.theme-dark .order-card,
+        body.theme-dark .service-item,
+        body.theme-dark .theme-info-box,
+        body.theme-dark .notif-item {
+            background: #0f172a;
+            border-color: #334155;
+        }
+        body.theme-gradient .order-card,
+        body.theme-gradient .service-item,
+        body.theme-gradient .theme-info-box {
+            background: rgba(255,255,255,0.7);
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        body.theme-dark .badge-service {
+            background: #134e4a;
+            color: white;
+            border-color: #115e59;
+        }
+        body.theme-dark .notification-count {
+            border-color: #1e293b;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px 10px;
+            font-size: 0.9rem;
+            color: var(--gray);
+            border-top: 1px solid var(--border);
+            margin-top: 30px;
+        }
+        body.theme-dark footer {
+            color: #94a3b8;
+            border-top-color: #334155;
+        }
+        body.theme-gradient footer {
+            color: white;
+            border-top-color: rgba(255,255,255,0.3);
+        }
     </style>
 </head>
 <body>
@@ -190,12 +293,11 @@
                 <div class="card" style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white;">
                     <div class="card-header" style="border:none"><h2 style="color:white">Dashboard</h2><button class="btn-danger btn-sm" onclick="logout()"><i class="fas fa-power-off"></i> Logout</button></div>
                     <p>Selamat Datang, <b id="activeAdminName">Admin</b></p>
-                    <p style="opacity:0.8;"><i class="fas fa-sync-alt"></i> Terhubung ke Firebase Realtime</p>
                 </div>
 
                 <!-- Pengaturan tampilan -->
                 <div class="card">
-                    <div class="card-header"><h2><i class="fas fa-palette"></i> Pengaturan Tampilan (Real-time)</h2></div>
+                    <div class="card-header"><h2><i class="fas fa-palette"></i> Pengaturan Tampilan</h2></div>
                     <form id="themeForm" onsubmit="event.preventDefault(); saveThemeSettingsToFirebase();">
                         <div class="form-group">
                             <label>Mode Warna</label>
@@ -213,16 +315,23 @@
                             </select></div>
                         </div>
                         <div id="themeAutoSettings" style="display:none;">
-                            <div class="theme-info-box"><i class="fas fa-clock"></i> Otomatis ganti siang & malam.</div>
                             <div class="theme-section-title"><i class="fas fa-sun"></i> Siang</div>
                             <div class="form-group"><label>Warna Siang</label><div class="color-presets" id="autoDayPrimary"></div></div>
-                            <div class="form-group"><label>Background Siang</label><select id="autoDayBg"><option value="light">☀️ Terang</option><option value="gradient-primary">🌈 Gradasi</option></select></div>
+                            <div class="form-group"><label>Background Siang</label><select id="autoDayBg">
+                                <option value="light">☀️ Terang</option>
+                                <option value="gradient-primary">🌈 Gradasi</option>
+                            </select></div>
                             <div class="theme-section-title"><i class="fas fa-moon"></i> Malam</div>
                             <div class="form-group"><label>Warna Malam</label><div class="color-presets" id="autoNightPrimary"></div></div>
-                            <div class="form-group"><label>Background Malam</label><select id="autoNightBg"><option value="dark">🌙 Gelap</option><option value="gradient-primary">🌈 Gradasi</option></select></div>
+                            <div class="form-group"><label>Background Malam</label><select id="autoNightBg">
+                                <option value="dark">🌙 Gelap</option>
+                                <option value="gradient-primary">🌈 Gradasi</option>
+                            </select></div>
                         </div>
-                        <button type="submit" class="btn-success"><i class="fas fa-save"></i> Simpan</button>
-                        <button type="button" class="btn-outline" onclick="resetThemeInFirebase()"><i class="fas fa-undo"></i> Reset</button>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button type="submit" class="btn-success"><i class="fas fa-save"></i> Simpan</button>
+                            <button type="button" class="btn-outline" onclick="resetThemeInFirebase()"><i class="fas fa-undo"></i> Reset</button>
+                        </div>
                     </form>
                 </div>
 
@@ -273,12 +382,16 @@
                 <h3>Info Toko</h3>
                 <p><i class="fas fa-map-marker-alt"></i> Blok Krasag, Gamel, Plered, Cirebon</p>
                 <p><i class="fas fa-phone"></i> 0899-1286-742</p>
-                <hr style="margin:10px 0;border:none;border-top:1px solid #e2e8f0">
-                <p style="font-size:0.8rem;color:var(--gray)"><i class="fas fa-database"></i> Firebase Realtime</p>
+                <hr style="margin:10px 0;border:none;border-top:1px solid var(--border)">
+                <p style="font-size:0.8rem;color:var(--gray)">Pro-Tech Service</p>
             </div>
         </div>
     </div>
 </div>
+
+<footer>
+    © 2026 Pro-Tech Service
+</footer>
 
 <!-- PRINT -->
 <div id="printArea">
@@ -301,7 +414,6 @@
     </table>
     <div class="divider"></div>
     <div class="total-section"><h3>TOTAL: Rp <span id="pTotal"></span></h3></div>
-    <!-- QR CODE DENGAN LINK YANG DIMINTA -->
     <div style="text-align:center; margin-top:10px;">
         <img src="https://api.qrserver.com/v1/create-qr-code/?size=120&data=https%3A%2F%2Fboledimmortal130-beep.github.io%2FJasa%2F%23" alt="QR Code Pro-Tech" width="120" height="120">
         <p style="font-size:10px">Scan untuk order & info servis</p>
@@ -317,7 +429,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
     import { getDatabase, ref, onValue, set, push, update, remove } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
 
-    // ===================== KONFIGURASI FIREBASE =====================
     const firebaseConfig = {
         apiKey: "AIzaSyCVUjdBjwdpIUUzcdvaWAsGGb9mkVUGZ2s",
         authDomain: "jasa-11dca.firebaseapp.com",
@@ -332,7 +443,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // ============ EXPOSE GLOBAL ============
     window.db = db;
     window.pushRef = push;
     window.setRef = set;
@@ -341,7 +451,6 @@
     window.onValueRef = onValue;
     window.refDB = ref;
 
-    // ============ DATA GLOBAL ============
     window.announcements = [];
     window.repairItems = [];
     window.orders = [];
@@ -350,16 +459,12 @@
     window.currentEditingAnnId = null;
     window.themeSettings = localStorage.getItem('protechThemeSettings') ? JSON.parse(localStorage.getItem('protechThemeSettings')) : null;
 
-    // Mulai sinkronisasi Firebase
     syncAllFromFirebase();
     console.log("Firebase siap.");
 </script>
 
-<!-- -->
 <script>
-// Fungsi-fungsi utama
 function syncAllFromFirebase() {
-    // Layanan
     window.onValueRef(window.refDB(window.db, 'repairItems'), (snap) => {
         const data = snap.val();
         if (data && Array.isArray(data)) {
@@ -373,7 +478,6 @@ function syncAllFromFirebase() {
         if (typeof renderServiceList === 'function') renderServiceList();
     }, (err) => console.warn(err));
 
-    // Pengumuman
     window.onValueRef(window.refDB(window.db, 'announcements'), (snap) => {
         const data = snap.val();
         window.announcements = data ? Object.entries(data).map(([id, val]) => ({ id, ...val })) : [];
@@ -381,7 +485,6 @@ function syncAllFromFirebase() {
         if (typeof renderAnnouncements === 'function') renderAnnouncements();
     }, (err) => console.warn(err));
 
-    // Orders
     window.onValueRef(window.refDB(window.db, 'orders'), (snap) => {
         const data = snap.val();
         if (data && typeof data === 'object') {
@@ -392,7 +495,6 @@ function syncAllFromFirebase() {
         if (typeof renderOrders === 'function') renderOrders();
     }, (err) => console.warn(err));
 
-    // Theme Settings
     window.onValueRef(window.refDB(window.db, 'themeSettings'), (snap) => {
         const data = snap.val();
         if (data) {
@@ -746,8 +848,8 @@ function rgbToHex(colorStr){
 function applyThemeSettings(force) {
     const t = window.themeSettings;
     if (!t) { 
-        document.body.style.background='';
-        document.body.style.backgroundColor='#f1f5f9';
+        document.body.classList.remove('theme-dark','theme-gradient');
+        document.body.classList.add('theme-light');
         return;
     }
     let primary = t.primary || '#4f46e5';
@@ -763,14 +865,15 @@ function applyThemeSettings(force) {
     document.documentElement.style.setProperty('--primary-dark', colorObj.dark);
     document.documentElement.style.setProperty('--secondary', colorObj.secondary);
 
+    document.body.classList.remove('theme-light','theme-dark','theme-gradient');
+    document.body.style.background = '';
+
     if (bg === 'dark') {
-        document.body.style.background = 'linear-gradient(135deg, #0f172a, #1e293b)';
-        document.body.style.backgroundColor = '#0f172a';
+        document.body.classList.add('theme-dark');
     } else if (bg === 'gradient-primary') {
-        document.body.style.background = `linear-gradient(135deg, ${colorObj.dark}, ${primary}, ${colorObj.secondary})`;
+        document.body.classList.add('theme-gradient');
     } else {
-        document.body.style.background = '#f1f5f9';
-        document.body.style.backgroundImage = 'radial-gradient(at 0% 0%, rgba(79,70,229,0.06), transparent 50%), radial-gradient(at 100% 100%, rgba(6,182,212,0.06), transparent 50%)';
+        document.body.classList.add('theme-light');
     }
 }
 
