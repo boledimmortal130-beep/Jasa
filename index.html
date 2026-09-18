@@ -87,16 +87,19 @@
 
         .main-content { display: grid; grid-template-columns: 1fr 340px; gap: 24px; margin-top: 24px; }
         .card { background: var(--bg-card); border-radius: var(--radius); padding: 24px; margin-bottom: 24px; box-shadow: var(--shadow-md); border: 1px solid var(--color-border); transition: background 0.4s ease; }
-        .card-header { border-bottom: 1px solid var(--color-border); margin-bottom: 20px; padding-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .card-header { border-bottom: 1px solid var(--color-border); margin-bottom: 20px; padding-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem; color: var(--color-text); }
         input, textarea, select { width: 100%; padding: 12px; border: 1px solid var(--color-border); border-radius: 12px; background: var(--bg-input); color: var(--color-text); transition: background 0.3s ease; }
         input:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12); }
         button { padding: 12px 24px; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; transition: 0.2s; background: var(--bg-button); color: white; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
         button:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
         .btn-danger { background: var(--warning); }
         .btn-success { background: var(--success); }
         .btn-wa { background: #25d366; }
+        .btn-bt { background: linear-gradient(135deg, #0082fc, #4f46e5); }
+        .btn-bt.connected { background: linear-gradient(135deg, #10b981, #22c55e); }
         .btn-outline { background: transparent; border: 1px dashed var(--color-muted); color: var(--color-muted); }
         .btn-sm { padding: 8px 12px; font-size: 0.8rem; border-radius: 8px; }
         .btn-edit { background: #f59e0b; }
@@ -116,6 +119,58 @@
         .service-item { display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--color-border); border-left: 4px solid var(--primary); background: var(--bg-input); border-radius: 12px; padding: 12px 15px; margin-bottom: 10px; gap: 10px; }
         .service-item-actions { display: flex; gap: 6px; flex-shrink: 0; }
         .badge-service { background: var(--bg-input); color: var(--primary); padding: 8px 15px; border-radius: 12px; font-size: 0.8rem; font-weight: 700; border: 1px solid var(--color-border); }
+
+        /* ============ BLUETOOTH PANEL ============ */
+        .bt-status {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 6px 14px; border-radius: 20px;
+            font-size: 0.75rem; font-weight: 700;
+            background: #fee2e2; color: #dc2626;
+            transition: 0.3s;
+        }
+        .bt-status.connected { background: #d1fae5; color: #065f46; }
+        .bt-status.searching { background: #fef9c3; color: #a16207; }
+        .bt-status .dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: currentColor; display: inline-block;
+        }
+        .bt-status.connected .dot { animation: pulse-dot 1.6s infinite; }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.75); }
+        }
+        .bt-actions { display: flex; gap: 10px; flex-wrap: wrap; margin: 15px 0; }
+        .bt-info {
+            background: var(--bg-input);
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            padding: 12px 15px;
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+        }
+        .bt-info b { color: var(--primary); }
+        .bt-options {
+            display: flex; flex-wrap: wrap; gap: 18px;
+            margin-top: 15px; padding-top: 15px;
+            border-top: 1px dashed var(--color-border);
+            font-size: 0.85rem; align-items: center;
+        }
+        .bt-options label {
+            display: flex; align-items: center; gap: 7px;
+            margin: 0; font-weight: 600; cursor: pointer;
+        }
+        .bt-options input[type="checkbox"] { width: auto; margin: 0; cursor: pointer; }
+        .bt-options select { width: auto; padding: 7px 10px; border-radius: 8px; font-size: 0.85rem; }
+        .bt-hint {
+            background: linear-gradient(135deg, rgba(79,70,229,0.06), rgba(6,182,212,0.06));
+            border-left: 3px solid var(--primary);
+            padding: 12px 15px; border-radius: 0 10px 10px 0;
+            font-size: 0.82rem; color: var(--color-muted);
+            margin-bottom: 15px; line-height: 1.5;
+        }
+        .bt-hint b { color: var(--primary); }
 
         /* ============ TEMA / PENGATURAN WARNA ============ */
         .theme-section-title {
@@ -232,9 +287,10 @@
             .service-item { flex-direction: column; }
             .service-item-actions { width: 100%; justify-content: flex-end; }
             .swatch { width: 22px; height: 22px; }
+            .bt-actions button { flex: 1; min-width: 140px; }
         }
         
-        .notification { position: fixed; bottom: 20px; right: 20px; padding: 15px 25px; border-radius: 12px; background: var(--dark); color: white; transform: translateY(200%); transition: 0.3s; z-index: 999; }
+        .notification { position: fixed; bottom: 20px; right: 20px; padding: 15px 25px; border-radius: 12px; background: var(--dark); color: white; transform: translateY(200%); transition: 0.3s; z-index: 999; max-width: 90vw; }
         .notification.show { transform: translateY(0); }
 
         footer {
@@ -338,6 +394,46 @@
                     <p>Selamat Datang, <b id="activeAdminName">Admin</b></p>
                 </div>
 
+                <!-- ============ PRINTER BLUETOOTH ============ -->
+                <div class="card" id="btCard">
+                    <div class="card-header">
+                        <h2><i class="fab fa-bluetooth-b"></i> Printer Bluetooth</h2>
+                        <span class="bt-status" id="btStatus"><span class="dot"></span> <span id="btStatusText">Tidak Terhubung</span></span>
+                    </div>
+
+                    <div class="bt-hint">
+                        <b><i class="fas fa-lightbulb"></i> Cara pakai:</b> Nyalakan printer thermal Bluetooth →
+                        klik <b>Hubungkan Bluetooth</b> → pilih nama printer di jendela Chrome →
+                        printer siap dipakai. <br>
+                        <i class="fas fa-info-circle"></i> Mendukung printer <b>BLE</b> (RPP02N, Xprinter BLE, GOOJPRT, PeriPage, dll).
+                    </div>
+
+                    <div class="bt-actions">
+                        <button class="btn-bt" id="btnBtConnect" onclick="connectBluetoothPrinter()">
+                            <i class="fab fa-bluetooth-b"></i> Hubungkan Bluetooth
+                        </button>
+                        <button class="btn-danger" id="btnBtDisconnect" onclick="disconnectBluetoothPrinter()" disabled>
+                            <i class="fas fa-plug-circle-xmark"></i> Putuskan Sambungan
+                        </button>
+                    </div>
+
+                    <div class="bt-info" id="btInfo">
+                        <i class="fas fa-circle-info"></i> Status: <b>Belum ada perangkat terhubung</b>
+                    </div>
+
+                    <div class="bt-options">
+                        <label><input type="checkbox" id="btAutoCut" checked> <span>Auto Cut kertas</span></label>
+                        <label><input type="checkbox" id="btBeep" checked> <span>Bunyi Beep</span></label>
+                        <label>
+                            <span>Lebar kertas:</span>
+                            <select id="btPaperWidth">
+                                <option value="32">58 mm (32 kolom)</option>
+                                <option value="48">80 mm (48 kolom)</option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+
                 <!-- ============ PENGATURAN WARNA & BACKGROUND ============ -->
                 <div class="card">
                     <div class="card-header"><h2><i class="fas fa-palette"></i> Pengaturan Warna & Background</h2></div>
@@ -370,7 +466,18 @@
                     <div id="receipt-items-container"><div class="receipt-row-item"><input type="text" placeholder="Nama Item" class="r-item-name"><input type="number" placeholder="Harga" class="r-item-price" oninput="calcTotal()"><button type="button" class="btn-danger btn-sm" onclick="this.parentElement.remove(); calcTotal()">X</button></div></div>
                     <button type="button" class="btn-outline btn-sm" onclick="addReceiptRow()">+ Tambah</button>
                     <div class="receipt-summary"><p>Total</p><h3>Rp <span id="sTotal">0</span></h3></div>
-                    <button class="btn-success" onclick="printReceipt()" style="width:100%; margin-top:15px"><i class="fas fa-print"></i> Cetak Struk (Ctrl+P)</button>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
+                        <button class="btn-bt" id="btnPrintBT" onclick="printReceiptBluetooth()">
+                            <i class="fab fa-bluetooth-b"></i> Cetak via Bluetooth
+                        </button>
+                        <button class="btn-success" onclick="printReceipt()">
+                            <i class="fas fa-print"></i> Cetak via Chrome
+                        </button>
+                    </div>
+                    <p style="font-size: 0.75rem; color: var(--color-muted); text-align: center; margin-top: 8px;">
+                        Bluetooth = langsung ke printer thermal &bull; Chrome = dialog print / simpan PDF
+                    </p>
                 </div>
 
                 <!-- Layanan -->
@@ -411,6 +518,11 @@
                 <hr style="margin:10px 0;border:none;border-top:1px solid var(--color-border)">
                 <p style="font-size:0.85rem;color:var(--color-muted);font-weight:700;">Pro-Tech Service</p>
                 <p style="font-size:0.75rem;color:var(--primary);font-weight:700;letter-spacing:1px;">GRADAG JAYA GROUP</p>
+                <hr style="margin:10px 0;border:none;border-top:1px solid var(--color-border)">
+                <p style="font-size:0.8rem;color:var(--color-muted);">
+                    <i class="fab fa-bluetooth-b"></i> Printer:
+                    <b id="sidebarBtStatus" style="color:var(--warning)">Offline</b>
+                </p>
             </div>
         </div>
     </div>
@@ -420,7 +532,7 @@
     © 2026 Pro-Tech Service | <b>Gradag Jaya Group</b>
 </footer>
 
-<!-- ===================== PRINT AREA (STRUK) ===================== -->
+<!-- ===================== PRINT AREA (CHROME FALLBACK) ===================== -->
 <div id="printArea">
     <div style="text-align:center;">
         <div class="brand">PRO-TECH SERVICE</div>
@@ -450,7 +562,7 @@
     </div>
     <div class="divider"></div>
     <div style="text-align:center; margin-top:6px; font-size:10px;">
-        <b>Terima kasih 😊</b><br>
+        <b>Terima kasih</b><br>
         Barang yang sudah diservis harap diambil maksimal 30 hari.<br>
         <b>Pro-Tech Service</b> - <i>Gradag Jaya Group</i>
     </div>
@@ -498,6 +610,9 @@
 </script>
 
 <script>
+/* ============================================================
+   ================   DATA & SYNC FIREBASE   ==================
+   ============================================================ */
 function syncAllFromFirebase() {
     window.onValueRef(window.refDB(window.db, 'repairItems'), (snap) => {
         const data = snap.val();
@@ -550,12 +665,14 @@ setInterval(updateClock, 1000);
 
 function showToast(msg) {
     const t = document.getElementById('toast');
-    t.textContent = msg;
+    t.innerHTML = msg;
     t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3000);
+    setTimeout(() => t.classList.remove('show'), 3500);
 }
 
-// ============== AUTH ==============
+/* ============================================================
+   ==============   AUTH ADMIN   ==============================
+   ============================================================ */
 function toggleAuth(isRegister) {
     document.getElementById('login-box').style.display = isRegister ? 'none' : 'block';
     document.getElementById('register-box').style.display = isRegister ? 'block' : 'none';
@@ -593,12 +710,15 @@ function loginAdmin() {
 }
 
 function logout() {
+    disconnectBluetoothPrinter();
     window.loggedInAdmin = null;
     localStorage.removeItem('loggedInAdmin');
     location.reload();
 }
 
-// =============== KELOLA LAYANAN ===============
+/* ============================================================
+   ==============   KELOLA LAYANAN   ==========================
+   ============================================================ */
 function saveServiceToFirebase() {
     const serviceName = document.getElementById('serviceName').value.trim();
     if (!serviceName) return alert('Nama layanan wajib diisi');
@@ -658,7 +778,9 @@ function cancelEditServiceFromFirebase() {
     window.currentEditingServiceId = null;
 }
 
-// =============== PENGUMUMAN ===============
+/* ============================================================
+   ==============   PENGUMUMAN   ==============================
+   ============================================================ */
 function saveAnnouncementToFirebase() {
     const text = document.getElementById('announcementText').value.trim();
     if (!text) return alert('Isi pengumuman!');
@@ -709,7 +831,9 @@ function deleteAnnouncementFirebase(id) {
     }
 }
 
-// =============== PESANAN ===============
+/* ============================================================
+   ==============   PESANAN   =================================
+   ============================================================ */
 function submitOrderViaWhatsApp() {
     const name = document.getElementById('custName').value.trim();
     const wa = document.getElementById('custWA').value.trim();
@@ -755,7 +879,9 @@ function deleteOrder(firebaseKey) {
     if (confirm('Hapus order?')) window.removeRef(window.refDB(window.db, 'orders/' + firebaseKey));
 }
 
-// =============== STRUK & PRINT ===============
+/* ============================================================
+   ==============   FORM STRUK   ==============================
+   ============================================================ */
 function addReceiptRow() {
     const div = document.createElement('div');
     div.className = 'receipt-row-item';
@@ -769,49 +895,470 @@ function calcTotal() {
     document.getElementById('sTotal').textContent = sum.toLocaleString('id-ID');
 }
 
-function printReceipt() {
+function getReceiptData() {
     const nama = document.getElementById('sNama').value.trim();
     const unit = document.getElementById('sBarang').value.trim();
     const garansi = document.getElementById('sGaransi').value.trim() || '-';
-    if (!nama || !unit) return alert('Lengkapi nama pelanggan dan unit servis!');
+
+    const names = document.querySelectorAll('.r-item-name');
+    const prices = document.querySelectorAll('.r-item-price');
+    const items = [];
+    names.forEach((el, idx) => {
+        const n = el.value.trim();
+        if (n) items.push({ name: n, price: parseInt(prices[idx].value) || 0 });
+    });
+    const total = items.reduce((a, b) => a + b.price, 0);
+
+    return { nama, unit, garansi, items, total };
+}
+
+/* ---------- CETAK VIA CHROME (FALLBACK) ---------- */
+function printReceipt() {
+    const d = getReceiptData();
+
+    if (!d.nama || !d.unit) return alert('Lengkapi nama pelanggan dan unit servis!');
     if (!window.loggedInAdmin) return alert('Login admin dulu');
 
     document.getElementById('pTgl').textContent = new Date().toLocaleString('id-ID');
     document.getElementById('pAdmin').textContent = window.loggedInAdmin.name;
-    document.getElementById('pNama').textContent = nama;
-    document.getElementById('pBarang').textContent = unit;
-    document.getElementById('pGaransi').textContent = garansi;
-    document.getElementById('pTotal').textContent = document.getElementById('sTotal').textContent;
+    document.getElementById('pNama').textContent = d.nama;
+    document.getElementById('pBarang').textContent = d.unit;
+    document.getElementById('pGaransi').textContent = d.garansi;
+    document.getElementById('pTotal').textContent = d.total.toLocaleString('id-ID');
 
     const rowsBody = document.getElementById('pItemsBody');
     rowsBody.innerHTML = '';
-    const namaItems = document.querySelectorAll('.r-item-name');
-    const hargaItems = document.querySelectorAll('.r-item-price');
-    namaItems.forEach((el, idx) => {
-        if (el.value.trim()) {
-            rowsBody.innerHTML += `<tr><td>${el.value}</td><td style="text-align:right">Rp ${parseInt(hargaItems[idx].value || 0).toLocaleString('id-ID')}</td></tr>`;
-        }
+    d.items.forEach(it => {
+        rowsBody.innerHTML += `<tr><td>${it.name}</td><td style="text-align:right">Rp ${it.price.toLocaleString('id-ID')}</td></tr>`;
     });
 
-    showToast('Membuka jendela cetak...');
-    // Delay kecil agar toast muncul dulu lalu dialog print Chrome terbuka
-    setTimeout(() => {
-        window.print();
-    }, 300);
+    showToast('<i class="fas fa-print"></i> Membuka jendela cetak Chrome...');
+    setTimeout(() => window.print(), 300);
 }
 
-// ============================================================
-// ============ PENGATURAN WARNA & BACKGROUND ==================
-// ============================================================
+/* ============================================================
+   ============================================================
+   ============   BLUETOOTH THERMAL PRINTER   =================
+   ============================================================
+   ============================================================ */
 
-// Palet warna lengkap (banyak pilihan)
+// UUID service umum printer thermal BLE
+const BLE_PRINTER_SERVICES = [
+    '0000ff00-0000-1000-8000-00805f9b34fb',
+    '0000ff01-0000-1000-8000-00805f9b34fb',
+    '0000ff10-0000-1000-8000-00805f9b34fb',
+    '0000ff90-0000-1000-8000-00805f9b34fb',
+    '0000ffe0-0000-1000-8000-00805f9b34fb',
+    '0000ffe5-0000-1000-8000-00805f9b34fb',
+    '0000fff0-0000-1000-8000-00805f9b34fb',
+    '000018f0-0000-1000-8000-00805f9b34fb',
+    '49535343-fe7d-4ae5-8fa9-9fafd205e455',
+    'e7810a71-73ae-499d-8c15-faa9aef0c3f2',
+    '6e400001-b5a3-f393-e0a9-e50e24dcca9e',
+    '0000ae30-0000-1000-8000-00805f9b34fb',
+    '0000af30-0000-1000-8000-00805f9b34fb',
+    '0000e790-0000-1000-8000-00805f9b34fb',
+    '000018f1-0000-1000-8000-00805f9b34fb',
+    '0000fee7-0000-1000-8000-00805f9b34fb'
+];
+
+window.btDevice = null;
+window.btCharacteristic = null;
+window.btServer = null;
+
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+function setBtUI(state, deviceName) {
+    const status = document.getElementById('btStatus');
+    const text = document.getElementById('btStatusText');
+    const info = document.getElementById('btInfo');
+    const side = document.getElementById('sidebarBtStatus');
+    const btnC = document.getElementById('btnBtConnect');
+    const btnD = document.getElementById('btnBtDisconnect');
+
+    status.classList.remove('connected', 'searching');
+
+    if (state === 'connected') {
+        status.classList.add('connected');
+        text.textContent = 'Terhubung';
+        info.innerHTML = `<i class="fas fa-circle-check" style="color:#10b981"></i> Printer: <b>${deviceName || 'Unknown'}</b> &mdash; Siap mencetak struk.`;
+        side.innerHTML = 'Online';
+        side.style.color = '#10b981';
+        btnC.innerHTML = '<i class="fas fa-rotate"></i> Ganti Printer';
+        btnC.classList.add('connected');
+        btnD.disabled = false;
+    } else if (state === 'searching') {
+        status.classList.add('searching');
+        text.textContent = 'Mencari...';
+        info.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mencari printer Bluetooth...';
+        btnC.disabled = true;
+        btnD.disabled = true;
+    } else if (state === 'error') {
+        text.textContent = 'Gagal';
+        info.innerHTML = `<i class="fas fa-triangle-exclamation" style="color:#dc2626"></i> ${deviceName || 'Terjadi kesalahan.'}`;
+        side.innerHTML = 'Offline';
+        side.style.color = 'var(--warning)';
+        btnC.disabled = false;
+        btnC.innerHTML = '<i class="fab fa-bluetooth-b"></i> Hubungkan Bluetooth';
+        btnC.classList.remove('connected');
+        btnD.disabled = true;
+    } else {
+        text.textContent = 'Tidak Terhubung';
+        info.innerHTML = '<i class="fas fa-circle-info"></i> Status: <b>Belum ada perangkat terhubung</b>';
+        side.innerHTML = 'Offline';
+        side.style.color = 'var(--warning)';
+        btnC.disabled = false;
+        btnC.innerHTML = '<i class="fab fa-bluetooth-b"></i> Hubungkan Bluetooth';
+        btnC.classList.remove('connected');
+        btnD.disabled = true;
+    }
+}
+
+/* ---------- HUBUNGKAN BLUETOOTH ---------- */
+async function connectBluetoothPrinter() {
+    if (!('bluetooth' in navigator)) {
+        alert(
+            'Web Bluetooth tidak didukung browser ini.\n\n' +
+            'Gunakan Google Chrome versi terbaru di:\n' +
+            '• Windows / macOS / Linux / ChromeOS\n' +
+            '• Android (Chrome)\n\n' +
+            'Pastikan halaman diakses via HTTPS.\n' +
+            'Gunakan tombol "Cetak via Chrome" sebagai alternatif.'
+        );
+        return;
+    }
+
+    try {
+        setBtUI('searching');
+
+        // Putuskan dulu jika sudah ada sambungan lama
+        if (window.btDevice && window.btDevice.gatt.connected) {
+            try { window.btDevice.gatt.disconnect(); } catch (e) {}
+        }
+
+        const device = await navigator.bluetooth.requestDevice({
+            acceptAllDevices: true,
+            optionalServices: BLE_PRINTER_SERVICES
+        });
+
+        device.addEventListener('gattserverdisconnected', onBtDisconnected);
+
+        const server = await device.gatt.connect();
+
+        // Cari characteristic yang bisa ditulis
+        let writeChar = null;
+        try {
+            const services = await server.getPrimaryServices();
+            for (const svc of services) {
+                let chars = [];
+                try { chars = await svc.getCharacteristics(); } catch (e) { continue; }
+                for (const ch of chars) {
+                    const p = ch.properties;
+                    if (p.writeWithoutResponse) { writeChar = ch; break; }
+                    if (p.write && !writeChar) { writeChar = ch; }
+                }
+                if (writeChar && writeChar.properties.writeWithoutResponse) break;
+            }
+        } catch (e) {
+            console.warn('Gagal enumerate services:', e);
+        }
+
+        if (!writeChar) {
+            try { device.gatt.disconnect(); } catch (e) {}
+            setBtUI('error', 'Printer tidak punya channel tulis (write characteristic). Coba printer BLE lain.');
+            alert('Printer terdeteksi, tetapi tidak memiliki channel untuk mengirim data.\n\nPastikan ini printer thermal BLE. Alternatif: gunakan "Cetak via Chrome".');
+            return;
+        }
+
+        window.btDevice = device;
+        window.btServer = server;
+        window.btCharacteristic = writeChar;
+
+        setBtUI('connected', device.name || 'Printer BLE');
+        showToast(`<i class="fas fa-circle-check"></i> Terhubung ke <b>${device.name || 'Printer'}</b>`);
+
+    } catch (err) {
+        console.error('BT Error:', err);
+        if (err.name === 'NotFoundError') {
+            setBtUI('idle');
+            showToast('<i class="fas fa-circle-info"></i> Pemilihan perangkat dibatalkan.');
+        } else if (err.name === 'SecurityError') {
+            setBtUI('error', 'Izin Bluetooth ditolak.'); 
+        } else {
+            setBtUI('error', err.message || 'Gagal terhubung.');
+            showToast('<i class="fas fa-triangle-exclamation"></i> Gagal: ' + (err.message || err.name));
+        }
+    }
+}
+
+/* ---------- PUTUSKAN SAMBUNGAN ---------- */
+function disconnectBluetoothPrinter() {
+    try {
+        if (window.btDevice && window.btDevice.gatt.connected) {
+            window.btDevice.gatt.disconnect();
+        }
+    } catch (e) { console.warn(e); }
+
+    window.btDevice = null;
+    window.btServer = null;
+    window.btCharacteristic = null;
+    setBtUI('idle');
+    showToast('<i class="fas fa-plug-circle-xmark"></i> Sambungan Bluetooth diputus.');
+}
+
+function onBtDisconnected() {
+    window.btDevice = null;
+    window.btServer = null;
+    window.btCharacteristic = null;
+    setBtUI('idle');
+    showToast('<i class="fas fa-triangle-exclamation"></i> Printer terputus.');
+    console.warn('GATT server disconnected.');
+}
+
+/* ============================================================
+   ============   ESC/POS RECEIPT BUILDER   ===================
+   ============================================================ */
+
+const ESC = 0x1B;
+const GS  = 0x1D;
+const LF  = 0x0A;
+
+// Konversi string → array byte (aman untuk thermal printer)
+function textToBytes(str) {
+    const out = [];
+    str = String(str)
+        .replace(/[""]/g, '"')
+        .replace(/['']/g, "'")
+        .replace(/–|—/g, '-')
+        .replace(/[^\x00-\x7E]/g, '?'); // karakter non-ASCII → '?'
+    for (let i = 0; i < str.length; i++) out.push(str.charCodeAt(i) & 0xFF);
+    return out;
+}
+
+function buildEscPosReceipt(d) {
+    const W         = parseInt(document.getElementById('btPaperWidth').value) || 32;
+    const autoCut   = document.getElementById('btAutoCut').checked;
+    const beep      = document.getElementById('btBeep').checked;
+
+    const B = [];
+    const push   = (...b) => B.push(...b);
+    const raw    = (s) => B.push(...textToBytes(s));
+    const ln     = (s = '') => { raw(s); push(LF); };
+    const center = (s, w = W) => {
+        const pad = Math.max(0, Math.floor((w - s.length) / 2));
+        ln(' '.repeat(pad) + s);
+    };
+    const divider = (ch = '-') => ln(ch.repeat(W));
+
+    // ---- INIT ----
+    push(ESC, 0x40);                 // ESC @ reset printer
+
+    // ---- BEEP ----
+    if (beep) { push(ESC, 0x42, 0x03, 0x03); } // ESC B n t (buzzer)
+
+    // ---- HEADER ----
+    push(ESC, 0x61, 0x01);           // ESC a 1 = center
+    push(GS, 0x21, 0x11);            // GS ! 0x11 = double width + height
+    ln('PRO-TECH SERVICE');
+    push(GS, 0x21, 0x00);            // normal size
+    push(ESC, 0x45, 0x01);           // ESC E 1 = bold on
+    ln('GRADAG JAYA GROUP');
+    push(ESC, 0x45, 0x00);           // bold off
+    center('Blok Krasag, Gamel, Plered');
+    center('Cirebon');
+    center('WA: 0899-1286-742');
+    push(ESC, 0x61, 0x00);           // align kiri
+    divider('=');
+
+    // ---- INFO TRANSAKSI ----
+    const tglStr = new Date().toLocaleString('id-ID', {
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+    }).replace(/\./g, ':');
+
+    const infoLines = [
+        ['Tgl',       tglStr],
+        ['Admin',     (window.loggedInAdmin && window.loggedInAdmin.name) || '-'],
+        ['Pelanggan', d.nama],
+        ['Unit',      d.unit],
+        ['Garansi',   d.garansi]
+    ];
+    infoLines.forEach(([k, v]) => {
+        let val = String(v);
+        const keyStr = k.padEnd(10, ' ');
+        const maxLen = W - 12;
+        if (val.length > maxLen) val = val.slice(0, maxLen);
+        ln(keyStr + ': ' + val);
+    });
+
+    divider('-');
+
+    // ---- DAFTAR ITEM ----
+    push(ESC, 0x45, 0x01);
+    ln('ITEM'.padEnd(W - 12) + 'SUBTOTAL');
+    push(ESC, 0x45, 0x00);
+    divider('.');
+
+    if (d.items.length === 0) {
+        const noItem = '(tidak ada rincian item)';
+        center(noItem);
+    } else {
+        d.items.forEach(it => {
+            const priceStr = 'Rp ' + it.price.toLocaleString('id-ID');
+            let name = it.name;
+            const maxName = W - priceStr.length - 1;
+            if (name.length > maxName) name = name.slice(0, Math.max(1, maxName - 2)) + '..';
+            const space = W - name.length - priceStr.length;
+            ln(name + ' '.repeat(Math.max(1, space)) + priceStr);
+        });
+    }
+
+    divider('-');
+
+    // ---- TOTAL ----
+    push(ESC, 0x45, 0x01);
+    push(GS, 0x21, 0x01);            // double height
+    const totalStr = 'Rp ' + d.total.toLocaleString('id-ID');
+    const totLabel = 'TOTAL';
+    const totSpace = W - totLabel.length - totalStr.length;
+    ln(totLabel + ' '.repeat(Math.max(1, totSpace)) + totalStr);
+    push(GS, 0x21, 0x00);
+    push(ESC, 0x45, 0x00);
+    divider('=');
+
+    // ---- QR CODE ----
+    try {
+        push(ESC, 0x61, 0x01);       // center
+        const qrData = 'https://boledimmortal130-beep.github.io/Jasa/';
+        const qrBytes = textToBytes(qrData);
+        const len = qrBytes.length + 3;
+        const pL = len & 0xFF, pH = (len >> 8) & 0xFF;
+
+        // Model 2
+        push(GS, 0x28, 0x6B, 0x04, 0x00, 0x31, 0x41, 0x32, 0x00);
+        // Module size
+        push(GS, 0x28, 0x6B, 0x03, 0x00, 0x31, 0x43, 0x06);
+        // Error correction level M
+        push(GS, 0x28, 0x6B, 0x03, 0x00, 0x31, 0x45, 0x31);
+        // Store data
+        push(GS, 0x28, 0x6B, pL, pH, 0x31, 0x50, 0x30, ...qrBytes);
+        // Print QR
+        push(GS, 0x28, 0x6B, 0x03, 0x00, 0x31, 0x51, 0x30);
+
+        ln('');
+        center('Scan untuk order & info servis');
+        center('boledimmortal130-beep.github.io/Jasa');
+        push(ESC, 0x61, 0x00);
+    } catch (e) {
+        ln('[QR Code]');
+    }
+
+    divider('=');
+
+    // ---- FOOTER ----
+    push(ESC, 0x61, 0x01);
+    ln('Terima kasih :)');
+    ln('Barang yang sudah diservis');
+    ln('harap diambil maks 30 hari.');
+    ln('');
+    push(ESC, 0x45, 0x01);
+    ln('PRO-TECH SERVICE');
+    ln('~ Gradag Jaya Group ~');
+    push(ESC, 0x45, 0x00);
+    push(ESC, 0x61, 0x00);
+
+    // ---- FEED & CUT ----
+    push(ESC, 0x64, 0x05);           // ESC d 5 = feed 5 lines
+    if (autoCut) {
+        push(GS, 0x56, 0x42, 0x00);  // GS V 66 0 = partial cut with feed
+    }
+
+    return new Uint8Array(B);
+}
+
+/* ---------- KIRIM DATA KE PRINTER (CHUNKED) ---------- */
+async function writeToPrinter(bytes) {
+    const ch = window.btCharacteristic;
+    if (!ch) throw new Error('Printer belum terhubung.');
+
+    const CHUNK = 180;   // aman untuk sebagian besar BLE printer
+    const PAUSE = 18;    // jeda ms antar chunk agar printer tidak overflow
+
+    for (let i = 0; i < bytes.length; i += CHUNK) {
+        const slice = bytes.slice(i, i + CHUNK);
+        try {
+            if (ch.properties.writeWithoutResponse) {
+                if (typeof ch.writeValueWithoutResponse === 'function') {
+                    await ch.writeValueWithoutResponse(slice);
+                } else {
+                    await ch.writeValue(slice);
+                }
+            } else if (typeof ch.writeValueWithResponse === 'function') {
+                await ch.writeValueWithResponse(slice);
+            } else {
+                await ch.writeValue(slice);
+            }
+        } catch (err) {
+            // Retry sekali dengan mode berbeda
+            if (typeof ch.writeValue === 'function') {
+                await ch.writeValue(slice);
+            } else {
+                throw err;
+            }
+        }
+        await sleep(PAUSE);
+    }
+}
+
+/* ---------- CETAK VIA BLUETOOTH ---------- */
+async function printReceiptBluetooth() {
+    if (!window.loggedInAdmin) return alert('Login admin dulu');
+
+    if (!window.btDevice || !window.btDevice.gatt.connected || !window.btCharacteristic) {
+        const ok = confirm(
+            'Printer Bluetooth belum terhubung.\n\n' +
+            'Klik OK untuk membuka jendela Hubungkan Bluetooth sekarang.'
+        );
+        if (ok) connectBluetoothPrinter();
+        return;
+    }
+
+    const d = getReceiptData();
+    if (!d.nama || !d.unit) return alert('Lengkapi nama pelanggan dan unit servis!');
+
+    const btn = document.getElementById('btnPrintBT');
+    const originalHTML = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mencetak...';
+    showToast('<i class="fas fa-bluetooth-b"></i> Mengirim data ke printer...');
+
+    try {
+        const bytes = buildEscPosReceipt(d);
+        await writeToPrinter(bytes);
+
+        showToast('<i class="fas fa-circle-check"></i> Struk berhasil dicetak!');
+    } catch (err) {
+        console.error('Print BT error:', err);
+        showToast('<i class="fas fa-triangle-exclamation"></i> Gagal cetak: ' + (err.message || err.name));
+
+        if (!window.btDevice || !window.btDevice.gatt.connected) {
+            onBtDisconnected();
+        }
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalHTML;
+    }
+}
+
+/* ============================================================
+   ============   PENGATURAN WARNA & BACKGROUND   =============
+   ============================================================ */
 const PALETTE = [
     '#000000','#0f172a','#1e293b','#334155','#475569','#64748b','#94a3b8','#cbd5e1','#e2e8f0','#f1f5f9','#f8fafc','#ffffff',
     '#ef4444','#f43f5e','#ec4899','#d946ef','#a855f7','#8b5cf6','#6366f1','#4f46e5','#3b82f6','#0ea5e9','#06b6d4','#14b8a6',
     '#10b981','#22c55e','#84cc16','#eab308','#f59e0b','#f97316','#dc2626','#b91c1c','#065f46','#1e3a8a','#4c1d95','#831843'
 ];
 
-// Field Warna Dasar & Teks
 const COLOR_FIELDS = [
     { key: 'primary',   label: 'Warna Utama',         def: '#4f46e5', icon: 'fa-tint' },
     { key: 'secondary', label: 'Warna Sekunder',      def: '#06b6d4', icon: 'fa-droplet' },
@@ -821,7 +1368,6 @@ const COLOR_FIELDS = [
     { key: 'border',    label: 'Warna Garis / Border',def: '#e2e8f0', icon: 'fa-border-all' }
 ];
 
-// Field Background Setiap Bagian
 const BG_FIELDS = [
     { key: 'bgBody',    label: 'Background Halaman Utama',   def: '#f1f5f9', icon: 'fa-window-maximize' },
     { key: 'bgHeader',  label: 'Background Header / Navbar', def: '#ffffff', icon: 'fa-bars' },
@@ -833,7 +1379,6 @@ const BG_FIELDS = [
     { key: 'bgFooter',  label: 'Background Footer',          def: '#f1f5f9', icon: 'fa-shoe-prints' }
 ];
 
-// Bangun HTML untuk satu picker
 function pickerHTML(field, value) {
     const swatches = PALETTE.map(c =>
         `<button type="button" class="swatch" data-key="${field.key}" data-color="${c}" style="background:${c};" title="${c}"></button>`
@@ -855,7 +1400,6 @@ function pickerHTML(field, value) {
     `;
 }
 
-// Render panel
 function renderThemeSettingsForm() {
     const s = window.themeSettings || {};
     const colorWrap = document.getElementById('colorFields');
@@ -868,7 +1412,6 @@ function renderThemeSettingsForm() {
     COLOR_FIELDS.concat(BG_FIELDS).forEach(f => markActiveSwatch(f.key, s[f.key] || f.def));
 }
 
-// Tandai swatch terpilih
 function markActiveSwatch(key, color) {
     document.querySelectorAll(`.swatch[data-key="${key}"]`).forEach(sw => {
         const isActive = sw.dataset.color.toLowerCase() === String(color).toLowerCase();
@@ -876,21 +1419,18 @@ function markActiveSwatch(key, color) {
     });
 }
 
-// Event delegation: klik swatch
 document.addEventListener('click', (e) => {
     const sw = e.target.closest('.swatch');
     if (!sw) return;
     setThemeValue(sw.dataset.key, sw.dataset.color);
 });
 
-// Event delegation: pakai color picker native
 document.addEventListener('input', (e) => {
     const inp = e.target.closest('.native-color');
     if (!inp) return;
     setThemeValue(inp.dataset.key, inp.value);
 });
 
-// Set satu nilai tema & terapkan langsung
 function setThemeValue(key, color) {
     if (!window.themeSettings) window.themeSettings = {};
     window.themeSettings[key] = color;
@@ -908,7 +1448,6 @@ function setThemeValue(key, color) {
     applyThemeSettings();
 }
 
-// Terapkan semua pengaturan ke CSS variable
 function applyThemeSettings() {
     const s = window.themeSettings || {};
     const r = document.documentElement.style;
@@ -933,7 +1472,6 @@ function applyThemeSettings() {
     r.setProperty('--bg-time', s.bgTime || primary);
 }
 
-// Helper: menggelapkan warna hex
 function darken(hex, percent) {
     if (!hex || !hex.startsWith('#')) return '#3730a3';
     let h = hex.replace('#', '');
@@ -946,25 +1484,25 @@ function darken(hex, percent) {
     return '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
 }
 
-// Simpan ke Firebase
 function saveThemeSettingsToFirebase() {
     const s = window.themeSettings || {};
     window.setRef(window.refDB(window.db, 'themeSettings'), s).then(() => {
-        showToast('Pengaturan warna & background tersimpan!');
+        showToast('<i class="fas fa-circle-check"></i> Pengaturan warna & background tersimpan!');
     });
 }
 
-// Reset ke default
 function resetThemeInFirebase() {
     if (!confirm('Reset semua warna & background ke default?')) return;
     const def = {};
     COLOR_FIELDS.forEach(f => def[f.key] = f.def);
     BG_FIELDS.forEach(f => def[f.key] = f.def);
     window.setRef(window.refDB(window.db, 'themeSettings'), def);
-    showToast('Direset ke default');
+    showToast('<i class="fas fa-rotate-left"></i> Direset ke default');
 }
 
-// ==================== LAIN-LAIN ====================
+/* ============================================================
+   ==============   LAIN-LAIN   ===============================
+   ============================================================ */
 function sendWhatsAppToAdmin(){
     const name = document.getElementById('custName').value || 'Pelanggan';
     const msg = encodeURIComponent(`Halo Admin, saya ${name} mau tanya servis.`);
@@ -990,7 +1528,9 @@ function renderNotif(){
     active.forEach(a=>l.innerHTML += `<div class="notif-item"><b>Info:</b> ${a.text}</div>`);
 }
 
-// =================== NAVIGATION & INIT =====================
+/* ============================================================
+   ==============   NAVIGATION & INIT   =======================
+   ============================================================ */
 document.getElementById('nav-cust').onclick = () => { 
     document.getElementById('panel-cust').style.display='block';
     document.getElementById('panel-admin').style.display='none';
@@ -1023,6 +1563,18 @@ window.addEventListener('load', () => {
     applyThemeSettings();
     renderThemeSettingsForm();
 
+    // Cek ketersediaan Web Bluetooth
+    if (!('bluetooth' in navigator)) {
+        const info = document.getElementById('btInfo');
+        if (info) {
+            info.innerHTML = '<i class="fas fa-triangle-exclamation" style="color:#dc2626"></i> ' +
+                'Browser ini tidak mendukung Web Bluetooth. Gunakan <b>Chrome</b> terbaru via HTTPS, ' +
+                'atau gunakan tombol <b>Cetak via Chrome</b>.';
+        }
+        const bc = document.getElementById('btnBtConnect');
+        if (bc) bc.disabled = true;
+    }
+
     if (window.loggedInAdmin) {
         document.getElementById('panel-cust').style.display='none';
         document.getElementById('panel-admin').style.display='block';
@@ -1031,6 +1583,15 @@ window.addEventListener('load', () => {
         document.getElementById('admin-auth').style.display='none';
         document.getElementById('admin-dashboard').style.display='block';
         document.getElementById('activeAdminName').textContent=window.loggedInAdmin.name;
+    }
+
+    setBtUI('idle');
+});
+
+// Peringatan sebelum keluar ketika printer masih tersambung
+window.addEventListener('beforeunload', () => {
+    if (window.btDevice && window.btDevice.gatt.connected) {
+        try { window.btDevice.gatt.disconnect(); } catch(e){}
     }
 });
 </script>
