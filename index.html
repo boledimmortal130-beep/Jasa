@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pro-Tech | Smart Electronics Repair System</title>
+    <title>Pro-Tech | Gradag Jaya Group - Smart Electronics Repair System</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -56,7 +56,16 @@
         .header-content { display: flex; justify-content: space-between; align-items: center; height: 70px; }
         .logo { display: flex; align-items: center; gap: 12px; color: var(--primary); }
         .logo i { font-size: 1.8rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .logo h1 { font-size: 1.5rem; font-weight: 800; color: var(--primary); }
+        .logo h1 { font-size: 1.5rem; font-weight: 800; color: var(--primary); line-height: 1.1; }
+        .logo .sub-brand {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--color-muted);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-top: 1px;
+        }
         
         nav ul { display: flex; list-style: none; gap: 8px; background: var(--bg-input); padding: 4px; border-radius: 12px; }
         nav a { color: var(--color-muted); text-decoration: none; padding: 8px 20px; border-radius: 10px; transition: 0.25s; font-weight: 600; font-size: 0.9rem; }
@@ -91,6 +100,7 @@
         .btn-outline { background: transparent; border: 1px dashed var(--color-muted); color: var(--color-muted); }
         .btn-sm { padding: 8px 12px; font-size: 0.8rem; border-radius: 8px; }
         .btn-edit { background: #f59e0b; }
+        .btn-print { background: linear-gradient(135deg, #4f46e5, #06b6d4); }
         .auth-footer { text-align: center; margin-top: 15px; font-size: 0.9rem; color: var(--color-muted); }
         .auth-footer a { color: var(--primary); text-decoration: none; font-weight: 700; }
         .receipt-row-item { display: grid; grid-template-columns: 1fr 140px auto; gap: 10px; margin-bottom: 10px; }
@@ -170,21 +180,50 @@
         }
         .current-hex { font-family: 'Courier New', monospace; font-weight: 700; color: var(--color-muted); font-size: 0.8rem; letter-spacing: 0.5px; }
 
+        /* ============ STRUK PRINT AREA ============ */
         #printArea { display: none; }
+
         @media print {
-            body * { visibility: hidden; }
-            #printArea, #printArea * { visibility: visible; }
+            @page {
+                size: 80mm auto;
+                margin: 4mm;
+            }
+            html, body {
+                background: #fff !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 80mm;
+                height: auto;
+            }
+            body * { visibility: hidden !important; }
+            #printArea, #printArea * { visibility: visible !important; }
             #printArea { 
-                position: absolute; left: 0; top: 0; width: 100%; 
-                display: block; 
+                position: absolute; left: 0; top: 0;
+                width: 100%; 
+                display: block !important;
                 font-family: 'Courier New', Courier, monospace;
-                font-size: 12px; padding: 15px; color: #000; line-height: 1.4;
+                font-size: 11px;
+                padding: 5px;
+                color: #000;
+                line-height: 1.35;
+                background: #fff;
             }
             #printArea table { width: 100%; border-collapse: collapse; margin-bottom: 5px; }
-            #printArea .divider { border-top: 1px dashed #000; margin: 8px 0; }
-            #printArea .total-section { text-align: right; margin-top: 10px; }
-            #printArea .total-section h3 { font-size: 16px; margin: 0; }
-            body { overflow: hidden; }
+            #printArea .divider { border-top: 1px dashed #000; margin: 6px 0; }
+            #printArea .total-section { text-align: right; margin-top: 8px; }
+            #printArea .total-section h3 { font-size: 13px; margin: 0; }
+            #printArea .brand {
+                font-size: 14px;
+                font-weight: bold;
+                letter-spacing: 0.5px;
+            }
+            #printArea .sub-brand {
+                font-size: 11px;
+                font-weight: bold;
+                letter-spacing: 1.5px;
+                margin-top: 2px;
+                color: #000;
+            }
         }
 
         @media (max-width: 768px) { 
@@ -208,6 +247,7 @@
             background: var(--bg-footer);
             transition: background 0.4s ease, color 0.3s ease;
         }
+        footer b { color: var(--primary); }
     </style>
 </head>
 <body>
@@ -215,7 +255,13 @@
 <header>
     <div class="container">
         <div class="header-content">
-            <div class="logo"><i class="fas fa-screwdriver-wrench"></i> <h1>Pro-Tech</h1></div>
+            <div class="logo">
+                <i class="fas fa-screwdriver-wrench"></i>
+                <div>
+                    <h1>Pro-Tech</h1>
+                    <span class="sub-brand">Gradag Jaya Group</span>
+                </div>
+            </div>
             <div class="notification-container">
                 <div class="notification-icon" id="notifBtn">
                     <i class="fas fa-bell"></i>
@@ -292,7 +338,7 @@
                     <p>Selamat Datang, <b id="activeAdminName">Admin</b></p>
                 </div>
 
-                <!-- ============ PENGATURAN WARNA & BACKGROUND (BARU) ============ -->
+                <!-- ============ PENGATURAN WARNA & BACKGROUND ============ -->
                 <div class="card">
                     <div class="card-header"><h2><i class="fas fa-palette"></i> Pengaturan Warna & Background</h2></div>
                     <p style="font-size: 0.85rem; color: var(--color-muted); margin-bottom: 10px;">
@@ -314,14 +360,17 @@
 
                 <!-- Struk -->
                 <div class="card">
-                    <div class="card-header"><h2><i class="fas fa-file-invoice"></i> Cetak Struk + QR</h2></div>
+                    <div class="card-header">
+                        <h2><i class="fas fa-file-invoice"></i> Cetak Struk + QR</h2>
+                        <span class="badge-service"><i class="fas fa-store"></i> Gradag Jaya Group</span>
+                    </div>
                     <div class="form-group"><label>Nama Pelanggan</label><input type="text" id="sNama"></div>
                     <div class="form-group"><label>Unit Servis</label><input type="text" id="sBarang"></div>
                     <div class="form-group"><label>Masa Garansi</label><input type="text" id="sGaransi" placeholder="30 hari"></div>
                     <div id="receipt-items-container"><div class="receipt-row-item"><input type="text" placeholder="Nama Item" class="r-item-name"><input type="number" placeholder="Harga" class="r-item-price" oninput="calcTotal()"><button type="button" class="btn-danger btn-sm" onclick="this.parentElement.remove(); calcTotal()">X</button></div></div>
                     <button type="button" class="btn-outline btn-sm" onclick="addReceiptRow()">+ Tambah</button>
                     <div class="receipt-summary"><p>Total</p><h3>Rp <span id="sTotal">0</span></h3></div>
-                    <button class="btn-success" onclick="printReceipt()" style="width:100%; margin-top:15px"><i class="fas fa-print"></i> Cetak</button>
+                    <button class="btn-success" onclick="printReceipt()" style="width:100%; margin-top:15px"><i class="fas fa-print"></i> Cetak Struk (Ctrl+P)</button>
                 </div>
 
                 <!-- Layanan -->
@@ -360,21 +409,24 @@
                 <p><i class="fas fa-map-marker-alt"></i> Blok Krasag, Gamel, Plered, Cirebon</p>
                 <p><i class="fas fa-phone"></i> 0899-1286-742</p>
                 <hr style="margin:10px 0;border:none;border-top:1px solid var(--color-border)">
-                <p style="font-size:0.8rem;color:var(--color-muted)">Pro-Tech Service</p>
+                <p style="font-size:0.85rem;color:var(--color-muted);font-weight:700;">Pro-Tech Service</p>
+                <p style="font-size:0.75rem;color:var(--primary);font-weight:700;letter-spacing:1px;">GRADAG JAYA GROUP</p>
             </div>
         </div>
     </div>
 </div>
 
 <footer>
-    © 2026 Pro-Tech Service
+    © 2026 Pro-Tech Service | <b>Gradag Jaya Group</b>
 </footer>
 
-<!-- PRINT -->
+<!-- ===================== PRINT AREA (STRUK) ===================== -->
 <div id="printArea">
     <div style="text-align:center;">
-        <div style="font-size:16px; font-weight:bold;">PRO-TECH SERVICE</div>
-        <div>Blok Krasag, Gamel, Plered, Cirebon | WA: 0899-1286-742</div>
+        <div class="brand">PRO-TECH SERVICE</div>
+        <div class="sub-brand">GRADAG JAYA GROUP</div>
+        <div style="font-size:10px; margin-top:3px;">Blok Krasag, Gamel, Plered, Cirebon</div>
+        <div style="font-size:10px;">WA: 0899-1286-742</div>
     </div>
     <div class="divider"></div>
     <table>
@@ -393,10 +445,15 @@
     <div class="total-section"><h3>TOTAL: Rp <span id="pTotal"></span></h3></div>
     <div style="text-align:center; margin-top:10px;">
         <img src="https://api.qrserver.com/v1/create-qr-code/?size=120&data=https%3A%2F%2Fboledimmortal130-beep.github.io%2FJasa%2F%23" alt="QR Code Pro-Tech" width="120" height="120">
-        <p style="font-size:10px">Scan untuk order & info servis</p>
-        <p style="font-size:8px; color:gray">boledimmortal130-beep.github.io/Jasa</p>
+        <p style="font-size:10px; margin-top:3px;">Scan untuk order & info servis</p>
+        <p style="font-size:8px; color:gray;">boledimmortal130-beep.github.io/Jasa</p>
     </div>
-    <div style="text-align:center; margin-top:8px; font-size:10px;">Terima kasih 😊</div>
+    <div class="divider"></div>
+    <div style="text-align:center; margin-top:6px; font-size:10px;">
+        <b>Terima kasih 😊</b><br>
+        Barang yang sudah diservis harap diambil maksimal 30 hari.<br>
+        <b>Pro-Tech Service</b> - <i>Gradag Jaya Group</i>
+    </div>
 </div>
 
 <div class="notification" id="toast">Notifikasi</div>
@@ -662,7 +719,7 @@ function submitOrderViaWhatsApp() {
     if (!name || !wa || !device || !problem) return alert('Lengkapi form!');
 
     const adminPhone = "628991286742";
-    const msg = encodeURIComponent(`*PESANAN SERVIS*\nNama: ${name}\nWA: ${wa}\nUnit: ${device}\nKeluhan: ${problem}`);
+    const msg = encodeURIComponent(`*PESANAN SERVIS - GRADAG JAYA GROUP*\nNama: ${name}\nWA: ${wa}\nUnit: ${device}\nKeluhan: ${problem}`);
     window.open(`https://wa.me/${adminPhone}?text=${msg}`, '_blank');
 
     const orderRef = window.pushRef(window.refDB(window.db, 'orders'));
@@ -716,10 +773,10 @@ function printReceipt() {
     const nama = document.getElementById('sNama').value.trim();
     const unit = document.getElementById('sBarang').value.trim();
     const garansi = document.getElementById('sGaransi').value.trim() || '-';
-    if (!nama || !unit) return alert('Lengkapi data!');
+    if (!nama || !unit) return alert('Lengkapi nama pelanggan dan unit servis!');
     if (!window.loggedInAdmin) return alert('Login admin dulu');
 
-    document.getElementById('pTgl').textContent = new Date().toLocaleDateString('id-ID');
+    document.getElementById('pTgl').textContent = new Date().toLocaleString('id-ID');
     document.getElementById('pAdmin').textContent = window.loggedInAdmin.name;
     document.getElementById('pNama').textContent = nama;
     document.getElementById('pBarang').textContent = unit;
@@ -735,11 +792,16 @@ function printReceipt() {
             rowsBody.innerHTML += `<tr><td>${el.value}</td><td style="text-align:right">Rp ${parseInt(hargaItems[idx].value || 0).toLocaleString('id-ID')}</td></tr>`;
         }
     });
-    window.print();
+
+    showToast('Membuka jendela cetak...');
+    // Delay kecil agar toast muncul dulu lalu dialog print Chrome terbuka
+    setTimeout(() => {
+        window.print();
+    }, 300);
 }
 
 // ============================================================
-// ============ PENGATURAN WARNA & BACKGROUND (BARU) ==========
+// ============ PENGATURAN WARNA & BACKGROUND ==================
 // ============================================================
 
 // Palet warna lengkap (banyak pilihan)
@@ -759,7 +821,7 @@ const COLOR_FIELDS = [
     { key: 'border',    label: 'Warna Garis / Border',def: '#e2e8f0', icon: 'fa-border-all' }
 ];
 
-// Field Background Setiap Bagian (satu per satu)
+// Field Background Setiap Bagian
 const BG_FIELDS = [
     { key: 'bgBody',    label: 'Background Halaman Utama',   def: '#f1f5f9', icon: 'fa-window-maximize' },
     { key: 'bgHeader',  label: 'Background Header / Navbar', def: '#ffffff', icon: 'fa-bars' },
@@ -793,7 +855,7 @@ function pickerHTML(field, value) {
     `;
 }
 
-// Render panel (dipanggil saat data masuk dari Firebase atau awal)
+// Render panel
 function renderThemeSettingsForm() {
     const s = window.themeSettings || {};
     const colorWrap = document.getElementById('colorFields');
@@ -803,7 +865,6 @@ function renderThemeSettingsForm() {
     colorWrap.innerHTML = COLOR_FIELDS.map(f => pickerHTML(f, s[f.key] || f.def)).join('');
     bgWrap.innerHTML = BG_FIELDS.map(f => pickerHTML(f, s[f.key] || f.def)).join('');
 
-    // Set state aktif untuk tiap picker
     COLOR_FIELDS.concat(BG_FIELDS).forEach(f => markActiveSwatch(f.key, s[f.key] || f.def));
 }
 
@@ -852,19 +913,16 @@ function applyThemeSettings() {
     const s = window.themeSettings || {};
     const r = document.documentElement.style;
 
-    // Warna dasar
     const primary = s.primary || '#4f46e5';
     r.setProperty('--primary', primary);
     r.setProperty('--primary-dark', darken(primary, 20));
     r.setProperty('--secondary', s.secondary || '#06b6d4');
 
-    // Warna teks
     r.setProperty('--color-text', s.text || '#0f172a');
     r.setProperty('--color-heading', s.heading || '#0f172a');
     r.setProperty('--color-muted', s.muted || '#64748b');
     r.setProperty('--color-border', s.border || '#e2e8f0');
 
-    // Background per bagian
     r.setProperty('--bg-body', s.bgBody || '#f1f5f9');
     r.setProperty('--bg-header', s.bgHeader || '#ffffff');
     r.setProperty('--bg-card', s.bgCard || '#ffffff');
